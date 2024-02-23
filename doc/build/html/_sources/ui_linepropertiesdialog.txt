@@ -1,0 +1,7 @@
+ui_linepropertiesdialog module
+==============================
+
+.. automodule:: ui_linepropertiesdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:

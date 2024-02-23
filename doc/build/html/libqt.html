@@ -1,0 +1,704 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>libqt module &#8212; APES 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="qsi module" href="qsi.html" />
+    <link rel="prev" title="libspec module" href="libspec.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qsi.html" title="qsi module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libspec.html" title="libspec module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-libqt">
+<span id="libqt-module"></span><h1>libqt module<a class="headerlink" href="#module-libqt" title="Permalink to this headline">¶</a></h1>
+<p>Commmon tasks for Qt widgets.</p>
+<p>This module contains some common routines to simplify interaction with
+Qt libraries.</p>
+<dl class="function">
+<dt id="libqt.array2tab">
+<code class="descclassname">libqt.</code><code class="descname">array2tab</code><span class="sig-paren">(</span><em>tab</em>, <em>array</em>, <em>row0=0</em>, <em>col0=0</em>, <em>formatting='{}'</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.array2tab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write 2D array to QTableWidget.</p>
+<p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code> and an iterable (or iterable of
+iterables), put the data from the array into the table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to be written to</li>
+<li><strong>array</strong> (<em>sequence of sequences</em>) – The data to read from. The first level
+of the sequence will be interpreted as rows, and the second level
+as columns.</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – index of first row to start writing data</li>
+<li><strong>col0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – index of first column to start writing data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">this function does not resize the table in any way, it only
+writes into cells.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.bool_crossed">
+<code class="descclassname">libqt.</code><code class="descname">bool_crossed</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.bool_crossed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Say wheter items are crossed over or not.</p>
+<p>Convert a stream of items into stream of bools where True means
+the item is crossed over and False if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>items</strong> (<em>iterable</em>) – must yield instances of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidgetItem</span></code> to be filtered.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body">True for each item crossed over, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.confirm_delete">
+<code class="descclassname">libqt.</code><code class="descname">confirm_delete</code><span class="sig-paren">(</span><em>parent</em>, <em>msg</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.confirm_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop up dialog to confirm option.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.count_crossed">
+<code class="descclassname">libqt.</code><code class="descname">count_crossed</code><span class="sig-paren">(</span><em>items</em>, <em>invert=False</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.count_crossed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the items crossed over.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>items</strong> (<em>iterable</em>) – must yield instances of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidgetItem</span></code> to be counted.</li>
+<li><strong>invert</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – if True, count the items not crossed instead.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The number of (not) crossed items</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.create_combo">
+<code class="descclassname">libqt.</code><code class="descname">create_combo</code><span class="sig-paren">(</span><em>options</em>, <em>default_option=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.create_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create QComboBox from options and default option.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>options</strong> (<em>sequence</em>) – sequence of str with option for combo</li>
+<li><strong>default_option</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – index of the defatult option</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">PyQt4.QtWidgets.QComboBox</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.cross">
+<code class="descclassname">libqt.</code><code class="descname">cross</code><span class="sig-paren">(</span><em>items</em>, <em>to_cross=None</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross over the items provided.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>items</strong> (<em>iterable</em>) – Provide a stream of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidgetItem</span></code> objects which will be
+crossed or uncrossed over.</li>
+<li><strong>to_cross</strong> – If True, cross over the items; if False, uncross them over;
+if None, switch the value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – if any of the items is not
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidgetItem</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.fill_column">
+<code class="descclassname">libqt.</code><code class="descname">fill_column</code><span class="sig-paren">(</span><em>tab</em>, <em>col</em>, <em>data</em>, <em>row0=0</em>, <em>flags=None</em>, <em>formatting='{}'</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.fill_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill column of a table with data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to write to.</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – index of column to be filled with data</li>
+<li><strong>data</strong> (<em>iterable</em>) – data to fill column with</li>
+<li><strong>flags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – extra flags to be passed to the newly created
+:class:<a href="#id1"><span class="problematic" id="id2">`</span></a>PyQt4.QtWidgets.QTableWidgetItem’ object</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – rows to skip at beginning</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.fill_column_comboindex">
+<code class="descclassname">libqt.</code><code class="descname">fill_column_comboindex</code><span class="sig-paren">(</span><em>table</em>, <em>indices</em>, <em>comboitems</em>, <em>col</em>, <em>row0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.fill_column_comboindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a column with QComboBoxes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to write to.</li>
+<li><strong>indices</strong> (<em>sequence of int</em>) – The indices for the QComboBoxes to be
+initialized to corresponding to the item in <strong>comboitems</strong>.</li>
+<li><strong>comboitems</strong> (<em>sequence of str</em>) – The items to fill QComboBoxes.</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the table column to loop over</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of rows to skip at the beginning.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.fill_row">
+<code class="descclassname">libqt.</code><code class="descname">fill_row</code><span class="sig-paren">(</span><em>table</em>, <em>row</em>, <em>data</em>, <em>col0=0</em>, <em>formatting='{}'</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.fill_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill row of a table with data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to write to.</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – index of row to be filled with data</li>
+<li><strong>data</strong> (<em>iterable</em>) – data to fill row with</li>
+<li><strong>col0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – cols to skip at beginning</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.fill_row_comboindex">
+<code class="descclassname">libqt.</code><code class="descname">fill_row_comboindex</code><span class="sig-paren">(</span><em>table</em>, <em>indices</em>, <em>comboitems</em>, <em>row</em>, <em>col0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.fill_row_comboindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a column with QComboBoxes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to write to.</li>
+<li><strong>indices</strong> (<em>sequence of int</em>) – The indices for the QComboBoxes to be
+initialized to corresponding to the item in <strong>comboitems</strong>.</li>
+<li><strong>comboitems</strong> (<em>sequence of str</em>) – The items to fill QComboBoxes.</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the table column to loop over</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of rows to skip at the beginning.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.filter_crossed">
+<code class="descclassname">libqt.</code><code class="descname">filter_crossed</code><span class="sig-paren">(</span><em>items</em>, <em>invert=False</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.filter_crossed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter items in table crossed over.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>items</strong> (<em>iterable</em>) – must yield instances of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidgetItem</span></code> to be filtered.</li>
+<li><strong>invert</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – if True, yield the items not crossed instead.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">items in <strong>items</strong> for which the text is crossed over.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.filter_tabwidget">
+<code class="descclassname">libqt.</code><code class="descname">filter_tabwidget</code><span class="sig-paren">(</span><em>table</em>, <em>ctype</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.filter_tabwidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter widgets in a table of a specific type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to write to.</li>
+<li><strong>ctype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><em>type</em></a>) – The type to be filtered.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">The filtered objects.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.indices_crossed">
+<code class="descclassname">libqt.</code><code class="descname">indices_crossed</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.indices_crossed" title="Permalink to this definition">¶</a></dt>
+<dd><p>List indices of items crossed over.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>items</strong> (<em>iterable</em>) – must yield instances of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidgetItem</span></code> to be filtered.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body">indices <strong>items</strong> for which the text is not crossed over.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_column">
+<code class="descclassname">libqt.</code><code class="descname">iter_column</code><span class="sig-paren">(</span><em>table</em>, <em>col</em>, <em>row0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over items in a column.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the column to loop over.</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">items in given column</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_column_comboindex">
+<code class="descclassname">libqt.</code><code class="descname">iter_column_comboindex</code><span class="sig-paren">(</span><em>table</em>, <em>col</em>, <em>row0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_column_comboindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indices of QComboBoxes in a column.</p>
+<p>Loop over a column from <strong>row0</strong> to the bottom, grab the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QComboBox</span></code> and return the currentIndex value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the column to loop over.</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first"><em>int</em> – the indices of the comboboxes along the column</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – if any cell on the way does not contain a QComboBox object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_column_text">
+<code class="descclassname">libqt.</code><code class="descname">iter_column_text</code><span class="sig-paren">(</span><em>table</em>, <em>col</em>, <em>row0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_column_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over items text in a column.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the column to loop over.</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">text from items in given column</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_column_widget">
+<code class="descclassname">libqt.</code><code class="descname">iter_column_widget</code><span class="sig-paren">(</span><em>table</em>, <em>col</em>, <em>row0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_column_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over widgets in a column.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the column to loop over.</li>
+<li><strong>row0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">widgets in given column</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_row">
+<code class="descclassname">libqt.</code><code class="descname">iter_row</code><span class="sig-paren">(</span><em>table</em>, <em>row</em>, <em>col0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over widgets in a row.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to iterate over</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – index of the row to iterate over</li>
+<li><strong>col0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the initial column</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>QTableWidgetItem</em> – for each column read</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_row_comboindex">
+<code class="descclassname">libqt.</code><code class="descname">iter_row_comboindex</code><span class="sig-paren">(</span><em>table</em>, <em>row</em>, <em>col0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_row_comboindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index QComboBoxes in a column.</p>
+<p>Loop over a column from <strong>col0</strong> to the end, grab the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QComboBox</span></code> and return the currentIndex value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the column to loop over.</li>
+<li><strong>col0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first"><em>int</em> – the indices of the comboboxes along the row</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – if any cell on the way does not contain a QComboBox object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_row_text">
+<code class="descclassname">libqt.</code><code class="descname">iter_row_text</code><span class="sig-paren">(</span><em>table</em>, <em>row</em>, <em>col0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_row_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over items text in a row.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the row to loop over.</li>
+<li><strong>col0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">text from items in given row</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_row_widget">
+<code class="descclassname">libqt.</code><code class="descname">iter_row_widget</code><span class="sig-paren">(</span><em>table</em>, <em>row</em>, <em>col0=0</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_row_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over widgets in a row.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – A table to read from</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the row to loop over.</li>
+<li><strong>col0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column to start looping over.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">widgets in given row</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.iter_tabwidget">
+<code class="descclassname">libqt.</code><code class="descname">iter_tabwidget</code><span class="sig-paren">(</span><em>tabwidget</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.iter_tabwidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the widgets of a <code class="xref py py-class docutils literal notranslate"><span class="pre">QtWidgets.QTabWidget</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.opendialog">
+<code class="descclassname">libqt.</code><code class="descname">opendialog</code><span class="sig-paren">(</span><em>parent</em>, <em>filters</em>, <em>directory='.'</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.opendialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open file dialog and return filename selected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – filters in dialog</li>
+<li><strong>directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – directory to open from.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file name selected</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.popwarning">
+<code class="descclassname">libqt.</code><code class="descname">popwarning</code><span class="sig-paren">(</span><em>text</em>, <em>more_info</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.popwarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open messagebox dialog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – title of the box</li>
+<li><strong>more_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – additional information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.remove_curr_row">
+<code class="descclassname">libqt.</code><code class="descname">remove_curr_row</code><span class="sig-paren">(</span><em>tab</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.remove_curr_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove row currently selected.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.replace_nones">
+<code class="descclassname">libqt.</code><code class="descname">replace_nones</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.replace_nones" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libqt.selected_rows">
+<code class="descclassname">libqt.</code><code class="descname">selected_rows</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.selected_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a set with the rows currently selected in table.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.tab2array">
+<code class="descclassname">libqt.</code><code class="descname">tab2array</code><span class="sig-paren">(</span><em>tab</em>, <em>rows</em>, <em>cols</em>, <em>dtype=&lt;class 'float'&gt;</em>, <em>masked=True</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.tab2array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write 1D or 2D array to <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>.</p>
+<p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code> and a range of rows and columns,
+the data in that area of the table is read and returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to read from</li>
+<li><strong>rows</strong> (<em>iterable</em>) – the rows to loop over and read</li>
+<li><strong>cols</strong> (<em>iterable</em>) – the columns to loop over and read</li>
+<li><strong>dtype</strong> (<em>callable</em>) – the type for the return array</li>
+<li><strong>masked</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – if set to True, values crossed over will not be
+returned. If False, all values will be returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">data to read from the table</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of tuple</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any item in <strong>rows</strong> or <strong>cols</strong> is out of bounds.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libqt.tab2maarray">
+<code class="descclassname">libqt.</code><code class="descname">tab2maarray</code><span class="sig-paren">(</span><em>tab</em>, <em>rows</em>, <em>cols</em>, <em>dtype=&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#libqt.tab2maarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write contents of table to a masked array.</p>
+<p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code> and a range of rows and columns,
+the data in that area of the table is read and returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt4.QtWidgets.QTableWidget</span></code>) – The table to read from</li>
+<li><strong>rows</strong> (<em>iterable</em>) – the rows to loop over and read</li>
+<li><strong>cols</strong> (<em>iterable</em>) – the columns to loop over and read</li>
+<li><strong>dtype</strong> (<em>callable</em>) – the type for the return array</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>where the first element is the data read from the table and the</dt>
+<dd><p class="first last">second is the mask.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libspec.html"
+                        title="previous chapter">libspec module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="qsi.html"
+                        title="next chapter">qsi module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/libqt.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qsi.html" title="qsi module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libspec.html" title="libspec module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Salvador Blasco.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

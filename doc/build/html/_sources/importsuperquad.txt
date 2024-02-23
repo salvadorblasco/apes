@@ -1,0 +1,7 @@
+importsuperquad module
+======================
+
+.. automodule:: importsuperquad
+    :members:
+    :undoc-members:
+    :show-inheritance:

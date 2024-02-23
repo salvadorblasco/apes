@@ -1,0 +1,7 @@
+distri_drag module
+==================
+
+.. automodule:: distri_drag
+    :members:
+    :undoc-members:
+    :show-inheritance:

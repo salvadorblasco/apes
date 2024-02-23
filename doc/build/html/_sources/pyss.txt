@@ -1,0 +1,7 @@
+pyss module
+===========
+
+.. automodule:: pyss
+    :members:
+    :undoc-members:
+    :show-inheritance:

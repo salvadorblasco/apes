@@ -1,0 +1,9 @@
+1
+x y ey
+<externaldata>
+ <title>y2-axis title</title>
+ <!-- order="0" applies to all -->
+ <data type="x"  unit="mL">{}</data>
+ <data type="y"  suborder="1" unit="mV" label="δ / ppm">{}</data>
+ <data type="ey" suborder="1" unit="mV" label="δ / ppm">{}</data>
+</externaldata>

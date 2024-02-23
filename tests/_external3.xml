@@ -1,0 +1,20 @@
+2
+x ex y ey y ey
+x ex y ey y ey
+<externaldata>
+ <title>y2-axis title</title>
+ <!-- order="0" applies to all -->
+ <data type="x"  order="0" unit="mL">{}</data>
+ <data type="ex" order="0" unit="mL">{}</data>
+ <data type="y"  order="0" suborder="2" unit="mV" label="δ / ppm">{}</data>
+ <data type="ey" order="0" suborder="2" unit="mV" label="δ / ppm">{}</data>
+ <data type="y"  order="0" suborder="1" unit="mV" label="δ / ppm">{}</data>
+ <data type="ey" order="0" suborder="1" unit="mV" label="δ / ppm">{}</data>
+ <data type="x"  order="1" unit="mL">{}</data>
+ <data type="ex" order="1" unit="mL">{}</data>
+ <data type="y"  order="1" suborder="2" unit="mV" label="δ / ppm">{}</data>
+ <data type="ey" order="1" suborder="2" unit="mV" label="δ / ppm">{}</data>
+ <data type="y"  order="1" suborder="1" unit="mV" label="δ / ppm">{}</data>
+ <data type="ey" order="1" suborder="1" unit="mV" label="δ / ppm">{}</data>
+</externaldata>
+

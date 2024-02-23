@@ -1,0 +1,590 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>libio module &#8212; APES 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="libnmr module" href="libnmr.html" />
+    <link rel="prev" title="libeq module" href="libeq.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libnmr.html" title="libnmr module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libeq.html" title="libeq module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-libio">
+<span id="libio-module"></span><h1>libio module<a class="headerlink" href="#module-libio" title="Permalink to this headline">¶</a></h1>
+<p>Routines for input/output and import/export data.</p>
+<dl class="function">
+<dt id="libio.importHyperquad">
+<code class="descclassname">libio.</code><code class="descname">importHyperquad</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importHyperquad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from Hyperquad file.</p>
+<p>This function imports data from a Hyperquad file. Those are XML files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file to import data from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importHyperquadApp">
+<code class="descclassname">libio.</code><code class="descname">importHyperquadApp</code><span class="sig-paren">(</span><em>app</em>, <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importHyperquadApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from Hyperquad data into application.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function assumes that the main application is empty.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importK88">
+<code class="descclassname">libio.</code><code class="descname">importK88</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importK88" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from a file which complies with K88 file format.</p>
+<p>K88 files are text files with the format
+10.096     0.000     0.000    40.344  1211.900A1
+10.096     0.000     0.000    37.899  1226.900      0.330</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file to import data from</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">of lists containing the following information information:<ul class="simple">
+<li>list: the amount of titre at the beginning of the point</li>
+<li>list: the amount of titre at the end of the point</li>
+<li>list: the id of the point</li>
+<li>list: the heat measured</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importK88App">
+<code class="descclassname">libio.</code><code class="descname">importK88App</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importK88App" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import calorimetry data from a K88 file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importPasatApp">
+<code class="descclassname">libio.</code><code class="descname">importPasatApp</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importPasatApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>import data from a PASAT file into current dataset and update.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importSuperquad">
+<code class="descclassname">libio.</code><code class="descname">importSuperquad</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importSuperquad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from Superquad file.</p>
+<p>This function imports data from a file which complies with SUPERQUAD
+file format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> (<em>string</em><em> or </em><em>file</em>) – A readable source from where the data is read.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first">** title (str)* – title of the project
+* control numbers (sequence)
+* labels (list of str): the labels of the principal components
+* temperature (float): the temperature
+* logB (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the constants in log10 units
+* P (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the stoichiometric coefficients
+* flags (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the refinement flags
+* emf (generator of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the potential read
+* V (generator of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the volume of titre
+* E0 (generator of floats): the standard potential
+* n (generator of int): the number of electrons involved
+* E0flags (generator of int): the refinement flags for E0
+* error_E0 (generator of float): the error associated to E0
+* V0 (generator of float): the initial volume
+* error_V0 (generator of float): the error associated to volume
+* T0 (generator of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the initial amounts for the</p>
+<blockquote>
+<div><p>principal components</p>
+</div></blockquote>
+<ul class="last simple">
+<li>T0flags (generator of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the refinement flags
+for T0.</li>
+<li>buret (generator of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): the concentration in the
+buret.</li>
+<li>hindex (generator of int): The index of the electroactive component.</li>
+<li>fRTnF (generator of float): Nernst’s propocionality number.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importSuperquadApp">
+<code class="descclassname">libio.</code><code class="descname">importSuperquadApp</code><span class="sig-paren">(</span><em>app</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importSuperquadApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from a superquad file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>app</strong> (<em>mainwindow</em>) – instance to the main window.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file to read data from.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importTiamoApp">
+<code class="descclassname">libio.</code><code class="descname">importTiamoApp</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importTiamoApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>import data from a TIAMO file into current dataset and update.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.importTxtSpApp">
+<code class="descclassname">libio.</code><code class="descname">importTxtSpApp</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.importTxtSpApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import spectra from data file and load into current widget.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.import_pasat">
+<code class="descclassname">libio.</code><code class="descname">import_pasat</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.import_pasat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from a file which complies with PASAT file format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A readable source from where the data is read.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Containing all the information read from the file</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.import_tiamo">
+<code class="descclassname">libio.</code><code class="descname">import_tiamo</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.import_tiamo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from a file which complies with TIAMO file format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A readable source from where the data is read.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Containing two lists, being the titre and the potential</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.j">
+<code class="descclassname">libio.</code><code class="descname">j</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.j" title="Permalink to this definition">¶</a></dt>
+<dd><p>A shortcut.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadCalorXML">
+<code class="descclassname">libio.</code><code class="descname">loadCalorXML</code><span class="sig-paren">(</span><em>self</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadCalorXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the contents of an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>
+into this class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – An ElementTree containing
+the information to be loaded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <strong>xmle</strong> has the wrong type or is not the right
+xml substructure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadCurveXML">
+<code class="descclassname">libio.</code><code class="descname">loadCurveXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadCurveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the titration data from an XML file into self.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadEmfXML">
+<code class="descclassname">libio.</code><code class="descname">loadEmfXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadEmfXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the contents of XML into this class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>widget</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">apes.EMDDSWidget</span></code>) – widget to load data into.</li>
+<li><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – An ElementTree containing
+the information about the model to be loaded.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <strong>xmle</strong> has the wrong type or is not the right
+xml substructure.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadExternalXML">
+<code class="descclassname">libio.</code><code class="descname">loadExternalXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadExternalXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.loadModelXML">
+<code class="descclassname">libio.</code><code class="descname">loadModelXML</code><span class="sig-paren">(</span><em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadModelXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the contents of an XML and return a <code class="xref py py-class docutils literal notranslate"><span class="pre">consts.Model</span></code>.</p>
+<dl class="docutils">
+<dt>:param <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>: An Element object</dt>
+<dd>containing the information about the model to be loaded.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The data read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">consts.Model</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <strong>xmle</strong> has the wrong type or is not the right
+xml substructure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadModelsXML">
+<code class="descclassname">libio.</code><code class="descname">loadModelsXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em>, <em>labels</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadModelsXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the contents of an XML into <code class="xref py py-class docutils literal notranslate"><span class="pre">apes.ModelWidget</span></code>.</p>
+<dl class="docutils">
+<dt>:param <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>: An Element object</dt>
+<dd>containing the information about the model to be loaded.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadNmrXML">
+<code class="descclassname">libio.</code><code class="descname">loadNmrXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadNmrXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.loadSpeciationXML">
+<code class="descclassname">libio.</code><code class="descname">loadSpeciationXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadSpeciationXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load speciation XML information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – object with the XML info.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadSpectrXML">
+<code class="descclassname">libio.</code><code class="descname">loadSpectrXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadSpectrXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.loadTitrationXML">
+<code class="descclassname">libio.</code><code class="descname">loadTitrationXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadTitrationXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load XML information into self.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – object with the XML info.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.loadXML">
+<code class="descclassname">libio.</code><code class="descname">loadXML</code><span class="sig-paren">(</span><em>app</em>, <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an XML file into application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>calls</strong> (<em>sequence of callables</em>) – Sequence of callables from the
+MainWindow that allow this function to load data. It must
+be (app.getModelWidget, app.newSpeciation, app.newTitration,
+app.newEmf, app.newNMR, app.newSpectr, app.newCalor)</li>
+<li><strong>f</strong> (<em>file</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file to read data from.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This routine assumes that MainWindow in empty.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveCalorXML">
+<code class="descclassname">libio.</code><code class="descname">saveCalorXML</code><span class="sig-paren">(</span><em>calorwidget</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveCalorXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a> containing the
+information from this class in order to write in the xml file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An ElementTree containing the</dt>
+<dd>information about the calorimetry data.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveCurveXML">
+<code class="descclassname">libio.</code><code class="descname">saveCurveXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveCurveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts self data into XML object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveEmfXML">
+<code class="descclassname">libio.</code><code class="descname">saveEmfXML</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveEmfXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a> containing the
+information from this class in order to write in the xml file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An ElementTree containing the</dt>
+<dd>information about the model.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveExternalXML">
+<code class="descclassname">libio.</code><code class="descname">saveExternalXML</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveExternalXML" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&lt;externaldata&gt;</dt>
+<dd>&lt;title&gt;y2-axis title&lt;/title&gt;
+&lt;!– order=”0” applies to all –&gt;
+&lt;x order=”1” unit=”mL”&gt;0.1 0.2 0.3 (…) 1.4&lt;/x&gt;
+&lt;y order=”1” unit=”chemical shift” label=”δ / ppm”&gt;123.3 (…)&lt;/y&gt;
+&lt;ey order=”1” unit=”chemical shift” label=”δ / ppm”&gt;0.1 (…)&lt;/ey&gt;</dd>
+</dl>
+<p>&lt;/externaldata&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveModelWidgetXML">
+<code class="descclassname">libio.</code><code class="descname">saveModelWidgetXML</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveModelWidgetXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.saveModelXML">
+<code class="descclassname">libio.</code><code class="descname">saveModelXML</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveModelXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a> containing the
+information from this class in order to write in the xml file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">modelwidget.ModelData</span></code>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An ElementTree containing the</dt>
+<dd>information about the model.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveNmrXML">
+<code class="descclassname">libio.</code><code class="descname">saveNmrXML</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveNmrXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.saveSpeciationXML">
+<code class="descclassname">libio.</code><code class="descname">saveSpeciationXML</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveSpeciationXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.saveSpectrXML">
+<code class="descclassname">libio.</code><code class="descname">saveSpectrXML</code><span class="sig-paren">(</span><em>widget</em>, <em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveSpectrXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libio.saveTitrationXML">
+<code class="descclassname">libio.</code><code class="descname">saveTitrationXML</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveTitrationXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save titration data into an XML object</p>
+<p>returns an <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code> with the information of
+this <a class="reference internal" href="data.html#data.SpeciationData" title="data.SpeciationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.SpeciationData</span></code></a> to be saved.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>widget</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">otherwidgets.TitrationWidget</span></code>) – The widget to
+get the data from.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the XML object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libio.saveXML">
+<code class="descclassname">libio.</code><code class="descname">saveXML</code><span class="sig-paren">(</span><em>app</em>, <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#libio.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the data into an XML file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>main</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">apes.MainWindow</span></code>) – The main application widget.</li>
+<li><strong>f</strong> (<em>file</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A file to save the data into. If file exists it will
+be overwritten.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libeq.html"
+                        title="previous chapter">libeq module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libnmr.html"
+                        title="next chapter">libnmr module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/libio.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libnmr.html" title="libnmr module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libeq.html" title="libeq module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Salvador Blasco.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

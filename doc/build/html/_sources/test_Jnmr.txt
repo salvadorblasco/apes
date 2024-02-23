@@ -1,0 +1,7 @@
+test_Jnmr module
+================
+
+.. automodule:: test_Jnmr
+    :members:
+    :undoc-members:
+    :show-inheritance:

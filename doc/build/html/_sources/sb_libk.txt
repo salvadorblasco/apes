@@ -1,0 +1,7 @@
+sb_libk module
+==============
+
+.. automodule:: sb_libk
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,360 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>libspec module &#8212; APES 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="libqt module" href="libqt.html" />
+    <link rel="prev" title="libplot module" href="libplot.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libqt.html" title="libqt module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libplot.html" title="libplot module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-libspec">
+<span id="libspec-module"></span><h1>libspec module<a class="headerlink" href="#module-libspec" title="Permalink to this headline">¶</a></h1>
+<p>Module <strong>libspec</strong> contains the routines needed for fitting equilibrium
+constants from spectrophotometric data, either absorbance, fluorescence,
+phosphorence, circular dichroism or any other that follows a linear
+relationship such as
+<a class="reference external" href="https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law">Beer-Lambert law</a>.</p>
+<dl class="glossary docutils">
+<dt id="term-ns">Ns</dt>
+<dd>is the number of spectra</dd>
+<dt id="term-nl">Nl</dt>
+<dd>is the number of wavelengths (points per spectrum)</dd>
+<dt id="term-ne">Ne</dt>
+<dd>is the total number of non-transparent, refinable species</dd>
+<dt id="term-nc">Nc</dt>
+<dd>is the total number of non-transparent species</dd>
+<dt id="term-nb">Nb</dt>
+<dd>is the number of constants to be refined</dd>
+<dt id="term-n">N</dt>
+<dd>is the total number of experimental points. <strong>N</strong> = <strong>Ns</strong> * <strong>Nl</strong></dd>
+<dt id="term-a">A</dt>
+<dd>is the absorbance matrix. It is a 2D matrix of size (<strong>Ns</strong>, <strong>Nl</strong>)  where
+columns represent the wavelength and rows are experimental points. Very often
+this matrix must be flattened for calculations. It must be flattened column-wise.</dd>
+<dt id="term-e">e</dt>
+<dd>is the epsilon matrix. It is a (Nl, E+S) array of floats representing
+the extintion coefficient.</dd>
+<dt id="term-erefkey">erefkey</dt>
+<dd>is an <strong>E</strong> + <strong>S</strong>-sized array of ints with the key to refine
+or not the epsilon.</dd>
+<dt id="term-transp">transp</dt>
+<dd>is an <strong>E</strong> + <strong>S</strong>-sized list of bools that indicate whether a
+specific species is transparent or not</dd>
+</dl>
+<dl class="function">
+<dt id="libspec.jac_sub_beta">
+<code class="descclassname">libspec.</code><code class="descname">jac_sub_beta</code><span class="sig-paren">(</span><em>e</em>, <em>C</em>, <em>P</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.jac_sub_beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the part of the jacobian that depends on the equilibrium
+constants, <span class="math notranslate nohighlight">\(J_{\beta}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial A_{i\lambda}}{\partial\log\beta_k} =
+  l \sum_{j=1}^{E+S} \varepsilon_{\lambda j} c_{ij}
+  \frac{\partial\log c_{ij}}{\partial\log\beta_k}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>e</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The epsilon matrix. It must
+be (Nl, Nc)-sized.</li>
+<li><strong>C</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The free concentrations coefficient array.
+It must be an (N, E+S) array.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
+<dt>The part of the jacobian matrix that depends on the extintion</dt>
+<dd><p class="first last">coefficient.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libspec.jac_sub_eps">
+<code class="descclassname">libspec.</code><code class="descname">jac_sub_eps</code><span class="sig-paren">(</span><em>Nl</em>, <em>C</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.jac_sub_eps" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the part of the jacobian that depends on the extinction
+coefficient refinement, <span class="math notranslate nohighlight">\(J_{\varepsilon}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial A_{i\lambda}}{\partial\varepsilon_{ab}} =
+  l c_{ib} \delta_{\lambda a}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Nl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – is the number of wavelengths used (points per spectrum)</li>
+<li><strong>C</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The free concentrations coefficient array.
+It must be an (N, Ne) array.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
+<dt>The part of the jacobian matrix that depends on the extintion</dt>
+<dd><p class="first last">coefficient.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libspec.jacobian">
+<code class="descclassname">libspec.</code><code class="descname">jacobian</code><span class="sig-paren">(</span><em>A</em>, <em>e</em>, <em>C</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.jacobian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the jacobian matrix. For constant fitting from spectroscopic
+data it is an (N×Nl,Nl×Nb)-array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The absorbance matrix. It must
+be (Ns, Nl)-sized.</li>
+<li><strong>e</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The epsilon matrix. It must
+be (Nl, Nc)-sized.</li>
+<li><strong>ntrares</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – An <strong>E**+**S</strong>-sized list of bools
+that indicate whether a specific species is transparent or not</li>
+<li><strong>C</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The free concentrations array. It must
+be (Ns, E+S)-sized.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libspec.ravel_A">
+<code class="descclassname">libspec.</code><code class="descname">ravel_A</code><span class="sig-paren">(</span><em>A</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.ravel_A" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes all A data and flattens it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – An 2D or 3D matrix where dim 1 is the
+experimental point, dim 2 is the wavelength and dim 3 (optional)
+is the replica.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A flattened array with all the valid data.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libspec.specLM1">
+<code class="descclassname">libspec.</code><code class="descname">specLM1</code><span class="sig-paren">(</span><em>A</em>, <em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.specLM1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This routine performs the fitting of the constants by means of the
+Levenberg-Marquardt algorithm when only the contants are to be refined.</p>
+<p>The objective function is defined as</p>
+<div class="math notranslate nohighlight">
+\[f = \sum_{i,\lambda}\left( A_{i\lambda} -
+l \sum_{j=1}^{E+S} \varepsilon_{\lambda, j} c_{ij}
+(\beta_1,\beta_2,\ldots,\beta_E) \right)^2\]</div>
+<p>where we refine ε and β together.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>A</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The absorbance matrix. It must
+be (Ns, Nl)-sized.</li>
+<li><strong>e</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The epsilon matrix. It must
+be (Nl, Nc)-sized.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If invalid parameters are passed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libspec.specfit">
+<code class="descclassname">libspec.</code><code class="descname">specfit</code><span class="sig-paren">(</span><em>logB0</em>, <em>B_flags</em>, <em>P</em>, <em>spectra</em>, <em>T</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.specfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine for spectrometry data fitting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>logB</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+initial guess for the constants in the form of log<sub>10</sub>.</li>
+<li><strong>B_flags</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – refinement flags for values in
+logB0. Flags are int values.</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> in the
+usual format.</li>
+<li><strong>spectra</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – containing the values of the
+measured spectra in normalized format. It is an (N, Nl)-array</li>
+<li><strong>T</strong> (list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Total amounts of the free species
+in mmol for every titration point.</li>
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – A number indicating the method to be used to mimize
+the objective functions. Allowed values are 0 for the algorithm
+by Levenberg-Marquardt (nonlinear least squares, this is the
+default one) and 1 for the Nelder-Mead algorithm (the simplex
+method).</li>
+<li><strong>logB_flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – False by default. If true B0 is assumed
+to be the log10 of the constants to be refined</li>
+<li><strong>c0</strong> (list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, optional) – The free concentrations
+used as initial guess for concentration calculations.</li>
+<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – returns a text with debug information</li>
+<li><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – a list of boolean arrays indicating for each
+experimental point whether will be used or not.</li>
+<li><strong>weights</strong> (<em>list of 1D-array of floats</em><em>, </em><em>optional</em>) – for weighting.</li>
+<li><strong>verbosity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – An 0-2 number indicating the level of
+verbosity to be printed. 0 for mute, 1 for normal and 2 for
+pedanting output.</li>
+<li><strong>htmlout</strong> (<em>callable</em><em>, </em><em>optional</em>) – A callable function that accepts an html
+snippet to be output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">First element is a 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats: The
+values of the refined parameters. The second element is a list of
+2D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats which are the final values of
+the free concentrations.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libspec.unravel_A">
+<code class="descclassname">libspec.</code><code class="descname">unravel_A</code><span class="sig-paren">(</span><em>A</em><span class="sig-paren">)</span><a class="headerlink" href="#libspec.unravel_A" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function undoes what <a class="reference internal" href="#libspec.ravel_A" title="libspec.ravel_A"><code class="xref py py-func docutils literal notranslate"><span class="pre">ravel_A()</span></code></a> does.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – A flattened array with all the valid data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An 2D or 3D matrix where dim 1 is the</dt>
+<dd>experimental point, dim 2 is the wavelength and dim 3 (optional)
+is the replica.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libplot.html"
+                        title="previous chapter">libplot module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libqt.html"
+                        title="next chapter">libqt module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/libspec.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libqt.html" title="libqt module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libplot.html" title="libplot module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Salvador Blasco.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

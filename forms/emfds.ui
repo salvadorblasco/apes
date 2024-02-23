@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EmfDSWidget</class>
+ <widget class="QWidget" name="EmfDSWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>556</width>
+    <height>331</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QSplitter" name="hsplitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QSplitter" name="vsplitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLineEdit" name="le_title"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_V0">
+            <property name="text">
+             <string>V0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="dsb_V0">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_errV">
+            <property name="text">
+             <string>error V</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="dsb_errV">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <double>9.990000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.030000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="table_titration">
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>20</number>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>65</number>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderCascadingSectionResizes">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderMinimumSectionSize">
+           <number>15</number>
+          </attribute>
+          <attribute name="verticalHeaderDefaultSectionSize">
+           <number>30</number>
+          </attribute>
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>2</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>Label</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Initial</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Buret</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Flag</string>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>L</string>
+           </property>
+          </item>
+          <item row="0" column="1">
+           <property name="text">
+            <string>0.001</string>
+           </property>
+          </item>
+          <item row="0" column="2">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </item>
+          <item row="1" column="0">
+           <property name="text">
+            <string>H</string>
+           </property>
+          </item>
+          <item row="1" column="1">
+           <property name="text">
+            <string>0.005</string>
+           </property>
+          </item>
+          <item row="1" column="2">
+           <property name="text">
+            <string>-0.1</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QTableWidget" name="table_params">
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>80</number>
+       </attribute>
+       <row>
+        <property name="text">
+         <string>emf0</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>error</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>flag</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>n</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>active</string>
+        </property>
+       </row>
+       <column>
+        <property name="text">
+         <string>electrode0</string>
+        </property>
+       </column>
+       <item row="0" column="0">
+        <property name="text">
+         <string>380.0</string>
+        </property>
+       </item>
+       <item row="1" column="0">
+        <property name="text">
+         <string>0.02</string>
+        </property>
+       </item>
+       <item row="3" column="0">
+        <property name="text">
+         <string>1</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QTableWidget" name="table_data">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>65</number>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>V</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>emf</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

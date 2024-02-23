@@ -1,0 +1,225 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to APES’s documentation! &#8212; APES 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="APES quickstart guide" href="quickstart.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="APES quickstart guide"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">APES 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-apes-s-documentation">
+<h1>Welcome to APES’s documentation!<a class="headerlink" href="#welcome-to-apes-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="apes-what-is-it">
+<h2>APES? What is it?<a class="headerlink" href="#apes-what-is-it" title="Permalink to this headline">¶</a></h2>
+<p><strong>APES</strong> is the <strong>A</strong>ll- <strong>P</strong>urpose <strong>E</strong>quilibrium <strong>S</strong>olver. As such,
+<strong>APES</strong> aims to provide the tools necessary to solve general equilibrium problems.</p>
+<a class="reference internal image-reference" href="monkey.png"><img alt="Monkey with wrench" class="align-center" src="monkey.png" /></a>
+</div>
+<div class="section" id="what-is-it-for">
+<h2>What is it for?<a class="headerlink" href="#what-is-it-for" title="Permalink to this headline">¶</a></h2>
+<p><strong>WARNING</strong> : <strong>APES</strong> is experimental software. Bugs, and errors in the
+final values are to be expected.</p>
+</div>
+<div class="section" id="describing-the-system">
+<h2>Describing the System<a class="headerlink" href="#describing-the-system" title="Permalink to this headline">¶</a></h2>
+<p>APES handled the stoichiometry coefficients in the form of a 2D array where
+each column stands for the independent components and each row stands for
+the complexes. For instance, consider the following system where L stands
+for a ligand, H stands for a proton and L has two protonable groups. We would
+write this as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{eqnarray}
+ \rm L + H &amp;\leftrightarrow \rm HL \\
+ \rm L + 2H &amp;\leftrightarrow \rm H_2L
+\end{eqnarray}\end{split}\]</div>
+<p>Now we have two <a class="reference internal" href="#term-independent-components"><span class="xref std std-term">independent components</span></a> which are L and H and
+three <a class="reference internal" href="#term-complex"><span class="xref std std-term">complex</span></a>es which would be HL, H<sub>2</sub>L and, provided that
+this equilibrium takes place in an aqueous environment we must not forget
+the OH<sup>-</sup>. The resulting <a class="reference internal" href="#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> would be</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left(
+ \begin{array}{rr}
+  1 &amp;  1 \\
+  1 &amp;  2 \\
+  0 &amp; -1 \\
+ \end{array}
+\right)\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">APES quickstart guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#install-apes">Install APES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#importing-data">Importing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apes.html">apes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas.html">canvas module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">data module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excepts.html">excepts module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libaux.html">libaux module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libemf.html">libemf module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libcal.html">libcal module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libeq.html">libeq module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libio.html">libio module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libnmr.html">libnmr module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libplot.html">libplot module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libspec.html">libspec module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libqt.html">libqt module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qsi.html">qsi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supyquad.html">SUPYQUAD script</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="supyquad.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="news">
+<h1>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Still in development</li>
+</ul>
+</div>
+<div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<dl class="glossary docutils">
+<dt id="term-complex">complex</dt>
+<dd>A species obtained by combinantion of independent components</dd>
+<dt id="term-equilibrium-constants-array">equilibrium constants array</dt>
+<dd>An 1D array with the values of the equilibrium constants in logarithmic
+units and in the same order than in the rows of the
+<a class="reference internal" href="#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>.</dd>
+<dt id="term-free-concentrations-array">free concentrations array</dt>
+<dd>An Nx(S+E) array that contains the values of the free concentrations</dd>
+<dt id="term-independent-components">independent components</dt>
+<dd>It is each one of the species with which the complexes are made</dd>
+<dt id="term-model">model</dt>
+<dd>A <a class="reference internal" href="#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> along with an
+<a class="reference internal" href="#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a> that describe the system.</dd>
+<dt id="term-nernst-s-equation">Nernst’s equation</dt>
+<dd>Relation between the potential and the concentration of electroactive
+species. <span class="math notranslate nohighlight">\(E=E_0+\frac{RT}{nF}\log[H]\)</span></dd>
+<dt id="term-standard-potential">standard potential</dt>
+<dd>The intercept in <a class="reference internal" href="#term-nernst-s-equation"><span class="xref std std-term">Nernst’s equation</span></a></dd>
+<dt id="term-stoichiometry-array">stoichiometry array</dt>
+<dd>A 2D array of integers which describes the stoichiometry of the system</dd>
+<dt id="term-total-concentrations-array">total concentrations array</dt>
+<dd>An 2D array of floats that represents the analytical concentrations
+for the independent components. The numbers can be negative insofar
+the mass balance is mathematically meaningful. Experimental points in
+rows and species in columns.</dd>
+</dl>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to APES’s documentation!</a><ul>
+<li><a class="reference internal" href="#apes-what-is-it">APES? What is it?</a></li>
+<li><a class="reference internal" href="#what-is-it-for">What is it for?</a></li>
+<li><a class="reference internal" href="#describing-the-system">Describing the System</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#news">News</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="next chapter">APES quickstart guide</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="APES quickstart guide"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">APES 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Salvador Blasco.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

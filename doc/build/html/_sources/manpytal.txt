@@ -1,0 +1,7 @@
+manpytal module
+===============
+
+.. automodule:: manpytal
+    :members:
+    :undoc-members:
+    :show-inheritance:

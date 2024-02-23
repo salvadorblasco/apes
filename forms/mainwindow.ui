@@ -1,0 +1,1075 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>688</width>
+    <height>464</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>APES, the All-purpose Equilibrium Solver</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>monkey.png</normaloff>monkey.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter_main">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="vl_1">
+        <item>
+         <widget class="QTabWidget" name="tab_main">
+          <property name="tabShape">
+           <enum>QTabWidget::Rounded</enum>
+          </property>
+          <property name="currentIndex">
+           <number>-1</number>
+          </property>
+          <property name="movable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="hl_1">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pb_undo">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Undo</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pb_refresh">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Refresh</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pb_iteration">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Do one iteration</string>
+            </property>
+            <property name="text">
+             <string>Iteration</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pb_go">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Do the full iteration cycle</string>
+            </property>
+            <property name="text">
+             <string>Go!</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="widget_plot" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="sizeIncrement">
+        <size>
+         <width>1</width>
+         <height>1</height>
+        </size>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>688</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionImportSuperquad"/>
+     <addaction name="actionImportHyperquad"/>
+    </widget>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionClose"/>
+    <addaction name="menuImport"/>
+    <addaction name="actionExport"/>
+    <addaction name="actionProperties"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuPlot">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Plot</string>
+    </property>
+    <widget class="QMenu" name="menuApplyStyle">
+     <property name="title">
+      <string>Apply Style</string>
+     </property>
+     <addaction name="actionStyle1"/>
+     <addaction name="actionStyle2"/>
+     <addaction name="actionStyle3"/>
+     <addaction name="actionStyle4"/>
+    </widget>
+    <widget class="QMenu" name="menuApplyColor">
+     <property name="title">
+      <string>Apply Color</string>
+     </property>
+     <addaction name="actionColorBW"/>
+     <addaction name="actionColorRed"/>
+     <addaction name="actionColorBlue"/>
+     <addaction name="actionColorRainbow"/>
+     <addaction name="actionColorGroup"/>
+    </widget>
+    <widget class="QMenu" name="menuFont_Size">
+     <property name="title">
+      <string>Font Size</string>
+     </property>
+     <addaction name="actionFont6"/>
+     <addaction name="actionFont8"/>
+     <addaction name="actionFont10"/>
+     <addaction name="actionFont12"/>
+    </widget>
+    <widget class="QMenu" name="menuExternal_data">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>External data</string>
+     </property>
+     <addaction name="actionAddittional_data"/>
+     <addaction name="actionClear_external_data"/>
+    </widget>
+    <widget class="QMenu" name="menuFigure">
+     <property name="title">
+      <string>Figure</string>
+     </property>
+     <addaction name="actionAspectRatio"/>
+     <addaction name="actionFigureSize"/>
+    </widget>
+    <addaction name="menuExternal_data"/>
+    <addaction name="actionExportImage"/>
+    <addaction name="menuApplyStyle"/>
+    <addaction name="menuApplyColor"/>
+    <addaction name="menuFont_Size"/>
+    <addaction name="actionLabels"/>
+    <addaction name="actionDelete"/>
+    <addaction name="menuFigure"/>
+   </widget>
+   <widget class="QMenu" name="menuFit">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Fi&amp;t</string>
+    </property>
+    <widget class="QMenu" name="menuFit_method">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Fit method</string>
+     </property>
+     <addaction name="actionNelder_Mead"/>
+     <addaction name="actionLevenberg_Marquardt"/>
+    </widget>
+    <widget class="QMenu" name="menuCovergence_criteria">
+     <property name="title">
+      <string>Covergence criteria</string>
+     </property>
+     <addaction name="actionCoarse"/>
+     <addaction name="actionFine"/>
+    </widget>
+    <widget class="QMenu" name="menuWeighting">
+     <property name="title">
+      <string>Weighting</string>
+     </property>
+     <addaction name="actionWAuto"/>
+     <addaction name="actionWUnit"/>
+    </widget>
+    <addaction name="menuFit_method"/>
+    <addaction name="menuCovergence_criteria"/>
+    <addaction name="menuWeighting"/>
+    <addaction name="actionAllowDP"/>
+    <addaction name="separator"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRefresh"/>
+    <addaction name="actionIteration"/>
+    <addaction name="actionFit"/>
+    <addaction name="actionReset_counter"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewJacobian"/>
+    <addaction name="actionConcentrationSolver"/>
+    <addaction name="actionSaveConc"/>
+    <addaction name="actionCopyConc"/>
+   </widget>
+   <widget class="QMenu" name="menuDataset">
+    <property name="title">
+     <string>&amp;Dataset</string>
+    </property>
+    <widget class="QMenu" name="menuImportDS">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionImportPASAT"/>
+     <addaction name="actionImportSuperquadDS"/>
+     <addaction name="actionImportHyperquadDS"/>
+     <addaction name="actionImportTiamo"/>
+     <addaction name="separator"/>
+     <addaction name="actionImportHypNMR"/>
+     <addaction name="separator"/>
+     <addaction name="actionImportTxtSpec"/>
+     <addaction name="separator"/>
+     <addaction name="actionImportK88"/>
+     <addaction name="separator"/>
+     <addaction name="actionImportExternal"/>
+    </widget>
+    <widget class="QMenu" name="menuNewDataset">
+     <property name="title">
+      <string>New</string>
+     </property>
+     <addaction name="actionNewEmfDS"/>
+     <addaction name="actionNewSpecDS"/>
+     <addaction name="actionNewNMRDS"/>
+     <addaction name="actionNewCalorimetryDS"/>
+     <addaction name="separator"/>
+     <addaction name="actionNewTitrSim"/>
+     <addaction name="actionNewSpeciesDist"/>
+     <addaction name="separator"/>
+     <addaction name="actionNewExternalData"/>
+    </widget>
+    <addaction name="menuNewDataset"/>
+    <addaction name="menuImportDS"/>
+    <addaction name="actionDeleteDS"/>
+    <addaction name="actionUse"/>
+    <addaction name="actionCopyTitDat"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionHelp"/>
+    <addaction name="actionAbout_APES"/>
+   </widget>
+   <widget class="QMenu" name="menu_Model">
+    <property name="title">
+     <string>&amp;Model</string>
+    </property>
+    <widget class="QMenu" name="menuSet_active">
+     <property name="title">
+      <string>Set active</string>
+     </property>
+     <addaction name="actionModel_1"/>
+    </widget>
+    <addaction name="actionNewModel"/>
+    <addaction name="actionRename"/>
+    <addaction name="menuSet_active"/>
+    <addaction name="actionModelDelete"/>
+    <addaction name="actionImportModel"/>
+    <addaction name="actionResetModel"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_beta"/>
+    <addaction name="actionAdd_solid"/>
+    <addaction name="actionRemove_beta"/>
+    <addaction name="actionAdd_reagent"/>
+    <addaction name="actionRemove_reagent"/>
+    <addaction name="action_ar_calorimetry"/>
+    <addaction name="separator"/>
+    <addaction name="action_set_temperature"/>
+    <addaction name="separator"/>
+    <addaction name="action_combine_constants"/>
+    <addaction name="actionCompare_models"/>
+    <addaction name="action_manual_fitting"/>
+   </widget>
+   <widget class="QMenu" name="menuOutput">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Output</string>
+    </property>
+    <addaction name="actionSaveOutput"/>
+    <addaction name="actionOutputClear"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionIonic_strength_calculator"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menu_Model"/>
+   <addaction name="menuDataset"/>
+   <addaction name="menuPlot"/>
+   <addaction name="menuFit"/>
+   <addaction name="menuOutput"/>
+   <addaction name="menuTools"/>
+   <addaction name="menu_Help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>&amp;Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open data file</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save  data</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+  </action>
+  <action name="actionPlot_unplot">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plot/unplot</string>
+   </property>
+  </action>
+  <action name="actionAddittional_data">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add external data</string>
+   </property>
+  </action>
+  <action name="actionImportSuperquad">
+   <property name="text">
+    <string>Superquad</string>
+   </property>
+  </action>
+  <action name="actionPASAT">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>PASAT</string>
+   </property>
+  </action>
+  <action name="actionImportHyperquad">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hyperquad</string>
+   </property>
+  </action>
+  <action name="actionNelder_Mead">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nelder-Mead</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
+  <action name="actionLevenberg_Marquardt">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Levenberg-Marquardt</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
+  <action name="actionNew_2">
+   <property name="text">
+    <string>New (empty)</string>
+   </property>
+  </action>
+  <action name="actionImportPASAT">
+   <property name="text">
+    <string>PASAT</string>
+   </property>
+  </action>
+  <action name="actionImportSuperquadDS">
+   <property name="text">
+    <string>Superquad</string>
+   </property>
+  </action>
+  <action name="actionImportHyperquadDS">
+   <property name="text">
+    <string>Hyperquad</string>
+   </property>
+  </action>
+  <action name="actionDeleteDS">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionNewProject">
+   <property name="text">
+    <string>Project</string>
+   </property>
+  </action>
+  <action name="actionNewDataset">
+   <property name="text">
+    <string>Dataset</string>
+   </property>
+  </action>
+  <action name="actionNewTitrSim">
+   <property name="text">
+    <string>Titration simulation</string>
+   </property>
+  </action>
+  <action name="actionNewSpeciesDist">
+   <property name="text">
+    <string>Species distribution</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionIteration">
+   <property name="text">
+    <string>Iteration</string>
+   </property>
+  </action>
+  <action name="actionFit">
+   <property name="text">
+    <string>Fit</string>
+   </property>
+  </action>
+  <action name="actionUse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use</string>
+   </property>
+   <property name="toolTip">
+    <string>Untick if you don't want this dataset to be included in the fitting.</string>
+   </property>
+  </action>
+  <action name="actionNewEmfDS">
+   <property name="text">
+    <string>Potentiometry</string>
+   </property>
+  </action>
+  <action name="actionNewSpecDS">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Spectrometry</string>
+   </property>
+  </action>
+  <action name="actionNewNMRDS">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>NMR</string>
+   </property>
+  </action>
+  <action name="actionExportImage">
+   <property name="text">
+    <string>Export image</string>
+   </property>
+  </action>
+  <action name="actionImportHypNMR">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>HypNMR</string>
+   </property>
+  </action>
+  <action name="actionNewModel">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionRename">
+   <property name="text">
+    <string>Rename</string>
+   </property>
+  </action>
+  <action name="actionAdd_beta">
+   <property name="text">
+    <string>Add beta</string>
+   </property>
+  </action>
+  <action name="actionRemove_beta">
+   <property name="text">
+    <string>Remove beta</string>
+   </property>
+  </action>
+  <action name="actionCopyTitDat">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Copy titration data</string>
+   </property>
+  </action>
+  <action name="actionSaveOutput">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionOutputClear">
+   <property name="text">
+    <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionCoarse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Coarse</string>
+   </property>
+  </action>
+  <action name="actionFine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fine</string>
+   </property>
+  </action>
+  <action name="actionAdd_reagent">
+   <property name="text">
+    <string>Add reagent</string>
+   </property>
+  </action>
+  <action name="actionRemove_reagent">
+   <property name="text">
+    <string>Remove reagent</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="actionAbout_APES">
+   <property name="text">
+    <string>About APES</string>
+   </property>
+  </action>
+  <action name="actionProperties">
+   <property name="text">
+    <string>Properties</string>
+   </property>
+  </action>
+  <action name="actionWAuto">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Authomatic</string>
+   </property>
+  </action>
+  <action name="actionWUnit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Unity</string>
+   </property>
+  </action>
+  <action name="actionStyle1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Style 1</string>
+   </property>
+  </action>
+  <action name="actionStyle2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Style 2</string>
+   </property>
+  </action>
+  <action name="actionStyle3">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Style 3</string>
+   </property>
+  </action>
+  <action name="actionStyle4">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Style 4</string>
+   </property>
+  </action>
+  <action name="actionColorBW">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>B&amp;&amp;W</string>
+   </property>
+  </action>
+  <action name="actionColorRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Red</string>
+   </property>
+  </action>
+  <action name="actionColorBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Blue</string>
+   </property>
+  </action>
+  <action name="actionColorRainbow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Rainbow</string>
+   </property>
+  </action>
+  <action name="actionFont6">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>6</string>
+   </property>
+  </action>
+  <action name="actionFont7">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>7</string>
+   </property>
+  </action>
+  <action name="actionFont8">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>8</string>
+   </property>
+  </action>
+  <action name="actionFont9">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>9</string>
+   </property>
+  </action>
+  <action name="actionFont10">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>10</string>
+   </property>
+  </action>
+  <action name="actionFont11">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>11</string>
+   </property>
+  </action>
+  <action name="actionFont12">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>12</string>
+   </property>
+  </action>
+  <action name="actionLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Labels</string>
+   </property>
+  </action>
+  <action name="actionLegend">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Legend</string>
+   </property>
+  </action>
+  <action name="actionReset_counter">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Reset χ² counter</string>
+   </property>
+  </action>
+  <action name="actionClear_external_data">
+   <property name="text">
+    <string>Clear external data</string>
+   </property>
+  </action>
+  <action name="actionNewCalorimetryDS">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Calorimetry</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionImportTxtSpec">
+   <property name="text">
+    <string>Txt spectra</string>
+   </property>
+  </action>
+  <action name="actionImportK88">
+   <property name="text">
+    <string>K88</string>
+   </property>
+  </action>
+  <action name="actionScale">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Scale</string>
+   </property>
+  </action>
+  <action name="actionModelDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionViewJacobian">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>View jacobian</string>
+   </property>
+  </action>
+  <action name="actionConcentrationSolver">
+   <property name="text">
+    <string>Concentration solver</string>
+   </property>
+  </action>
+  <action name="actionModel_1">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>model #1</string>
+   </property>
+  </action>
+  <action name="actionImportModel">
+   <property name="text">
+    <string>Import model</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+  </action>
+  <action name="action_ar_calorimetry">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Add/remove calorimetry</string>
+   </property>
+  </action>
+  <action name="actionRemove_calorimetry">
+   <property name="text">
+    <string>Remove calorimetry</string>
+   </property>
+  </action>
+  <action name="actionNewExternalData">
+   <property name="text">
+    <string>External Data</string>
+   </property>
+  </action>
+  <action name="action_set_temperature">
+   <property name="text">
+    <string>Set temperature</string>
+   </property>
+  </action>
+  <action name="actionSaveConc">
+   <property name="text">
+    <string>Save concentration</string>
+   </property>
+  </action>
+  <action name="actionColorGroup">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>By group</string>
+   </property>
+  </action>
+  <action name="actionAllowDP">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Allow dangerous p.</string>
+   </property>
+  </action>
+  <action name="action_combine_constants">
+   <property name="text">
+    <string>Combine constants</string>
+   </property>
+  </action>
+  <action name="actionAspectRatio">
+   <property name="text">
+    <string>Aspect ratio</string>
+   </property>
+  </action>
+  <action name="actionFigureSize">
+   <property name="text">
+    <string>Size</string>
+   </property>
+  </action>
+  <action name="actionLabelFormat">
+   <property name="text">
+    <string>Label format</string>
+   </property>
+  </action>
+  <action name="actionImportTiamo">
+   <property name="text">
+    <string>Tiamo</string>
+   </property>
+  </action>
+  <action name="actionIonic_strength_calculator">
+   <property name="text">
+    <string>Ionic strength calculator</string>
+   </property>
+  </action>
+  <action name="actionCompare_models">
+   <property name="text">
+    <string>Compare models</string>
+   </property>
+  </action>
+  <action name="action_manual_fitting">
+   <property name="text">
+    <string>Manual fitting</string>
+   </property>
+  </action>
+  <action name="actionImportExternal">
+   <property name="text">
+    <string>External data</string>
+   </property>
+  </action>
+  <action name="actionCopyConc">
+   <property name="text">
+    <string>Copy concentration</string>
+   </property>
+  </action>
+  <action name="actionAdd_solid">
+   <property name="text">
+    <string>Add solid</string>
+   </property>
+  </action>
+  <action name="actionResetModel">
+   <property name="text">
+    <string>Reset model</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

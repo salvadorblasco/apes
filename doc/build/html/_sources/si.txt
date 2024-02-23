@@ -1,0 +1,7 @@
+si module
+=========
+
+.. automodule:: si
+    :members:
+    :undoc-members:
+    :show-inheritance:

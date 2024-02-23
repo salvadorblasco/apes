@@ -1,0 +1,7 @@
+test_propertiesdlg module
+=========================
+
+.. automodule:: test_propertiesdlg
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,1961 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>data module &#8212; APES 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="excepts module" href="excepts.html" />
+    <link rel="prev" title="canvas module" href="canvas.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="excepts.html" title="excepts module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="canvas.html" title="canvas module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-data">
+<span id="data-module"></span><h1>data module<a class="headerlink" href="#module-data" title="Permalink to this headline">¶</a></h1>
+<p>Data encapsulation classes.</p>
+<p>Data encapsulation that serves as middleclass between the GUI and the backend
+that does the actual calculations.</p>
+<ul class="simple">
+<li><a class="reference internal" href="#data.Data" title="data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a></li>
+<li><a class="reference internal" href="#data.ModelData" title="data.ModelData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelData</span></code></a></li>
+<li><a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></li>
+<li><a class="reference internal" href="#data.CaloriData" title="data.CaloriData"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaloriData</span></code></a></li>
+<li><a class="reference internal" href="#data.EMFData" title="data.EMFData"><code class="xref py py-class docutils literal notranslate"><span class="pre">EMFData</span></code></a></li>
+<li><a class="reference internal" href="#data.SpecData" title="data.SpecData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecData</span></code></a></li>
+<li><a class="reference internal" href="#data.NMRData" title="data.NMRData"><code class="xref py py-class docutils literal notranslate"><span class="pre">NMRData</span></code></a></li>
+<li><a class="reference internal" href="#data.SimulationData" title="data.SimulationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationData</span></code></a></li>
+<li><a class="reference internal" href="#data.SpeciationData" title="data.SpeciationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpeciationData</span></code></a></li>
+<li><a class="reference internal" href="#data.TitrationData" title="data.TitrationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">TitrationData</span></code></a></li>
+</ul>
+<dl class="class">
+<dt id="data.CaloriData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">CaloriData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.CaloriData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.Dataset</span></code></a></p>
+<p>Abstraction for calorimetric data</p>
+<dl class="attribute">
+<dt id="data.CaloriData.Q">
+<code class="descname">Q</code><a class="headerlink" href="#data.CaloriData.Q" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.CaloriData.getCalcQ">
+<code class="descname">getCalcQ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.CaloriData.getCalcQ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.CaloriData.getQ">
+<code class="descname">getQ</code><span class="sig-paren">(</span><em>mask=0</em><span class="sig-paren">)</span><a class="headerlink" href="#data.CaloriData.getQ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.CaloriData.getResiduals">
+<code class="descname">getResiduals</code><span class="sig-paren">(</span><em>mask=0</em><span class="sig-paren">)</span><a class="headerlink" href="#data.CaloriData.getResiduals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.CaloriData.loadXML">
+<code class="descname">loadXML</code><span class="sig-paren">(</span><em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#data.CaloriData.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the contents of an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>
+into this class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – An ElementTree containing
+the information to be loaded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <strong>xmle</strong> has the wrong type or is not the right
+xml substructure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.CaloriData.saveXML">
+<code class="descname">saveXML</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.CaloriData.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a> containing the
+information from this class in order to write in the xml file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An ElementTree containing the</dt>
+<dd>information about the calorimetry data.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.Data">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">Data</code><a class="headerlink" href="#data.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class handles all potentiometric data together in order to better
+manage data transfer between different routines and help to keep
+consistency with the data.</p>
+<dl class="attribute">
+<dt id="data.Data.B">
+<code class="descname">B</code><a class="headerlink" href="#data.Data.B" title="Permalink to this definition">¶</a></dt>
+<dd><p>The values of the <a class="reference internal" href="index.html#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.Bflags">
+<code class="descname">Bflags</code><a class="headerlink" href="#data.Data.Bflags" title="Permalink to this definition">¶</a></dt>
+<dd><p>The values of the flags for constants refinement</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.E">
+<code class="descname">E</code><a class="headerlink" href="#data.Data.E" title="Permalink to this definition">¶</a></dt>
+<dd><p>(int) the number of equilibria</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.NCal">
+<code class="descname">NCal</code><a class="headerlink" href="#data.Data.NCal" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of calorimetry datasets in use</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.NDatasets">
+<code class="descname">NDatasets</code><a class="headerlink" href="#data.Data.NDatasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of datasets currently being used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.NEmf">
+<code class="descname">NEmf</code><a class="headerlink" href="#data.Data.NEmf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of potentiometry datasets in use</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.NSpec">
+<code class="descname">NSpec</code><a class="headerlink" href="#data.Data.NSpec" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of spectrometry datasets in use</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.Nt">
+<code class="descname">Nt</code><a class="headerlink" href="#data.Data.Nt" title="Permalink to this definition">¶</a></dt>
+<dd><p>return total number of experimental points</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.Nvt">
+<code class="descname">Nvt</code><a class="headerlink" href="#data.Data.Nvt" title="Permalink to this definition">¶</a></dt>
+<dd><p>return total number of not excluded experimental points</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.P">
+<code class="descname">P</code><a class="headerlink" href="#data.Data.P" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> of the current model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.S">
+<code class="descname">S</code><a class="headerlink" href="#data.Data.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of independent components in the current model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.addEquilibrium">
+<code class="descname">addEquilibrium</code><span class="sig-paren">(</span><em>b=0.0</em>, <em>pos=-1</em>, <em>p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.addEquilibrium" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new equilibrium to the current model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The value of the constant in decimal logarithmic units</li>
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the position in which the new equilibrium
+will be inserted. Defaults to -1 (the last position).</li>
+<li><strong>p</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – A 1D array of <em>S</em> ints representing
+the stoichiometry associated to the new equilibrium and will
+be inserted as a row in the <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>.  If
+not provided, zeros will be used.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.addReagent">
+<code class="descname">addReagent</code><span class="sig-paren">(</span><em>label=''</em>, <em>pos=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.addReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new reagent.</p>
+<p>Adds one additional reagent to the <a class="reference internal" href="index.html#term-independent-components"><span class="xref std std-term">independent components</span></a>
+to all models and datasets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A label for this reagent</li>
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The position in which will be inserted</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.chiSq">
+<code class="descname">chiSq</code><a class="headerlink" href="#data.Data.chiSq" title="Permalink to this definition">¶</a></dt>
+<dd><p>a list containing the χ₂ values of each iteration</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the content of this object and restores the initial values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>what</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the specified object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>what</strong> (<a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a> or <a class="reference internal" href="#data.SimulationData" title="data.SimulationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationData</span></code></a>) – The object to
+be deleted</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.errlogB">
+<code class="descname">errlogB</code><a class="headerlink" href="#data.Data.errlogB" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value of the error associated to the log:sub:<cite>10</cite> values of the
+constants of the current model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>method=0</em>, <em>method_pars=None</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit data.</p>
+<p>Method for fitting the free variables defined in the flags to the
+experimental data. It takes no arguments and returns no value. The data
+is taken from this object and updates the values of the refined
+variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Indicates which algorithm will be used for fitting.
+Accepted values are 0 for Levenverg-Marquardt algorithm
+(non-linear least squares, default) and 1 for Nelder-Mead
+algorithm (simplex). Any other value will raise
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</li>
+<li><strong>method_pars</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – A dict with the parameters needed for either
+method. They will be unpacked and passed upstream. See
+documentation for them.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.fullLabels">
+<code class="descname">fullLabels</code><a class="headerlink" href="#data.Data.fullLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>full list of labels</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.getUse">
+<code class="descname">getUse</code><span class="sig-paren">(</span><em>ds</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.getUse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.herald">
+<code class="descname">herald</code><a class="headerlink" href="#data.Data.herald" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a handlet for sending messages into the GUI.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.htmlout">
+<code class="descname">htmlout</code><a class="headerlink" href="#data.Data.htmlout" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a handlet for sending messages into the GUI.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.importFromHyperquad">
+<code class="descname">importFromHyperquad</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.importFromHyperquad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from a hyperquad file and loads it into this object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A valid file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.importFromSuperquad">
+<code class="descname">importFromSuperquad</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.importFromSuperquad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data from a superquad file and loads it into this object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A valid file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.indexEMF">
+<code class="descname">indexEMF</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.indexEMF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of a given EMFData.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.indexSpeciation">
+<code class="descname">indexSpeciation</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.indexSpeciation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of a given Speciation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.indexTitration">
+<code class="descname">indexTitration</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.indexTitration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of a given Titration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterCalorDs">
+<code class="descname">iterCalorDs</code><span class="sig-paren">(</span><em>use=True</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterCalorDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over calorimetry data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>use</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, iterate over the datasets that have the flag
+‘use’ set. If False, iterate over all datasets.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterEmfDs">
+<code class="descname">iterEmfDs</code><span class="sig-paren">(</span><em>use=False</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterEmfDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over potentiometric data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>use</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, iterate over the datasets that have the flag
+‘use’ set. If False, iterate over all datasets.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterLabels">
+<code class="descname">iterLabels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over labels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterSimu">
+<code class="descname">iterSimu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterSimu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over simulations</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterSpecDs">
+<code class="descname">iterSpecDs</code><span class="sig-paren">(</span><em>use=True</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterSpecDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over spectrometric data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>use</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, iterate over the datasets that have the flag
+‘use’ set. If False, iterate over all datasets.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterTitr">
+<code class="descname">iterTitr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterTitr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over titrations</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.iterate">
+<code class="descname">iterate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.iterate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform one iteration.</p>
+<p>This routine does the same as <a class="reference internal" href="#data.Data.fit" title="data.Data.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code></a> but it does not perform
+the full fitting until convergence but only one iteration is done
+and the the results are updated</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.labels">
+<code class="descname">labels</code><a class="headerlink" href="#data.Data.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the labels for the independent components.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.loadXML">
+<code class="descname">loadXML</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an XML file into self.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> (<em>file</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The file to read data from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.logB">
+<code class="descname">logB</code><a class="headerlink" href="#data.Data.logB" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value of the log:sub:<cite>10</cite> of the constants of the current model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.model">
+<code class="descname">model</code><a class="headerlink" href="#data.Data.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.models">
+<code class="descname">models</code><a class="headerlink" href="#data.Data.models" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of <a class="reference internal" href="#data.ModelData" title="data.ModelData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelData</span></code></a> being used</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.newCalorDs">
+<code class="descname">newCalorDs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.newCalorDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an empty <a class="reference internal" href="#data.CaloriData" title="data.CaloriData"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaloriData</span></code></a> and returns a reference to it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A reference to the newly created dataset</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#data.CaloriData" title="data.CaloriData"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaloriData</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.newEmfDs">
+<code class="descname">newEmfDs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.newEmfDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an empty <a class="reference internal" href="#data.EMFData" title="data.EMFData"><code class="xref py py-class docutils literal notranslate"><span class="pre">EMFData</span></code></a> and returns a reference to it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A reference to the newly created dataset</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#data.EMFData" title="data.EMFData"><code class="xref py py-class docutils literal notranslate"><span class="pre">EMFData</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.newModel">
+<code class="descname">newModel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.newModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an empty model and sets as current.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.newSpecDs">
+<code class="descname">newSpecDs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.newSpecDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an empty <a class="reference internal" href="#data.SpecData" title="data.SpecData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecData</span></code></a> and returns a reference to it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A reference to the newly created dataset</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#data.SpecData" title="data.SpecData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecData</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.newSpeciation">
+<code class="descname">newSpeciation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.newSpeciation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an empty <a class="reference internal" href="#data.SpeciationData" title="data.SpeciationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpeciationData</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>A reference to the newly created</dt>
+<dd>speciation.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#data.SpeciationData" title="data.SpeciationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpeciationData</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.newTitration">
+<code class="descname">newTitration</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.newTitration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new titration.</p>
+<p>Creates an empty <a class="reference internal" href="#data.TitrationData" title="data.TitrationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">TitrationData</span></code></a> and returns a reference to it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>A reference to the newly created</dt>
+<dd>speciation.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#data.TitrationData" title="data.TitrationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">TitrationData</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.plotCalor">
+<code class="descname">plotCalor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.plotCalor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide data for plotting calorimetry data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Yields:</th><td class="field-body"><ol class="first last arabic simple">
+<li>number of datasets to plot</li>
+<li>titre used</li>
+<li>titre ignored or None</li>
+<li>heat data used</li>
+<li>heat data ignored or None</li>
+<li>volume for fit (all points)</li>
+<li>free concentration array</li>
+<li>calculated heat</li>
+<li>residuals for used points</li>
+<li>residuals for ignored points</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.plotEMF">
+<code class="descname">plotEMF</code><span class="sig-paren">(</span><em>plot_ignored=True</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.plotEMF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator with contains all the data needed to plot the
+potentiometry data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Yields:</th><td class="field-body"><ol class="first last arabic simple">
+<li>The number of datasets to plot</li>
+<li>The use flag</li>
+<li>Volume of titre</li>
+<li>Experimental data (masked)</li>
+<li>Fitted emf (masked)</li>
+<li>Free concentrations array</li>
+<li>Residuals (masked)</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.plotSpeciation">
+<code class="descname">plotSpeciation</code><span class="sig-paren">(</span><em>d</em>, <em>ref=None</em>, <em>pX=False</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.plotSpeciation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield data needed to draw a spectiation plot.</p>
+<p>Returns a generator with all the data needed to plot the species
+distribution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>d</strong> (<a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The index for the species simulation to plot</li>
+<li><strong>ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – Optional. The index of the species for the
+relative concentration to be referred to. If it is none
+the absolute concentrations are plotted.</li>
+<li><strong>pX</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Optional. Default is False. If True, the x-axis is
+in logarithmic units.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><ol class="first last arabic simple">
+<li>the x-axis array</li>
+<li>the y-values</li>
+<li>the errors (or None)</li>
+<li>the labels</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.plotSpectr">
+<code class="descname">plotSpectr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.plotSpectr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield data needed to plot a spectrophotometric titration.</p>
+<p>Returns a generator with contains all the data needed to plot the
+spectrophotometric data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Yields:</th><td class="field-body"><ol class="first last arabic simple">
+<li>The number of datasets to plot</li>
+<li>The total number of spectra sets to plot</li>
+<li>A generator that return all spectra in turn</li>
+<li>A generator with all residuals in turn</li>
+<li>fit spectra</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.removeEquilibrium">
+<code class="descname">removeEquilibrium</code><span class="sig-paren">(</span><em>pos=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.removeEquilibrium" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Data.removeReagent">
+<code class="descname">removeReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.removeReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove reagent from the list of reagents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.resetChisq">
+<code class="descname">resetChisq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.resetChisq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset fitting history.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.saveXML">
+<code class="descname">saveXML</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the data into an XML file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A file to save the data into. If file exists it will be
+overwritten.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.setCurrentModel">
+<code class="descname">setCurrentModel</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.setCurrentModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Data.setWeightingScheme">
+<code class="descname">setWeightingScheme</code><span class="sig-paren">(</span><em>scheme='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.setWeightingScheme" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.temperature">
+<code class="descname">temperature</code><a class="headerlink" href="#data.Data.temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>The temperature of the system.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Data.title">
+<code class="descname">title</code><a class="headerlink" href="#data.Data.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>The title of the project</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.Dataset">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This is the base class for all types of datasets</p>
+<dl class="attribute">
+<dt id="data.Dataset.B">
+<code class="descname">B</code><a class="headerlink" href="#data.Dataset.B" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equilibrium constants array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.C">
+<code class="descname">C</code><a class="headerlink" href="#data.Dataset.C" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-free-concentrations-array"><span class="xref std std-term">free concentrations array</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.E">
+<code class="descname">E</code><a class="headerlink" href="#data.Dataset.E" title="Permalink to this definition">¶</a></dt>
+<dd><p>the number of equilibrium constants</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.N">
+<code class="descname">N</code><a class="headerlink" href="#data.Dataset.N" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of experimental datapoints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.P">
+<code class="descname">P</code><a class="headerlink" href="#data.Dataset.P" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> of the current model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.S">
+<code class="descname">S</code><a class="headerlink" href="#data.Dataset.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>the number of principal components</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.T">
+<code class="descname">T</code><a class="headerlink" href="#data.Dataset.T" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-total-concentrations-array"><span class="xref std std-term">total concentrations array</span></a>. Notice that this important
+parameter can be set directly by assigning a valis array of values
+to this variable, or indirectly by setting the parameters <em>T0</em>, <em>V</em>,
+<em>V0</em> and <em>buret</em>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.T0">
+<code class="descname">T0</code><a class="headerlink" href="#data.Dataset.T0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial total amount for each component, in mmol</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.Tflags">
+<code class="descname">Tflags</code><a class="headerlink" href="#data.Dataset.Tflags" title="Permalink to this definition">¶</a></dt>
+<dd><p>The refinement flags for T0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.V">
+<code class="descname">V</code><a class="headerlink" href="#data.Dataset.V" title="Permalink to this definition">¶</a></dt>
+<dd><p>the volume of titre in mL</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.V0">
+<code class="descname">V0</code><a class="headerlink" href="#data.Dataset.V0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial volume in mL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.addReagent">
+<code class="descname">addReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.addReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove reagent from the list of reagents.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.buret">
+<code class="descname">buret</code><a class="headerlink" href="#data.Dataset.buret" title="Permalink to this definition">¶</a></dt>
+<dd><p>an array containing the titre in mL for each point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.calcC">
+<code class="descname">calcC</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.calcC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the free concentrations array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.errV0">
+<code class="descname">errV0</code><a class="headerlink" href="#data.Dataset.errV0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.expdata">
+<code class="descname">expdata</code><a class="headerlink" href="#data.Dataset.expdata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.getTitration">
+<code class="descname">getTitration</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.getTitration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ‘titration’ dict which can be fed to low level routines</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.getV">
+<code class="descname">getV</code><span class="sig-paren">(</span><em>mask=0</em>, <em>caltweak=False</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.getV" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.labels">
+<code class="descname">labels</code><a class="headerlink" href="#data.Dataset.labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.loadCurveXML">
+<code class="descname">loadCurveXML</code><span class="sig-paren">(</span><em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.loadCurveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the titration data from an XML file into self.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.mask">
+<code class="descname">mask</code><a class="headerlink" href="#data.Dataset.mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.maskCol">
+<code class="descname">maskCol</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.maskCol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.maskPoint">
+<code class="descname">maskPoint</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.maskPoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.maskValues">
+<code class="descname">maskValues</code><span class="sig-paren">(</span><em>indices</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.maskValues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.name">
+<code class="descname">name</code><a class="headerlink" href="#data.Dataset.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of this dataset</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.removeReagent">
+<code class="descname">removeReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.removeReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove reagent from the list of reagents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.saveCurveXML">
+<code class="descname">saveCurveXML</code><span class="sig-paren">(</span><em>tcurve</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.saveCurveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts self data into XML object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.unmaskCol">
+<code class="descname">unmaskCol</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.unmaskCol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.unmaskPoint">
+<code class="descname">unmaskPoint</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.unmaskPoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.unmaskValues">
+<code class="descname">unmaskValues</code><span class="sig-paren">(</span><em>indices</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.unmaskValues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.use">
+<code class="descname">use</code><a class="headerlink" href="#data.Dataset.use" title="Permalink to this definition">¶</a></dt>
+<dd><p>A flag indicating whether this dataset will be used or not</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Dataset.usePoint">
+<code class="descname">usePoint</code><span class="sig-paren">(</span><em>luse</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Dataset.usePoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flags one or some titration point as ‘not ignored’ to be taken
+into account in fitting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ign</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em>) – The indices of the points that will be
+flagged.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.Dataset.weights">
+<code class="descname">weights</code><a class="headerlink" href="#data.Dataset.weights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.EMFData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">EMFData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.EMFData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.Dataset</span></code></a></p>
+<p>This class encapsulates the data for a potentiometric titration.</p>
+<dl class="attribute">
+<dt id="data.EMFData.C">
+<code class="descname">C</code><a class="headerlink" href="#data.EMFData.C" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-free-concentrations-array"><span class="xref std std-term">free concentrations array</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.E0">
+<code class="descname">E0</code><a class="headerlink" href="#data.EMFData.E0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The standard potential in mV</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.E0flags">
+<code class="descname">E0flags</code><a class="headerlink" href="#data.EMFData.E0flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refinement flags for standard potentials</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.NEl">
+<code class="descname">NEl</code><a class="headerlink" href="#data.EMFData.NEl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.EMFData.calcC">
+<code class="descname">calcC</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.EMFData.calcC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the free concentrations array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.emf_fit">
+<code class="descname">emf_fit</code><a class="headerlink" href="#data.EMFData.emf_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.emf_read">
+<code class="descname">emf_read</code><a class="headerlink" href="#data.EMFData.emf_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.errE0">
+<code class="descname">errE0</code><a class="headerlink" href="#data.EMFData.errE0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Errors in standard potential</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.f">
+<code class="descname">f</code><a class="headerlink" href="#data.EMFData.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.fRTnF">
+<code class="descname">fRTnF</code><a class="headerlink" href="#data.EMFData.fRTnF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.EMFData.getElectrode">
+<code class="descname">getElectrode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.EMFData.getElectrode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict with the data of the electrodes which will be used
+to feed the fitting routines.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.hindex">
+<code class="descname">hindex</code><a class="headerlink" href="#data.EMFData.hindex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.EMFData.loadXML">
+<code class="descname">loadXML</code><span class="sig-paren">(</span><em>xmle</em>, <em>temperature=298.15</em><span class="sig-paren">)</span><a class="headerlink" href="#data.EMFData.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the contents of an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>
+into this class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – An ElementTree containing
+the information about the model to be loaded.</li>
+<li><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The temperature of the system, in kelvin</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <strong>xmle</strong> has the wrong type or is not the right
+xml substructure.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.n">
+<code class="descname">n</code><a class="headerlink" href="#data.EMFData.n" title="Permalink to this definition">¶</a></dt>
+<dd><p>the number of electrons reacted with the electrode</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.EMFData.residuals">
+<code class="descname">residuals</code><a class="headerlink" href="#data.EMFData.residuals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.EMFData.saveXML">
+<code class="descname">saveXML</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.EMFData.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a> containing the
+information from this class in order to write in the xml file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An ElementTree containing the</dt>
+<dd>information about the model.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.EMFData.setWeightingScheme">
+<code class="descname">setWeightingScheme</code><span class="sig-paren">(</span><em>scheme='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#data.EMFData.setWeightingScheme" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.ModelData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">ModelData</code><span class="sig-paren">(</span><em>parent</em>, <em>name='noname'</em><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class contains and manages the data corresponding to a model,
+namely the equilibrium constants, the stoichiometric coefficients and
+other.</p>
+<p>Here the following data are encapsulated:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>the equilibrium constants which is an <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> that</dt>
+<dd>contains the values of the equilibrium constants in decimal
+logarithmic units.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>the error of the equilibrium constants is an <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></dt>
+<dd>that represents the error of the equilibrium constants in decimal
+logarithmic units.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>the refinement flags for the constants which is a list of ints</dt>
+<dd>representing what to do with the constants. Accepted values are
+-1 for ignoring this constant, 0 for not refine this constant, 1 for
+refining this constant, 2 and more for constraining the constant.</dd>
+</dl>
+</li>
+<li>the stoichiometry array.</li>
+</ul>
+<dl class="attribute">
+<dt id="data.ModelData.B">
+<code class="descname">B</code><a class="headerlink" href="#data.ModelData.B" title="Permalink to this definition">¶</a></dt>
+<dd><p>The values of the <a class="reference internal" href="index.html#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is the <strong>full</strong> array, including ignored values.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.Bflags">
+<code class="descname">Bflags</code><a class="headerlink" href="#data.ModelData.Bflags" title="Permalink to this definition">¶</a></dt>
+<dd><p>The flags for the <a class="reference internal" href="index.html#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is the <strong>full</strong> array, including ignored values.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.E">
+<code class="descname">E</code><a class="headerlink" href="#data.ModelData.E" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.P">
+<code class="descname">P</code><a class="headerlink" href="#data.ModelData.P" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> of the current model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.S">
+<code class="descname">S</code><a class="headerlink" href="#data.ModelData.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of independent components</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.addCalorimetry">
+<code class="descname">addCalorimetry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.addCalorimetry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add calorimetry data to the current model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.addEquilibrium">
+<code class="descname">addEquilibrium</code><span class="sig-paren">(</span><em>b=0.0</em>, <em>pos=-1</em>, <em>p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.addEquilibrium" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new equilibrium to the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The value of the constant in decimal logarithmic units</li>
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the position in which the new equilibrium
+will be inserted. Defaults to -1 (the last position).</li>
+<li><strong>p</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – A 1D array of <em>S</em> ints representing
+the stoichiometry associated to the new equilibrium and will
+be inserted as a row in the <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>.  If
+not provided, zeros will be used.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.addReagent">
+<code class="descname">addReagent</code><span class="sig-paren">(</span><em>pos=-1</em>, <em>p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.addReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new reagent (<span class="xref std std-term">independent component</span>) to the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the position in which the new reagent will
+be inserted. Defaults to -1 (the last position).</li>
+<li><strong>p</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – An int or 1D array of <em>E</em> ints
+representing the stoichiometry associated to the new reagent
+with respect to all the equilibria and will be inserted as a
+column in the <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>. If not provided,
+zeros will be used. If it is an int, that number will be used
+for all.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.enthalpy">
+<code class="descname">enthalpy</code><a class="headerlink" href="#data.ModelData.enthalpy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.enthalpy_flags">
+<code class="descname">enthalpy_flags</code><a class="headerlink" href="#data.ModelData.enthalpy_flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.enthropy">
+<code class="descname">enthropy</code><a class="headerlink" href="#data.ModelData.enthropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the enthropy of the system in ΔS units</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.errlogB">
+<code class="descname">errlogB</code><a class="headerlink" href="#data.ModelData.errlogB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.error_enthalpy">
+<code class="descname">error_enthalpy</code><a class="headerlink" href="#data.ModelData.error_enthalpy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.error_enthropy">
+<code class="descname">error_enthropy</code><a class="headerlink" href="#data.ModelData.error_enthropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the error of enthropy of the system in ΔS units</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.isCalori">
+<code class="descname">isCalori</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.isCalori" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.labels">
+<code class="descname">labels</code><a class="headerlink" href="#data.ModelData.labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.loadXML">
+<code class="descname">loadXML</code><span class="sig-paren">(</span><em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the contents of an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>
+into this class.</p>
+<dl class="docutils">
+<dt>:param <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a>: An Element object</dt>
+<dd>containing the information about the model to be loaded.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <strong>xmle</strong> has the wrong type or is not the right
+xml substructure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.logB">
+<code class="descname">logB</code><a class="headerlink" href="#data.ModelData.logB" title="Permalink to this definition">¶</a></dt>
+<dd><p>The values of the <a class="reference internal" href="index.html#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a> in
+logarithmic units.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is the <strong>full</strong> array, including ignored values.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.name">
+<code class="descname">name</code><a class="headerlink" href="#data.ModelData.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name for this object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.parent">
+<code class="descname">parent</code><a class="headerlink" href="#data.ModelData.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.refBflags">
+<code class="descname">refBflags</code><a class="headerlink" href="#data.ModelData.refBflags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.refP">
+<code class="descname">refP</code><a class="headerlink" href="#data.ModelData.refP" title="Permalink to this definition">¶</a></dt>
+<dd><p>The stoichiometry array including only the entries that are
+not ignored</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.refenthalpy">
+<code class="descname">refenthalpy</code><a class="headerlink" href="#data.ModelData.refenthalpy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.refenthalpyflags">
+<code class="descname">refenthalpyflags</code><a class="headerlink" href="#data.ModelData.refenthalpyflags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.referrlogB">
+<code class="descname">referrlogB</code><a class="headerlink" href="#data.ModelData.referrlogB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.reflogB">
+<code class="descname">reflogB</code><a class="headerlink" href="#data.ModelData.reflogB" title="Permalink to this definition">¶</a></dt>
+<dd><p>A view of the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the non-ignored constants
+only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.removeEquilibrium">
+<code class="descname">removeEquilibrium</code><span class="sig-paren">(</span><em>pos=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.removeEquilibrium" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.removeReagent">
+<code class="descname">removeReagent</code><span class="sig-paren">(</span><em>pos=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.removeReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes one reagent</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.ModelData.residuals">
+<code class="descname">residuals</code><a class="headerlink" href="#data.ModelData.residuals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.ModelData.saveXML">
+<code class="descname">saveXML</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.ModelData.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree.Element</span></code></a> containing the
+information from this class in order to write in the xml file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>An ElementTree containing the</dt>
+<dd>information about the model.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.NMRData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">NMRData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.NMRData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.Dataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="data.SimulationData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">SimulationData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SimulationData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class provides encapsulation for the data for a titration
+simulation.</p>
+<dl class="attribute">
+<dt id="data.SimulationData.B">
+<code class="descname">B</code><a class="headerlink" href="#data.SimulationData.B" title="Permalink to this definition">¶</a></dt>
+<dd><p>The values of the <a class="reference internal" href="index.html#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.C">
+<code class="descname">C</code><a class="headerlink" href="#data.SimulationData.C" title="Permalink to this definition">¶</a></dt>
+<dd><p>the free concentrations array.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.N">
+<code class="descname">N</code><a class="headerlink" href="#data.SimulationData.N" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of points to be simulated</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.P">
+<code class="descname">P</code><a class="headerlink" href="#data.SimulationData.P" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a> of the current model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.S">
+<code class="descname">S</code><a class="headerlink" href="#data.SimulationData.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of <a class="reference internal" href="index.html#term-independent-components"><span class="xref std std-term">independent components</span></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.X">
+<code class="descname">X</code><a class="headerlink" href="#data.SimulationData.X" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SimulationData.clearExternalData">
+<code class="descname">clearExternalData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SimulationData.clearExternalData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears external data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.eC">
+<code class="descname">eC</code><a class="headerlink" href="#data.SimulationData.eC" title="Permalink to this definition">¶</a></dt>
+<dd><p>the errors associated with the free equilibrium concentrations array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.erlvl">
+<code class="descname">erlvl</code><a class="headerlink" href="#data.SimulationData.erlvl" title="Permalink to this definition">¶</a></dt>
+<dd><p>The error level at which the uncertanty of the concentrations is
+calculated</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.errlogB">
+<code class="descname">errlogB</code><a class="headerlink" href="#data.SimulationData.errlogB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.externalDataTitle">
+<code class="descname">externalDataTitle</code><a class="headerlink" href="#data.SimulationData.externalDataTitle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SimulationData.getExternalData">
+<code class="descname">getExternalData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SimulationData.getExternalData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SimulationData.iterExternalData">
+<code class="descname">iterExternalData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SimulationData.iterExternalData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator that contains the external data to be plotted
+or None if there is none. The iterator returns in turn a triplet
+containing the label, x and y for each set of data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.labels">
+<code class="descname">labels</code><a class="headerlink" href="#data.SimulationData.labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SimulationData.logB">
+<code class="descname">logB</code><a class="headerlink" href="#data.SimulationData.logB" title="Permalink to this definition">¶</a></dt>
+<dd><p>The values of the <a class="reference internal" href="index.html#term-equilibrium-constants-array"><span class="xref std std-term">equilibrium constants array</span></a> in
+logarithmic units</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SimulationData.setExternalData">
+<code class="descname">setExternalData</code><span class="sig-paren">(</span><em>labels</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SimulationData.setExternalData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.SpecData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">SpecData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data.Dataset" title="data.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.Dataset</span></code></a></p>
+<p>This class handles all spectrometric data that belongs to the same
+titration.</p>
+<dl class="attribute">
+<dt id="data.SpecData.MODEL_LINEAR">
+<code class="descname">MODEL_LINEAR</code><em class="property"> = 0</em><a class="headerlink" href="#data.SpecData.MODEL_LINEAR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.Nds">
+<code class="descname">Nds</code><a class="headerlink" href="#data.SpecData.Nds" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of spectra sets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.Nl">
+<code class="descname">Nl</code><a class="headerlink" href="#data.SpecData.Nl" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of wavelength available</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.addSpectra">
+<code class="descname">addSpectra</code><span class="sig-paren">(</span><em>spectra</em>, <em>sptype=0</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.addSpectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a spectra set to the collection. A spectra set is usually a
+titration with N experimental points each with a spectrum of Nl
+wavelengths + 1 column for wavelength values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>spectra</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – A 2D array containing the data.</li>
+<li><strong>stype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Optional. The type of spectrum.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.addSpectraFromFile">
+<code class="descname">addSpectraFromFile</code><span class="sig-paren">(</span><em>f</em>, <em>sptype=0</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.addSpectraFromFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load spectra from a data file using numpy routines</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.calcSpectra">
+<code class="descname">calcSpectra</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.calcSpectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the calculated spectra.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.coloured">
+<code class="descname">coloured</code><a class="headerlink" href="#data.SpecData.coloured" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.epsilon">
+<code class="descname">epsilon</code><a class="headerlink" href="#data.SpecData.epsilon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.fitSpectra">
+<code class="descname">fitSpectra</code><a class="headerlink" href="#data.SpecData.fitSpectra" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.getSpectrum">
+<code class="descname">getSpectrum</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.getSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.getUse">
+<code class="descname">getUse</code><span class="sig-paren">(</span><em>ds</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.getUse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.ignorePt">
+<code class="descname">ignorePt</code><span class="sig-paren">(</span><em>nset</em>, <em>wl</em>, <em>sp</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.ignorePt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ignores a specific point from a given spectrum set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectra set to which the wavelength is
+referred.</li>
+<li><strong>sp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectrum that will be ignored.</li>
+<li><strong>wl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the wavelength that will be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any of the indices are incorrect</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.ignoreSp">
+<code class="descname">ignoreSp</code><span class="sig-paren">(</span><em>nset</em>, <em>sp</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.ignoreSp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ignores a specific spectrum from a given spectrum set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectra set to which the wavelength is
+referred.</li>
+<li><strong>sp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectrum that will be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any of the indices are incorrect</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.ignoreWl">
+<code class="descname">ignoreWl</code><span class="sig-paren">(</span><em>nset</em>, <em>wl</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.ignoreWl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ignores a specific wavelength from a given spectrum set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectra set to which the wavelength is
+referred.</li>
+<li><strong>wl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the wavelength that will be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any of the indices are incorrect</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.iterResidual">
+<code class="descname">iterResidual</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.iterResidual" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.iterSpectra">
+<code class="descname">iterSpectra</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.iterSpectra" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.model">
+<code class="descname">model</code><a class="headerlink" href="#data.SpecData.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.removeSpectra">
+<code class="descname">removeSpectra</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.removeSpectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes one spectra set from this dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The index of the spectra array that will be deleted.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if the index provided does not exist</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.residuals">
+<code class="descname">residuals</code><a class="headerlink" href="#data.SpecData.residuals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.setUse">
+<code class="descname">setUse</code><span class="sig-paren">(</span><em>ds</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.setUse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.spectra">
+<code class="descname">spectra</code><a class="headerlink" href="#data.SpecData.spectra" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.usePt">
+<code class="descname">usePt</code><span class="sig-paren">(</span><em>nset</em>, <em>wl</em>, <em>sp</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.usePt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ignores a specific point from a given spectrum set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectra set to which the wavelength is
+referred.</li>
+<li><strong>sp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectrum that will be ignored.</li>
+<li><strong>wl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the wavelength that will be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any of the indices are incorrect</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.useSp">
+<code class="descname">useSp</code><span class="sig-paren">(</span><em>nset</em>, <em>sp</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.useSp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ignores a specific spectrum from a given spectrum set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectra set to which the wavelength is
+referred.</li>
+<li><strong>sp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectrum that will be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any of the indices are incorrect</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpecData.useWl">
+<code class="descname">useWl</code><span class="sig-paren">(</span><em>nset</em>, <em>wl</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpecData.useWl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unignores a specific wavelength from a given spectrum set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the spectra set to which the wavelength is
+referred.</li>
+<li><strong>wl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Index of the wavelength that will be un-ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> – if any of the indices are incorrect</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpecData.w">
+<code class="descname">w</code><a class="headerlink" href="#data.SpecData.w" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.SpeciationData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">SpeciationData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpeciationData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data.SimulationData" title="data.SimulationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.SimulationData</span></code></a></p>
+<p>This class provides encapsulation for the data for a speciation.</p>
+<dl class="attribute">
+<dt id="data.SpeciationData.T">
+<code class="descname">T</code><a class="headerlink" href="#data.SpeciationData.T" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpeciationData.T0">
+<code class="descname">T0</code><a class="headerlink" href="#data.SpeciationData.T0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpeciationData.T1">
+<code class="descname">T1</code><a class="headerlink" href="#data.SpeciationData.T1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpeciationData.addReagent">
+<code class="descname">addReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpeciationData.addReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new reagent to the list of reagents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpeciationData.calcC">
+<code class="descname">calcC</code><span class="sig-paren">(</span><em>x</em>, <em>erlvl=None</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpeciationData.calcC" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the free concentrations and the errors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – a valid index indicating which of the independent
+components will be used as independent variable.</li>
+<li><strong>erlvl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The error level at which the error in the free
+concentrations will be calculated. If None, no error will
+be calculated.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpeciationData.loadXML">
+<code class="descname">loadXML</code><span class="sig-paren">(</span><em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpeciationData.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads XML information into self.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – object with the XML info.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.SpeciationData.pX">
+<code class="descname">pX</code><a class="headerlink" href="#data.SpeciationData.pX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="data.SpeciationData.removeReagent">
+<code class="descname">removeReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.SpeciationData.removeReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove reagent from the list of reagents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.SpeciationData.saveXML">
+<code class="descname">saveXML</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.SpeciationData.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="data.TitrationData">
+<em class="property">class </em><code class="descclassname">data.</code><code class="descname">TitrationData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#data.TitrationData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data.SimulationData" title="data.SimulationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.SimulationData</span></code></a></p>
+<dl class="attribute">
+<dt id="data.TitrationData.T">
+<code class="descname">T</code><a class="headerlink" href="#data.TitrationData.T" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="index.html#term-total-concentrations-array"><span class="xref std std-term">total concentrations array</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.TitrationData.T0">
+<code class="descname">T0</code><a class="headerlink" href="#data.TitrationData.T0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting amounts of principal components in mmol</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.TitrationData.V0">
+<code class="descname">V0</code><a class="headerlink" href="#data.TitrationData.V0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial volume in mL</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.TitrationData.V1">
+<code class="descname">V1</code><a class="headerlink" href="#data.TitrationData.V1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Final volume in mL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.TitrationData.addReagent">
+<code class="descname">addReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.TitrationData.addReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new reagent to the list of reagents.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.TitrationData.buret">
+<code class="descname">buret</code><a class="headerlink" href="#data.TitrationData.buret" title="Permalink to this definition">¶</a></dt>
+<dd><p>The concentration in buret in mmol/mL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.TitrationData.calcC">
+<code class="descname">calcC</code><span class="sig-paren">(</span><em>erlvl=None</em><span class="sig-paren">)</span><a class="headerlink" href="#data.TitrationData.calcC" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the free concentrations and the errors</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.TitrationData.incrV">
+<code class="descname">incrV</code><a class="headerlink" href="#data.TitrationData.incrV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Volume increment for each titration point in mL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.TitrationData.loadXML">
+<code class="descname">loadXML</code><span class="sig-paren">(</span><em>xmle</em><span class="sig-paren">)</span><a class="headerlink" href="#data.TitrationData.loadXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads XML information into self.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code>) – object with the XML info.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.TitrationData.removeReagent">
+<code class="descname">removeReagent</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#data.TitrationData.removeReagent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove reagent from the list of reagents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.TitrationData.saveXML">
+<code class="descname">saveXML</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.TitrationData.saveXML" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns an <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code> with the information of
+this <a class="reference internal" href="#data.SpeciationData" title="data.SpeciationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">data.SpeciationData</span></code></a> to be saved.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="canvas.html"
+                        title="previous chapter">canvas module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="excepts.html"
+                        title="next chapter">excepts module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="excepts.html" title="excepts module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="canvas.html" title="canvas module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Salvador Blasco.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

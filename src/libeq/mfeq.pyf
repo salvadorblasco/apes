@@ -1,0 +1,86 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module mfeq ! in 
+    interface  ! in :mfeq
+        subroutine newtonr1(c,t,b,p,ctrl,n,e,s,es) ! in :mfeq:eq.f90
+            double precision dimension(n,es),intent(inout) :: c
+            double precision dimension(n,s),intent(in),depend(n) :: t
+            double precision dimension(e),intent(in) :: b
+            integer dimension(e,s),intent(in),depend(e,s) :: p
+            integer intent(inout) :: ctrl
+            integer, optional,intent(in),check(shape(c,0)==n),depend(c) :: n=shape(c,0)
+            integer, optional,intent(in),check(len(b)>=e),depend(b) :: e=len(b)
+            integer, optional,intent(in),check(shape(t,1)==s),depend(t) :: s=shape(t,1)
+            integer, optional,intent(in),check(shape(c,1)==es),depend(c) :: es=shape(c,1)
+        end subroutine newtonr1
+        subroutine newtonr2(c,t,b,p,ctrl,n,e,s,es) ! in :mfeq:eq.f90
+            double precision dimension(n,es),intent(inout) :: c
+            double precision dimension(n,s),intent(in),depend(n) :: t
+            double precision dimension(n,e),intent(in),depend(n) :: b
+            integer dimension(e,s),intent(in),depend(e,s) :: p
+            integer intent(inout) :: ctrl
+            integer, optional,check(shape(c,0)==n),depend(c) :: n=shape(c,0)
+            integer, optional,check(shape(b,1)==e),depend(b) :: e=shape(b,1)
+            integer, optional,check(shape(t,1)==s),depend(t) :: s=shape(t,1)
+            integer, optional,check(shape(c,1)==es),depend(c) :: es=shape(c,1)
+        end subroutine newtonr2
+        subroutine lsolve(a,b,x,n) ! in :mfeq:eq.f90
+            double precision dimension(n,n),intent(in) :: a
+            double precision dimension(n),intent(in),depend(n) :: b
+            double precision dimension(n),intent(out),depend(n) :: x
+            integer, optional,intent(in),check(shape(a,0)==n),depend(a) :: n=shape(a,0)
+        end subroutine lsolve
+        subroutine cplussn(c,b,p,n,e,s) ! in :mfeq:eq.f90
+            double precision dimension(n,s+e),intent(inout),depend(e,s) :: c
+            double precision dimension(e),intent(in) :: b
+            integer dimension(e,s),intent(in),depend(e) :: p
+            integer, optional,intent(in),check(shape(c,0)==n),depend(c) :: n=shape(c,0)
+            integer, optional,intent(in),check(len(b)>=e),depend(b) :: e=len(b)
+            integer, optional,intent(in),check(shape(p,1)==s),depend(p) :: s=shape(p,1)
+        end subroutine cplussn
+        subroutine cpluss(c,b,p,e,s) ! in :mfeq:eq.f90
+            double precision dimension(s+e),intent(inout),depend(e,s) :: c
+            double precision dimension(e) :: b
+            integer dimension(e,s),intent(in),depend(e) :: p
+            integer, optional,intent(in),check(len(b)>=e),depend(b) :: e=len(b)
+            integer, optional,intent(in),check(shape(p,1)==s),depend(p) :: s=shape(p,1)
+        end subroutine cpluss
+        subroutine fobj(f,c,p,t,e,s) ! in :mfeq:eq.f90
+            double precision dimension(s),intent(inout) :: f
+            double precision dimension(s+e),intent(in),depend(e,s) :: c
+            integer dimension(e,s),intent(in),depend(s) :: p
+            double precision dimension(s),intent(in),depend(s) :: t
+            integer, optional,intent(in),check(shape(p,0)==e),depend(p) :: e=shape(p,0)
+            integer, optional,intent(in),check(len(f)>=s),depend(f) :: s=len(f)
+        end subroutine fobj
+        subroutine jacobian(jac,c,p,e,s) ! in :mfeq:eq.f90
+            double precision dimension(s,s),intent(inout) :: jac
+            double precision dimension(s+ e),intent(in),depend(e,s) :: c
+            integer dimension(e,s),intent(in),depend(s) :: p
+            integer, optional,intent(in),check(shape(p,0)==e),depend(p) :: e=shape(p,0)
+            integer, optional,intent(in),check(shape(jac,0)==s),depend(jac) :: s=shape(jac,0)
+        end subroutine jacobian
+        subroutine nr(x,t,b,p,ctrl,e,s) ! in :mfeq:eq.f90
+            double precision dimension(s+e),intent(inout),depend(e,s) :: x
+            double precision dimension(s),intent(in) :: t
+            double precision dimension(e),intent(in) :: b
+            integer dimension(e,s),intent(in),depend(e,s) :: p
+            integer intent(inout) :: ctrl
+            integer, optional,intent(in),check(len(b)>=e),depend(b) :: e=len(b)
+            integer, optional,intent(in),check(len(t)>=s),depend(t) :: s=len(t)
+        end subroutine nr
+        subroutine pcf(c,t,b,p,thresh,e,s) ! in :mfeq:eq.f90
+            double precision dimension(s+e),intent(inout),depend(e,s) :: c
+            double precision dimension(s),intent(in) :: t
+            double precision dimension(e),intent(in) :: b
+            integer dimension(e,s),intent(in),depend(e,s) :: p
+            real intent(in) :: thresh
+            integer, optional,intent(in),check(len(b)>=e),depend(b) :: e=len(b)
+            integer, optional,intent(in),check(len(t)>=s),depend(t) :: s=len(t)
+        end subroutine pcf
+    end interface 
+end python module mfeq
+
+! This file was auto-generated with f2py (version:1.21.5).
+! See http://cens.ioc.ee/projects/f2py2e/

@@ -1,0 +1,7 @@
+test_point0 module
+==================
+
+.. automodule:: test_point0
+    :members:
+    :undoc-members:
+    :show-inheritance:

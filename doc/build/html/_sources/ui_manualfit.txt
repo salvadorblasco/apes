@@ -1,0 +1,7 @@
+ui_manualfit module
+===================
+
+.. automodule:: ui_manualfit
+    :members:
+    :undoc-members:
+    :show-inheritance:

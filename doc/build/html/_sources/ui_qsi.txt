@@ -1,0 +1,7 @@
+ui_qsi module
+=============
+
+.. automodule:: ui_qsi
+    :members:
+    :undoc-members:
+    :show-inheritance:

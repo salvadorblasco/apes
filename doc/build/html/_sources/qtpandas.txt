@@ -1,0 +1,7 @@
+qtpandas module
+===============
+
+.. automodule:: qtpandas
+    :members:
+    :undoc-members:
+    :show-inheritance:

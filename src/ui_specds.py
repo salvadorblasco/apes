@@ -1,0 +1,98 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'forms/specds.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.1
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_SpecDSWidget(object):
+    def setupUi(self, SpecDSWidget):
+        SpecDSWidget.setObjectName("SpecDSWidget")
+        SpecDSWidget.resize(438, 407)
+        self.verticalLayout = QtWidgets.QVBoxLayout(SpecDSWidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.splitter = QtWidgets.QSplitter(SpecDSWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
+        self.splitter.setSizePolicy(sizePolicy)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setObjectName("splitter")
+        self.colored_input = QtWidgets.QScrollArea(self.splitter)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.colored_input.sizePolicy().hasHeightForWidth())
+        self.colored_input.setSizePolicy(sizePolicy)
+        self.colored_input.setWidgetResizable(True)
+        self.colored_input.setObjectName("colored_input")
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 418, 73))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.scrollAreaWidgetContents.sizePolicy().hasHeightForWidth())
+        self.scrollAreaWidgetContents.setSizePolicy(sizePolicy)
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.layout_checkboxes = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.layout_checkboxes.setObjectName("layout_checkboxes")
+        self.checkBox = QtWidgets.QCheckBox(self.scrollAreaWidgetContents)
+        self.checkBox.setObjectName("checkBox")
+        self.layout_checkboxes.addWidget(self.checkBox)
+        self.colored_input.setWidget(self.scrollAreaWidgetContents)
+        self.table_data = QtWidgets.QTableWidget(self.splitter)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(1)
+        sizePolicy.setHeightForWidth(self.table_data.sizePolicy().hasHeightForWidth())
+        self.table_data.setSizePolicy(sizePolicy)
+        self.table_data.setObjectName("table_data")
+        self.table_data.setColumnCount(2)
+        self.table_data.setRowCount(3)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setVerticalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setVerticalHeaderItem(1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setVerticalHeaderItem(2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setHorizontalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setHorizontalHeaderItem(1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setItem(2, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.table_data.setItem(2, 1, item)
+        self.table_data.horizontalHeader().setDefaultSectionSize(80)
+        self.verticalLayout.addWidget(self.splitter)
+
+        self.retranslateUi(SpecDSWidget)
+        QtCore.QMetaObject.connectSlotsByName(SpecDSWidget)
+
+    def retranslateUi(self, SpecDSWidget):
+        _translate = QtCore.QCoreApplication.translate
+        SpecDSWidget.setWindowTitle(_translate("SpecDSWidget", "Form"))
+        self.checkBox.setText(_translate("SpecDSWidget", "CheckBox"))
+        item = self.table_data.verticalHeaderItem(0)
+        item.setText(_translate("SpecDSWidget", "L"))
+        item = self.table_data.verticalHeaderItem(1)
+        item.setText(_translate("SpecDSWidget", "H"))
+        item = self.table_data.verticalHeaderItem(2)
+        item.setText(_translate("SpecDSWidget", "1"))
+        item = self.table_data.horizontalHeaderItem(0)
+        item.setText(_translate("SpecDSWidget", "λ"))
+        item = self.table_data.horizontalHeaderItem(1)
+        item.setText(_translate("SpecDSWidget", "1"))
+        __sortingEnabled = self.table_data.isSortingEnabled()
+        self.table_data.setSortingEnabled(False)
+        item = self.table_data.item(2, 0)
+        item.setText(_translate("SpecDSWidget", "220.0"))
+        item = self.table_data.item(2, 1)
+        item.setText(_translate("SpecDSWidget", "0.12344"))
+        self.table_data.setSortingEnabled(__sortingEnabled)

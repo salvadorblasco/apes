@@ -1,0 +1,7 @@
+test_supyquad module
+====================
+
+.. automodule:: test_supyquad
+    :members:
+    :undoc-members:
+    :show-inheritance:

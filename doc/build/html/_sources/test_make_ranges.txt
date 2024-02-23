@@ -1,0 +1,7 @@
+test_make_ranges module
+=======================
+
+.. automodule:: test_make_ranges
+    :members:
+    :undoc-members:
+    :show-inheritance:

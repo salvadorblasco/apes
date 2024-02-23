@@ -1,0 +1,21 @@
+ <!-- Block that contains data for potentiometric titrations -->
+ <potentiometricdata title="optional" temperature="25" use="1">
+   <!-- emf0 is given optionally with error -->
+   <emf0 unit="mV">359.32</emf0>
+   <erroremf0 unit="mV">0.03</erroremf0>
+   <!-- index of the active species for this electrode -->
+   <active>1</active>
+   <emf0flags>0 0</emf0flags> <!-- Optional 0 = constant, 1 = refine, no constraints admitted -->
+   <n>1</n>     <!-- number of electrons involved -->
+   <f>1.0</f>   <!-- Optional. correction constant. Assume 1.0 by default -->
+   <fRTnF>25.25</fRTnF>   <!-- Optional. Nernst's -->
+   <!-- either T or titrations parms must be present -->
+   <T0 unit="mmol">0.025 0.0124 0.124</T0>
+   <T0key>0 0 0</T0key> <!-- Optional refinement keys -->
+   <buret unit="mmol/mL">0 0 -0.1</buret>
+   <V0 unit="mL">30.00 0.01</V0>
+   <titre>   0.00 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0</titre>
+   <emfread>10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0</emfread>
+   <key>1 1 1 1 1 1 1 1 1 1 1  </key>
+ </potentiometricdata>
+

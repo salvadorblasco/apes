@@ -1,0 +1,7 @@
+test_nmr module
+===============
+
+.. automodule:: test_nmr
+    :members:
+    :undoc-members:
+    :show-inheritance:

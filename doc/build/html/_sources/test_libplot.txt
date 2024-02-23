@@ -1,0 +1,7 @@
+test_libplot module
+===================
+
+.. automodule:: test_libplot
+    :members:
+    :undoc-members:
+    :show-inheritance:

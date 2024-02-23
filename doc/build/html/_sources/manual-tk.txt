@@ -1,0 +1,7 @@
+manual-tk module
+================
+
+.. automodule:: manual-tk
+    :members:
+    :undoc-members:
+    :show-inheritance:

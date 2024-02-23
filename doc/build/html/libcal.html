@@ -1,0 +1,279 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>libcal module &#8212; APES 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="libeq module" href="libeq.html" />
+    <link rel="prev" title="libemf module" href="libemf.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libeq.html" title="libeq module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libemf.html" title="libemf module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-libcal">
+<span id="libcal-module"></span><h1>libcal module<a class="headerlink" href="#module-libcal" title="Permalink to this headline">¶</a></h1>
+<p>Module <a class="reference internal" href="#module-libcal" title="libcal"><code class="xref py py-mod docutils literal notranslate"><span class="pre">libcal</span></code></a> contains the routines needed for fitting equilibrium
+constants and enthalpies from calorimetric data. The main function to invoke
+here is <a class="reference internal" href="#libcal.calfit" title="libcal.calfit"><code class="xref py py-func docutils literal notranslate"><span class="pre">calfit()</span></code></a> which handles most of the work. This is the only public
+function for this module.</p>
+<dl class="function">
+<dt id="libcal.cal_jac1">
+<code class="descclassname">libcal.</code><code class="descname">cal_jac1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#libcal.cal_jac1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libcal.cal_jac2">
+<code class="descclassname">libcal.</code><code class="descname">cal_jac2</code><span class="sig-paren">(</span><em>H</em>, <em>V</em>, <em>C</em>, <em>P</em><span class="sig-paren">)</span><a class="headerlink" href="#libcal.cal_jac2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This routine calculates the part of the jacobian that deals with the β</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial Q_i}{\partial\log\beta_j} =
+\sum_k^E H_k \left(
+  V_i\frac{\partial c_{i,k+S}}{\partial\log\beta_j} -
+  V_{i-1}\frac{\partial c_{i-1,k+S}}{\partial\log\beta_j}
+\right)\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>H</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The enthalpy values. Must be N-1 sized</li>
+<li><strong>V</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The total volume of each point in the
+titration (initial plus titre). Must be N-sized.</li>
+<li><strong>C</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-free-concentrations-array"><span class="xref std std-term">free concentrations array</span></a>.</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libcal.cal_jac3">
+<code class="descclassname">libcal.</code><code class="descname">cal_jac3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#libcal.cal_jac3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libcal.calcN">
+<code class="descclassname">libcal.</code><code class="descname">calcN</code><span class="sig-paren">(</span><em>C</em>, <em>V</em><span class="sig-paren">)</span><a class="headerlink" href="#libcal.calcN" title="Permalink to this definition">¶</a></dt>
+<dd><p>C is the concentrations of the complexes only.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libcal.calcQ">
+<code class="descclassname">libcal.</code><code class="descname">calcQ</code><span class="sig-paren">(</span><em>V</em>, <em>C</em>, <em>H</em><span class="sig-paren">)</span><a class="headerlink" href="#libcal.calcQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>C is the concentrations of the complexes only.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libcal.calfit">
+<code class="descclassname">libcal.</code><code class="descname">calfit</code><span class="sig-paren">(</span><em>logB0</em>, <em>Bflags</em>, <em>H</em>, <em>Hflags</em>, <em>P</em>, <em>Q</em>, <em>titration</em>, <em>method=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#libcal.calfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function fits equilibrium constants for a calorimetric titration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>logB</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+initial guess for the constants in the form of log<sub>10</sub>.</li>
+<li><strong>Bflags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – refinement flags for values in logB.</li>
+<li><strong>H</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+initial guess for the enthalpy values.</li>
+<li><strong>Hflags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – refinement flags for values in H.</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The stoichiometric coefficients in the
+usual format.</li>
+<li><strong>Q</strong> (list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The stoichiometric coefficients
+in the usual format.</li>
+<li><strong>titration</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – Information about the titrations. Two options are
+accepted: (1) The following key must be provided (a) ‘V’
+(<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, volume of titre in mL), (b) ‘V0’ (float,
+the initial volume in mL), (c) ‘T0’ (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, total
+amount of initial components in mmol), (d) buret
+(<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, concentration in the buret for each
+component in mmol/mL) and (e) ‘Tflags’ (list, optional) or (2)</li>
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – A number indicating the method to be used to mimize
+the objective functions. Allowed values are 0 for the algorithm
+by Levenberg-Marquardt (nonlinear least squares, this is the
+default one) and 1 for the Nelder-Mead algorithm (the simplex
+method).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>containing the follogin data (1) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>: The</dt>
+<dd><p class="first last">refined constants, (2) the refined enthalpy values, (3) the free
+concentrations and (4) additional fitting data</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="libcal.calfit_Honly">
+<code class="descclassname">libcal.</code><code class="descname">calfit_Honly</code><span class="sig-paren">(</span><em>Q</em>, <em>N</em>, <em>H</em>, <em>Hflags</em><span class="sig-paren">)</span><a class="headerlink" href="#libcal.calfit_Honly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the enthalpy values for the case when the equilibrium
+constants are not to be fit. This case simplifies significantly
+because a linear fitting is enough to find the values.</p>
+<div class="math notranslate nohighlight">
+\[\textbf{Q} - \mathbf{N}^0\mathbf{H}^0 = \mathbf{N}^1\mathbf{H}^1 +
+\mathbf{N}^2\mathbf{H}^2 + \ldots + \mathbf{N}^x\mathbf{H}^x\]</div>
+<div class="math notranslate nohighlight">
+\[q_i - \sum_{j=[0]} n_{ij} h_j = \sum_{j=[1]} n_{ij} h_j +
+\sum_k \left(\sum_{j=[k]} n_{ij} \frac{h_j}{h_{[k]}} \right) h_{[k]}\]</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="libcal.calfit_LM1">
+<code class="descclassname">libcal.</code><code class="descname">calfit_LM1</code><span class="sig-paren">(</span><em>logB</em>, <em>Bflags</em>, <em>H</em>, <em>Hflags</em>, <em>P</em>, <em>Q</em>, <em>V</em>, <em>T</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#libcal.calfit_LM1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function fits equilibrium constants for a calorimetric titration
+by means of the Levenberg-Marquardt algoritm for the case when there is
+no refinement flag in the initial state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>logB</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+initial guess for the constants in the form of log<sub>10</sub>.</li>
+<li><strong>Bflags</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – refinement flags for values in
+logB0.</li>
+<li><strong>H</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+initial guess for the enthalpy values.</li>
+<li><strong>Hflags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – refinement flags for values in H.</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The stoichiometric coefficients in the
+usual format.</li>
+<li><strong>Q</strong> (list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The stoichiometric coefficients
+in the usual format.</li>
+<li><strong>T</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The analytical concentrations for the
+initial components in mmol/mL</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><dl class="first docutils">
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>: The refined constants in natural logarithmic</dt>
+<dd>units</dd>
+</dl>
+</li>
+<li><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>: The free concentrations</li>
+<li>dict: Extra optional parameters</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If invalid parameters are passed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libemf.html"
+                        title="previous chapter">libemf module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libeq.html"
+                        title="next chapter">libeq module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/libcal.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libeq.html" title="libeq module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libemf.html" title="libemf module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Salvador Blasco.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

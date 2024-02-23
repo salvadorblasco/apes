@@ -1,0 +1,7 @@
+test_libk module
+================
+
+.. automodule:: test_libk
+    :members:
+    :undoc-members:
+    :show-inheritance:

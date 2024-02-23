@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<apes version="1.0">
+ <metadata>
+  <created>07/02/2016 15:25</created>
+  <lastmodified>07/02/2016 15:25</lastmodified>
+  <author>author 1</author>
+  <title>my title</title>
+  <comments>comment 1</comments>
+ </metadata>
+
+ <labels>L H</labels>
+ <temperature units="celsius">25</temperature>
+
+ <models>
+  <model title="optional" energy_units='kcal/mol'>
+   <beta>9.25 10.19</beta>
+   <error>0.06 0.01</error>
+   <p>1  1 0 -1</p>
+   <key>1 0</key>
+  </model>
+ </models>
+</apes>
