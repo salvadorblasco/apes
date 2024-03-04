@@ -137,7 +137,7 @@
      <x>0</x>
      <y>0</y>
      <width>688</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -305,6 +305,7 @@
      <addaction name="actionNewSpeciesDist"/>
      <addaction name="separator"/>
      <addaction name="actionNewExternalData"/>
+     <addaction name="actionNewTitration"/>
     </widget>
     <addaction name="menuNewDataset"/>
     <addaction name="menuImportDS"/>
@@ -1050,6 +1051,11 @@
   <action name="actionResetModel">
    <property name="text">
     <string>Reset model</string>
+   </property>
+  </action>
+  <action name="actionNewTitration">
+   <property name="text">
+    <string>Titration</string>
    </property>
   </action>
  </widget>
