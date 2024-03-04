@@ -3,6 +3,7 @@
 Home to miscellaneous widgets not included in other category.
 """
 
+import enum
 import itertools
 import math
 import re
@@ -18,6 +19,7 @@ import ui_externaldata
 import ui_manualfit
 import ui_output
 import ui_ionicst
+import ui_titration
 
 
 class ManualFitWidget(QtWidgets.QWidget):
@@ -559,3 +561,79 @@ class ExternalDataWidget(QtWidgets.QWidget):
     #     # else:
     #     #     return r.group(1, 2)
     #     return ('1', '2') if r is None else r.group(1, 2)
+
+class TitrationBaseWidget(QtWidgets.QWidget):
+    def __init__(self, model):
+        super().__init__()
+        self.ui = ui_titration.Ui_Titration()
+        self.ui.setupUi(self)
+        self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags')
+
+    def buret(self):
+        """The buret values.
+
+        Returns:
+            tuple of floats containing the values of this parameter.
+        """
+        ctext = libqt.iter_column_text(self.ui.table_titration, col=self._cols.buret.value)
+        return tuple(float(b) for b in ctext)
+
+    def initial_amount(self):
+        """The inital amount values in millimole.
+
+        Returns:
+            tuple of floats containing the values of this parameter.
+        """
+        ctext = libqt.iter_column_text(self.ui.table_titration, col=self._cols.init.value)
+        return tuple(float(b) for b in ctext)
+
+    def set_initial_amount(self, initial_amount):
+        """The initial amount values in millimole.
+
+        Parameters:
+            initial_amount (sequence of floats): the values for this parameter.
+                The length must be equal to the number of components.
+        """
+        libqt.fill_column(self.ui.table_titration, col=self._cols.buret.value, data=initial_amount)
+
+    def set_buret(self, buret):
+        """Set the buret parameter.
+
+        Parameters:
+            buret (sequence of floats): the values for buret. The length must be equal
+                to the number of components.
+        """
+        libqt.fill_column(self.ui.table_titration, data=buret, col=self._cols.buret.value)
+
+    def starting_volume(self):
+        'The starting volume in mL.'
+        return self.ui.dsb_V0.value()
+
+    def set_starting_volume(self, volume: float):
+        'Set the starting volume in mL.'
+        assert isinstance(volume, float)
+        self.ui.dsb_V0.setValue(volume)
+
+    def final_volume(self):
+        'The value of the final titre in mL.'
+        return self.ui.dsb_Vf.value()
+
+    def set_final_volume(self, volume: float):
+        'Set the final volume in mL.'
+        assert isinstance(volume, float)
+        # if volume > self.starting_volume():
+        #     raise ValueError('Final volume must be bigger than start volume')
+        self.ui.dsb_Vf.setValue(volume)
+
+    def titre(self):
+        """The titre values in mL.
+
+        Yields:
+            float: the value of the titre.
+        """
+        yield from ((self.final_volume() - self.starting_volume())
+                    / self.n_points() * i for i in range(self.n_points()))
+
+    def volume_increment(self):
+        'The step volume in mL.'
+        return (self.final_volume() - self.starting_volume()) / self.n_points()

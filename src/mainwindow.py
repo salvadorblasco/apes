@@ -24,7 +24,8 @@ import libeq
 import libeq.consol
 import libemf
 import libqt
-import canvas
+import canvas_pqtg as canvas
+#import canvas
 import consts
 import ui_mainwindow as mainui
 import datawidget
@@ -34,9 +35,10 @@ from modelwidget import ModelWidget
 from calorwidget import CalorWidget
 from specwidget import SpecWidget
 from nmrwidget import NmrWidget
-from otherwidgets import OutputWidget, ExternalDataWidget, IonicWidget
+from otherwidgets import OutputWidget, ExternalDataWidget, IonicWidget, TitrationBaseWidget
 from simulationwidgets import SpeciationWidget, TitrationWidget
 from project import Project
+from tabwidget import TabWidget
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -50,6 +52,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui = mainui.Ui_MainWindow()
         self.ui.setupUi(self)
+
+        new_tab_main = TabWidget(self)
+        self.ui.vl_1.replaceWidget(self.ui.tab_main, new_tab_main)
+        self.ui.tab_main = new_tab_main
 
         self._setup_vars()          # initialize variables
         self._more_widgets()        # create extra widgets
@@ -65,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.newSpeciation()
         # self.ui.tab_main.clear()
         # _debug_fname_ = '../data/hcit1.xml'
-        # _debug_fname_ = '../data/cuimpy33333_.xml'
+        _debug_fname_ = '../data/cuimpy33333_.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
@@ -82,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        # libio.loadXML(self, _debug_fname_)
+        libio.loadXML(self, _debug_fname_)
         # self.import_txtsp('./spec1.txt')
         # self.newTitration()
         # self.newSpeciation()
@@ -331,11 +337,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self._newtab('Ionic strength', dsw)
         return dsw
  
+    # TODO deprecate and use tabmain.add_external_data instead
     def new_external_data(self):
-        dsw = ExternalDataWidget()
-        self._newtab('External data', dsw, self.ui.actionNewExternalData)
-        return dsw
+        # dsw = ExternalDataWidget()
+        # self._newtab('External data', dsw, self.ui.actionNewExternalData)
+        # return dsw
+        widget = self.ui.tab_main.add_external_data()
+        return widget
 
+    # TODO deprecate and use tabmain.add_model instead
     def newModel(self):
         '''Create new ModelWidget and return a reference to it.
 
@@ -347,32 +357,35 @@ class MainWindow(QtWidgets.QMainWindow):
             :class:`ModelWidget`: The newly created widget or the currently
                 existing.
         '''
-        if self.modelwidget is not None:
-            widget = self.modelwidget
-            widget.clear()
-        else:
-            widget = ModelWidget()
-            self._newtab('Model', widget)
-
+        # if self.modelwidget is not None:
+        #     widget = self.modelwidget
+        #     widget.clear()
+        # else:
+        #     widget = ModelWidget()
+        #     self._newtab('Model', widget)
+        widget = self.ui.tab_main.add_model()
+        #self.modelwidget = widget
         return widget
 
+    # TODO deprecate - use self.ui.tab_main.add_speciation()
     def newSpeciation(self):
-        """Create new :class:`SpeciationWidget` and return instance.
+        # """Create new :class:`SpeciationWidget` and return instance.
 
-        Returns:
-            :class:`SpeciationWidget`: the newly created widget.
-        """
-        sdw = SpeciationWidget(self.modelwidget)
-        self._newtab('Speciation', sdw, self.ui.actionNewSpeciesDist)
+        # Returns:
+        #     :class:`SpeciationWidget`: the newly created widget.
+        # """
+        # sdw = SpeciationWidget(self.modelwidget)
+        # self._newtab('Speciation', sdw, self.ui.actionNewSpeciesDist)
 
-        sdw.plotUpdate.connect(self.__plot_update_titr)
+        # sdw.plotUpdate.connect(self.__plot_update_titr)
 
-        # connect w.labelsChanged con model.updateLabel
-        # sdw.labelsChanged.connect(self.modelwidget.updateLabel)
-        self.modelwidget.componentAdded.connect(sdw.add_component)
-        self.modelwidget.labelsChanged.connect(sdw.updateLabel)
+        # # connect w.labelsChanged con model.updateLabel
+        # # sdw.labelsChanged.connect(self.modelwidget.updateLabel)
+        # self.modelwidget.componentAdded.connect(sdw.add_component)
+        # self.modelwidget.labelsChanged.connect(sdw.updateLabel)
 
-        return sdw
+        # return sdw
+        return self.ui.tab_main.add_speciation()
 
     def newSpectr(self):
         '''Create a new tab containing a spectrometry data set.
@@ -411,6 +424,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # w.labelsChanged.connect(self.modelwidget.updateLabel)
         self.modelwidget.componentAdded.connect(widget.add_component)
         self.modelwidget.labelsChanged.connect(widget.updateLabel)
+        return widget
+
+    def new_titration_base(self):
+        widget = TitrationBaseWidget(self.modelwidget)
+        self._newtab('Titration', widget, self.ui.actionNewTitration)
         return widget
 
     def open_dialog(self, filters):
@@ -519,6 +537,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self._title = title
         self.project.title = title
 
+    # TODO deprecate and move to tabwidget.py
     def _compute_concentration_combined(self):
         # TODO probably move part of this to consol
         # TODO code duplicated in otherwidgets.ManualFitWidget.recalc
@@ -886,6 +905,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionNewSpeciesDist.triggered.connect(self.newSpeciation)
         ui.actionNewExternalData.triggered.connect(self.new_external_data)
         ui.actionDeleteDS.triggered.connect(self.menuDeleteDs)
+        ui.actionNewTitration.triggered.connect(self.new_titration_base)
         ui.actionUse.triggered.connect(self.menu_toggle_use)
         ui.actionImportPASAT.triggered.connect(self._import_pasat)
         ui.actionImportTiamo.triggered.connect(self._import_tiamo)
@@ -960,14 +980,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.main_frame = QtWidgets.QWidget()
         self.canvas = canvas.MyCanvas(self.ui.widget_plot, width=8, height=6, dpi=100)
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+        # self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         layout = QtWidgets.QVBoxLayout(self.ui.widget_plot)
         layout.addWidget(self.canvas)
-        layout.addWidget(self.mpl_toolbar)
+        #layout.addWidget(self.mpl_toolbar)
 
-        self._newtab('Model', ModelWidget())
+        #self._newtab('Model', ModelWidget())
+        self.ui.tab_main.add_model()
 
+    # TODO deprecate
     def _newtab(self, txt, dsw, action=None):
         "Common tasks for when a new tab is opened."
         n_tabs = self._tabcounter(type(SpeciationWidget))
