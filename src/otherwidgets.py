@@ -569,6 +569,11 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.ui = ui_titration.Ui_Titration()
         self.ui.setupUi(self)
         self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags')
+        self._column_buret_flags = 4
+        self._column_init_flags = 2
+        n = model.number_components
+        self.init_flags = [consts.RF_CONSTANT] * n
+        self.buret_flags = [consts.RF_CONSTANT] * n
 
     def buret(self):
         """The buret values.
@@ -638,3 +643,27 @@ class TitrationBaseWidget(QtWidgets.QWidget):
     def volume_increment(self):
         'The step volume in mL.'
         return (self.final_volume() - self.starting_volume()) / self.n_points()
+
+    @property
+    def buret_flags(self):
+        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._column_buret_flags)
+        return tuple(item - 1 for item in indices)
+
+    @buret_flags.setter
+    def buret_flags(self, flags):
+        flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
+        with libqt.table_locked(self.ui.table_titration):
+            for row, widget in enumerate(flagwidgets):
+                self.ui.table_titration.setCellWidget(row, self._column_buret_flags, widget)
+
+    @property
+    def init_flags(self):
+        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._column_init_flags)
+        return tuple(item - 1 for item in indices)
+
+    @init_flags.setter
+    def init_flags(self, flags):
+        flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
+        with libqt.table_locked(self.ui.table_titration):
+            for row, widget in enumerate(flagwidgets):
+                self.ui.table_titration.setCellWidget(row, self._column_init_flags, widget)

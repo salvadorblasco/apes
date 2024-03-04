@@ -55,6 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         new_tab_main = TabWidget(self)
         self.ui.vl_1.replaceWidget(self.ui.tab_main, new_tab_main)
+        self.ui.tab_main.deleteLater()
         self.ui.tab_main = new_tab_main
 
         self._setup_vars()          # initialize variables
@@ -93,8 +94,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.newTitration()
         # self.newSpeciation()
         # self.newSpectr()
-        self.new_titration_base()
+        self.ui.tab_main.add_titrationbase()
         self.ui.tab_main.add_emf()
+        self.ui.tab_main.add_spectrumuv()
+        self.ui.tab_main.add_calor()
+        self.ui.tab_main.add_ionic()
         # self.go()
         # self._manual_fitting()
         # self.refresh()
@@ -130,7 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def import_txtsp(self, filename):
         'Import data from text file.'
         wavelength, data = libio.import_spectrum_text(filename)
-        spectwidget = self.newSpectr()
+        spectwidget = self.ui.tab_main.add_spectrumuv()
         spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
 
     def iterate(self):
@@ -166,12 +170,14 @@ class MainWindow(QtWidgets.QMainWindow):
             widget.set_free_concentration(c)
             self.refresh()
 
+    # deprecated
     def menuDeleteDs(self):
         "Delete the current dataset."
-        t = self.ui.tab_main
-        # self.data.delete(t.currentWidget().data)
-        # TODO remove signals/slots
-        t.removeTab(t.currentIndex())
+        # t = self.ui.tab_main
+        # # self.data.delete(t.currentWidget().data)
+        # # TODO remove signals/slots
+        # t.removeTab(t.currentIndex())
+        t = self.ui.tab_main.delete_current_tab()
 
     def menuModelRename(self):
         """Change the name of the current model.
@@ -394,6 +400,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # return sdw
         return self.ui.tab_main.add_speciation()
 
+    # deprecate
     def newSpectr(self):
         '''Create a new tab containing a spectrometry data set.
 
@@ -406,9 +413,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # else:
         #     dswf = self._spect_fit
 
-        dsw = SpecWidget(self.modelwidget)
-        self._newtab('spec data', dsw, self.ui.actionNewSpecDS)
-        return dsw  #, dswf
+        # dsw = SpecWidget(self.modelwidget)
+        # self._newtab('spec data', dsw, self.ui.actionNewSpecDS)
+        # return dsw  #, dswf
+        return self.ui.tab_main.add_spectrumuv()
 
     def newNmr(self):
         '''Create new :class:`NmrWidget`.
@@ -908,7 +916,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._model_connections()
 
         ui.actionNewEmfDS.triggered.connect(self.ui.tab_main.add_emf)
-        ui.actionNewSpecDS.triggered.connect(self.newSpectr)
+        ui.actionNewSpecDS.triggered.connect(self.ui.tab_main.add_spectrumuv)
         ui.actionNewNMRDS.triggered.connect(self.newNmr)
         ui.actionNewCalorimetryDS.triggered.connect(self.newCalor)
         ui.actionNewTitrSim.triggered.connect(self.newTitration)

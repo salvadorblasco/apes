@@ -66,7 +66,6 @@ class DataWidget(QtGui.QWidget):
         self._freeconcentration = c
 
     def populate_cb_titration(self, args):
-        print('>>', args)
         self.ui.cb_titration.clear()
         self.ui.cb_titration.addItems(args)
 
