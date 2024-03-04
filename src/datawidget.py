@@ -65,6 +65,11 @@ class DataWidget(QtGui.QWidget):
     def set_free_concentration(self, c):
         self._freeconcentration = c
 
+    def populate_cb_titration(self, args):
+        print('>>', args)
+        self.ui.cb_titration.clear()
+        self.ui.cb_titration.addItems(args)
+
     @property
     def initial_amount(self):
         'Initial amount for every component (in mmol)'
@@ -78,7 +83,8 @@ class DataWidget(QtGui.QWidget):
     @property
     def labels(self):
         'list of labels for every component'
-        return tuple(libqt.iter_column_text(self._tabtitr, col=0))
+        # return tuple(libqt.iter_column_text(self._tabtitr, col=0))
+        return self._model.labels
 
     @labels.setter
     def labels(self, labels):

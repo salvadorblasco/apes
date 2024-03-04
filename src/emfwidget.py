@@ -29,7 +29,7 @@ class EmfWidget(datawidget.DataWidget):
         self.ui = ui_emfds.Ui_EmfDSWidget()
         self.ui.setupUi(self)
 
-        self._tabtitr = self.ui.table_titration
+        self._tabtitr = None
 
         self._connectMenu(self.ui.table_data)
 
@@ -37,8 +37,8 @@ class EmfWidget(datawidget.DataWidget):
         self.emf0_flags = (0,)      # default parameters
         self.nelectrons = (1,)
         self.active_species = (1,)
-        self.amount_flags = (0, 0)
-        self.buret_flags = (0, 0)
+        # self.amount_flags = (0, 0)
+        # self.buret_flags = (0, 0)
 
         popup = self._popupm
         action = popup.addAction('New electrode')
@@ -46,9 +46,9 @@ class EmfWidget(datawidget.DataWidget):
         action = popup.addAction('Remove electrode')
         action.triggered.connect(self._dellectrode)
 
-        self._set_default_titration()
+        # self._set_default_titration()
         # self.ui.table_data.cellChanged.connect(self.__tdatch)
-        self.ui.table_titration.cellChanged.connect(self.__titr_params_changed)
+        # self.ui.table_titration.cellChanged.connect(self.__titr_params_changed)
         # self.ui.table_params.cellChanged.connect(self.__tparch)
 
         # pop-up menu for tab_data

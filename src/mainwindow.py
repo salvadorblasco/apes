@@ -88,11 +88,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        libio.loadXML(self, _debug_fname_)
+        # libio.loadXML(self, _debug_fname_)
         # self.import_txtsp('./spec1.txt')
         # self.newTitration()
         # self.newSpeciation()
         # self.newSpectr()
+        self.new_titration_base()
+        self.ui.tab_main.add_emf()
         # self.go()
         # self._manual_fitting()
         # self.refresh()
@@ -302,30 +304,34 @@ class MainWindow(QtWidgets.QMainWindow):
         self.statusBar().showMessage(text)
         self.statusBar().repaint()
 
+    # deprecate
     def newCalor(self):
         '''Create new calorimetry data set and return instance.
 
         Returns:
             :class:`CalorWidget`: The newly created widget.
         '''
-        dsw = CalorWidget(self.modelwidget)
-        # self.modelwidget.refreshWidgets()
-        self._newtab('cal. data', dsw, self.ui.actionNewCalorimetryDS)
-        return dsw
+        # dsw = CalorWidget(self.modelwidget)
+        # # self.modelwidget.refreshWidgets()
+        # self._newtab('cal. data', dsw, self.ui.actionNewCalorimetryDS)
+        # return dsw
+        return self.ui.tab_main.add_calor()
 
+    # deprecate
     def newEmf(self):
         '''Create new potentiometry data set and return instance.
 
         Returns:
             :class:`EmfWidget`: The newly created widget.
         '''
-        dsw = EmfWidget(self.modelwidget)
-        # dsw.labelsChanged.connect(self._label_changed)
-        self.modelwidget.componentAdded.connect(dsw.add_component)
-        dsw.model = self.modelwidget
-        self._newtab('Emf data', dsw, self.ui.actionNewEmfDS)
-        self.modelwidget.labelsChanged.connect(dsw.updateLabel)
-        return dsw
+        # dsw = EmfWidget(self.modelwidget)
+        # # dsw.labelsChanged.connect(self._label_changed)
+        # self.modelwidget.componentAdded.connect(dsw.add_component)
+        # dsw.model = self.modelwidget
+        # self._newtab('Emf data', dsw, self.ui.actionNewEmfDS)
+        # self.modelwidget.labelsChanged.connect(dsw.updateLabel)
+        # return dsw
+        return self.ui.tab_main.add_emf()
 
     def newIonic(self):
         '''Create new ionis strength calculator and return instance.
@@ -333,9 +339,10 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`IonicWidget`: The newly created widget.
         '''
-        dsw = IonicWidget()
-        self._newtab('Ionic strength', dsw)
-        return dsw
+        # dsw = IonicWidget()
+        # self._newtab('Ionic strength', dsw)
+        # return dsw
+        return self.ui.tab_main.add_ionic()
  
     # TODO deprecate and use tabmain.add_external_data instead
     def new_external_data(self):
@@ -427,9 +434,10 @@ class MainWindow(QtWidgets.QMainWindow):
         return widget
 
     def new_titration_base(self):
-        widget = TitrationBaseWidget(self.modelwidget)
-        self._newtab('Titration', widget, self.ui.actionNewTitration)
-        return widget
+        self.ui.tab_main.add_titrationbase()
+        # widget = TitrationBaseWidget(self.modelwidget)
+        # self._newtab('Titration', widget, self.ui.actionNewTitration)
+        # return widget
 
     def open_dialog(self, filters):
         return QtWidgets.QFileDialog.getOpenFileName(
@@ -760,7 +768,8 @@ class MainWindow(QtWidgets.QMainWindow):
         f, ok = self.open_dialog(filters)
         if not ok:
             return
-        w = self.newEmf()
+        #w = self.newEmf()
+        w = self.ui.tab_main.add_emf()
         volume, emf = libio.import_tiamo(f)
         # always set 'emf' first because the table is reshaped accordingly
         w.emf = emf
@@ -772,7 +781,8 @@ class MainWindow(QtWidgets.QMainWindow):
         f, ok = self.open_dialog(filters)
         if not ok:
             return
-        w = self.newEmf()
+        w = self.ui.tab_main.add_emf()
+        # w = self.newEmf()
         volume, emf = libio.import_pasat(f)
         # always set 'emf' first because the table is reshaped accordingly
         w.emf = emf
@@ -897,7 +907,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionResetModel.triggered.connect(self._reset_model)
         self._model_connections()
 
-        ui.actionNewEmfDS.triggered.connect(self.newEmf)
+        ui.actionNewEmfDS.triggered.connect(self.ui.tab_main.add_emf)
         ui.actionNewSpecDS.triggered.connect(self.newSpectr)
         ui.actionNewNMRDS.triggered.connect(self.newNmr)
         ui.actionNewCalorimetryDS.triggered.connect(self.newCalor)

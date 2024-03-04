@@ -565,6 +565,7 @@ class ExternalDataWidget(QtWidgets.QWidget):
 class TitrationBaseWidget(QtWidgets.QWidget):
     def __init__(self, model):
         super().__init__()
+        self.name = None
         self.ui = ui_titration.Ui_Titration()
         self.ui.setupUi(self)
         self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags')
