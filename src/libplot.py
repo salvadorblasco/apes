@@ -131,7 +131,7 @@ class DragableLabel(QtCore.QObject):
         self.label.figure.canvas.mpl_disconnect(self.cidmotion)
 
 
-def make_labels(label_seed, P):
+def make_labels(label_seed, P, format_='latex'):
     '''This routine takes the names of the components (label_seed) and the matrix
     of stoichiometric coefficients and makes a list of species in equilibrium.
     For instance: if primary species are 'L' and 'H' and 'L' can take up to
@@ -142,6 +142,7 @@ def make_labels(label_seed, P):
         labels_seed (list): list of :class:`str` with the bases for making
             the labels.
         P (:class:`ndarray`): the stoichiometric coefficients.
+        format (str): how to output the labels. Accepted values are 'latex' or 'html'
 
     Returns:
         A list of strings with the constructed labels.
@@ -150,6 +151,8 @@ def make_labels(label_seed, P):
     # libaux.islist(label_seed)
     labels = []
     labels.extend(label_seed)
+    formats = {'latex': ("${}_{", "}$"), 'html': ("<sub>", "</sub>")}
+    ini, fin = formats[format_]
 
     for row in range(P.shape[0]):
         t = ""
@@ -160,7 +163,7 @@ def make_labels(label_seed, P):
                 t += label_seed[col]
             else:
                 t += label_seed[col]
-                t += "${}_{" + str(P[row, col]) + "}$"
+                t += ini + str(P[row, col]) + fin
         labels.append(t)
 
     return labels
@@ -185,7 +188,7 @@ def position_labels(x, y, window):
 
     libaux.assert_array_dim(1, x)
     libaux.assert_array_dim(2, y)
-    assert isinstance(window, tuple)
+    # assert isinstance(window, tuple)
     assert len(window) == 2 and len(window[0]) == 2 and len(window[1]) == 2
 
     x_min, x_max = window[0]

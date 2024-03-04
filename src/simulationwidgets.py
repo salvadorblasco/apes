@@ -116,9 +116,9 @@ class SimulationData(QtWidgets.QWidget):
     def set_free_concentration_error(self, c):
         self._freeconcentrationerrors = c
 
-    def extended_labels(self):
+    def extended_labels(self, format_):
         return libplot.make_labels(self.labels(),
-                                   np.array(self._model.stoich))
+                                   np.array(self._model.stoich), format_)
 
     def free_concentration_error(self):
         "The error in the :term:`free concentrations array`."
@@ -141,9 +141,9 @@ class SimulationData(QtWidgets.QWidget):
         'bool: whether the error will be plotted or not'
         return self._cbploterrors.isChecked()
 
-    def plot_labels(self):
+    def plot_labels(self, format_='latex'):
         ref = self.referencey()
-        all_labels = self.extended_labels()
+        all_labels = self.extended_labels(format_)
         if ref is not None and ref >= 0:
             n_comp = len(self._model.stoich[0])
             z = n_comp * [0]
