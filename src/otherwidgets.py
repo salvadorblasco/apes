@@ -568,22 +568,17 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.name = None
         self.ui = ui_titration.Ui_Titration()
         self.ui.setupUi(self)
-        self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags')
+        self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags', start=0)
         self._column_buret_flags = 4
         self._column_init_flags = 2
         n = model.number_components
         self.init_flags = [consts.RF_CONSTANT] * n
         self.buret_flags = [consts.RF_CONSTANT] * n
 
-    def buret(self):
-        """The buret values.
+    def is_titre_implicit(self):
+        return self.ui.dsb_Vf.isEnabled()
 
-        Returns:
-            tuple of floats containing the values of this parameter.
-        """
-        ctext = libqt.iter_column_text(self.ui.table_titration, col=self._cols.buret.value)
-        return tuple(float(b) for b in ctext)
-
+    @property
     def initial_amount(self):
         """The inital amount values in millimole.
 
@@ -593,19 +588,36 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         ctext = libqt.iter_column_text(self.ui.table_titration, col=self._cols.init.value)
         return tuple(float(b) for b in ctext)
 
-    def n_points(self):
-        return self.ui.sb_NPoints.value()
-
-    def set_initial_amount(self, initial_amount):
+    @initial_amount.setter
+    def initial_amount(self, initial_amount):
         """The initial amount values in millimole.
 
         Parameters:
             initial_amount (sequence of floats): the values for this parameter.
                 The length must be equal to the number of components.
         """
-        libqt.fill_column(self.ui.table_titration, col=self._cols.buret.value, data=initial_amount)
+        libqt.fill_column(self.ui.table_titration, col=self._cols.init.value, data=initial_amount)
 
-    def set_buret(self, buret):
+    @property
+    def n_points(self):
+        return self.ui.sb_NPoints.value()
+
+    @n_points.setter
+    def n_points(self, value):
+        return self.ui.sb_NPoints.setValue(value)
+
+    @property
+    def buret(self):
+        """The inital amount values in millimole.
+
+        Returns:
+            tuple of floats containing the values of this parameter.
+        """
+        ctext = libqt.iter_column_text(self.ui.table_titration, col=self._cols.buret.value)
+        return tuple(float(b) for b in ctext)
+
+    @buret.setter
+    def buret(self, buret):
         """Set the buret parameter.
 
         Parameters:
@@ -614,25 +626,36 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         """
         libqt.fill_column(self.ui.table_titration, data=buret, col=self._cols.buret.value)
 
+    @property
     def starting_volume(self):
         'The starting volume in mL.'
         return self.ui.dsb_V0.value()
 
-    def set_starting_volume(self, volume: float):
+    @starting_volume.setter
+    def starting_volume(self, volume: float):
         'Set the starting volume in mL.'
         assert isinstance(volume, float)
         self.ui.dsb_V0.setValue(volume)
 
+    @property
     def final_volume(self):
         'The value of the final titre in mL.'
         return self.ui.dsb_Vf.value()
 
-    def set_final_volume(self, volume: float):
+    @final_volume.setter
+    def final_volume(self, volume: float):
         'Set the final volume in mL.'
         assert isinstance(volume, float)
         # if volume > self.starting_volume():
         #     raise ValueError('Final volume must be bigger than start volume')
         self.ui.dsb_Vf.setValue(volume)
+
+    def set_labels(self, labels):
+        libqt.fill_column(self.ui.table_titration, data=labels, col=self._cols.label)
+
+    def set_volume_implicit(self, value: bool):
+        for widget in (self.ui.dsb_Vf, self.ui.sb_NPoints):
+            widget.setEnabled(value)
 
     def titre(self):
         """The titre values in mL.
@@ -640,7 +663,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         Yields:
             float: the value of the titre.
         """
-        yield from ((self.final_volume() - self.starting_volume())
+        yield from ((self.final_volume - self.starting_volume)
                     / self.n_points() * i for i in range(self.n_points()))
 
     def volume_increment(self):
@@ -670,3 +693,11 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         with libqt.table_locked(self.ui.table_titration):
             for row, widget in enumerate(flagwidgets):
                 self.ui.table_titration.setCellWidget(row, self._column_init_flags, widget)
+
+    @property
+    def volume_error(self):
+        return self.ui.dsb_Verror
+
+    @volume_error.setter
+    def volume_error(self, error: float):
+        self.ui.dsb_Verror.setValue(error)

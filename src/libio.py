@@ -14,6 +14,7 @@ import nmrwidget
 import otherwidgets
 import specwidget
 import simulationwidgets
+from excepts import DataFileException
 
 
 __version__ = 'dev'
@@ -23,10 +24,7 @@ def loadXML(app, f):
     """Load an XML file into application.
 
     Parameters:
-        calls (sequence of callables): Sequence of callables from the
-            MainWindow that allow this function to load data. It must
-            be (app.getModelWidget, app.newSpeciation, app.newTitration,
-            app.newEmf, app.newNMR, app.newSpectr, app.newCalor)
+        twidget (:class:`TabWidget`): 
         f (file or str): The file to read data from.
 
     .. warning:: This routine assumes that MainWindow in empty.
@@ -74,14 +72,15 @@ def loadXML(app, f):
 
     # kwargs = {'labels': labels, 'temperature': temperature}
     kwargs = {'models': {'labels': labels}}
+    tmain = app.ui.tab_main
 
     tags = ('models', 'distri', 'simu', 'potentiometricdata', 'nmrdata',
             'specdata', 'calordata', 'externaldata')
     loaders = (loadModelsXML, loadSpeciationXML, loadTitrationXML, loadEmfXML,
                loadNmrXML, loadSpectrXML, loadCalorXML, loadExternalXML)
-    callables = (app.newModel, app.newSpeciation, app.newTitration,
-                 app.newEmf, app.newNmr, app.newSpectr, app.newCalor,
-                 app.new_external_data)
+    callables = (tmain.add_model, tmain.add_speciation, tmain.add_titration,
+                 tmain.add_emf, tmain.add_nmr, tmain.add_spectrumuv,
+                 tmain.add_calor, tmain.add_external_data)
 
     for tag, call, loader in zip(tags, callables, loaders):
         for section in root.iter(tag):
@@ -353,6 +352,28 @@ def loadSpectrXML(widget, xmle):
     pass
 
 
+def loadTitrationBaseXML(widget, xmle):
+    """Load XML information into self.
+
+    Parameters:
+        xmle (:class:`xml.etree.ElementTree`): object with the XML info.
+    """
+    verr = float(xml.find('volumeerror').text)
+    init = __read_floats('init')
+    initk = __read_ints('initkey')
+    buret = __read_floats('buret')
+    buretk = __read_ints( 'buretkey')
+    vinit = float(xml.find('startingvolume').text)
+    vfinal = xmle.find('finalvolume')
+    npoints = xmle.find('totalpoints')
+    if vfinal is not None and npoints is not None:
+        widget.set_volume_implicit(True)
+        widget.final_volume = float(vfinal.text)
+        widget.n_points = int(npoints.text)
+    else:
+        widget.set_volume_implicit(False)
+
+
 def loadTitrationXML(widget, xmle):
     """Load XML information into self.
 
@@ -446,10 +467,10 @@ def saveModelXML(model):
     faux('p', itertools.chain(*model.stoich))
     faux('key', model.const_flags)
 
-    if model.enthalpy is not None:
-        faux('enthalpy', model.enthalpy)
-        faux('enthalpy_error', model.enthalpy_error)
-        faux('enthalpy_key', model.enthalpy_flags)
+    # if model.enthalpy is not None:
+    #     faux('enthalpy', model.enthalpy)
+    #     faux('enthalpy_error', model.enthalpy_error)
+    #     faux('enthalpy_key', model.enthalpy_flags)
 
     return tm
 
@@ -588,6 +609,30 @@ def saveSpectrXML(widget, xmle):
     raise NotImplementedError
 
 
+def saveTitrationBaseXML(widget):
+    """Save titration data into an XML object
+
+    returns an :class:`xml.etree.ElementTree` with the information of
+    this :class:`data.SpeciationData` to be saved.
+
+    Parameters:
+        widget (:class:`otherwidgets.TitrationBaseWidget`): The widget to
+            get the data from.
+    Returns:
+        :class:`xml.etree.ElementTree.Element`: the XML object.
+    """
+    xmle = ET.Element('titration', {'name': widget.name})
+    ET.SubElement(xmle, 'init', {'unit': 'mmol'}).text = j(xmle.initial_amount)
+    ET.SubElement(xmle, 'initkey').text = j(xmle.init_flags)
+    ET.SubElement(xmle, 'buret', {'unit': 'mmol/mL'}).text = j(xmle.buret)
+    ET.SubElement(xmle, 'buretkey').text = j(xmle.buret_flags)
+    ET.SubElement(xmle, 'volumeerror').text = str(xmle.volume_error)
+    ET.SubElement(xmle, 'startingvolume', {'unit':'mL'}).text = str(xmle.starting_volume)
+    if xmlw.is_titre_implicit():
+        ET.SubElement(xmle, 'finalvolume', {'unit':'mL'}).text = str(xmle.final_volume)
+        ET.SubElement(xmle, 'totalpoints').text = str(xmle.n_points())
+
+
 def saveTitrationXML(widget):
     """Save titration data into an XML object
 
@@ -676,23 +721,27 @@ def importSuperquadApp(app, filename):
     data = importSuperquad(filename)
     app.title = next(data)
     _ = next(data)    # control numbers (unused)
-    app.modelwidget.labels = list(next(data))
+    model = app.ui.tab_main.add_model()
+    model.labels = list(next(data))
     app.temperature = next(data)
     logB = next(data)
 
-    model = modelwidget.ModelData()
-    model.name = 'model #0'
-    model.const = logB
-    model.stoich = next(data)
-    model.const_flags = next(data)
-    model.const_error = len(logB)*[0.0]
+    model.clear()
+    modeldata = model.newModel()
+    modeldata.name = 'model #0'
+    modeldata.const = logB
+    modeldata.stoich = next(data)
+    modeldata.const_flags = next(data)
+    modeldata.const_error = len(logB)*[0.0]
 
-    app.modelwidget.clear()
-    app.modelwidget.append(model)
-    app.modelwidget.setCurrentModel(0)
+    # model.append(model)
+    model.setCurrentModel(0)
 
     for emfd in data:
-        widget = app.newEmf()
+        titr_widget = app.ui.tab_main.add_titrationbase()
+        titr_widget.set_volume_implicit(False)
+        titr_widget.set_labels(model.labels)
+        data_widget = app.ui.tab_main.add_emf()
 
         # cascade unpacking
         amounts, electr, dataset = emfd
@@ -700,16 +749,16 @@ def importSuperquadApp(app, filename):
         V0, errV, n, hindex, emf0, erremf0 = electr
         V, emf = dataset
 
-        widget.starting_volume = V0
-        widget.volume_error = errV
-        widget.initial_amount = t0
-        widget.buret = buret
-        widget.emf0 = emf0
-        widget.emf0_error = erremf0
-        widget.nelectrons = (n,)
-        widget.active_species = order.index(hindex)
-        widget.emf = emf
-        widget.titre = V
+        titr_widget.starting_volume = V0
+        titr_widget.volume_error = errV
+        titr_widget.initial_amount = t0
+        titr_widget.buret = buret
+        data_widget.emf0 = emf0
+        data_widget.emf0_error = erremf0
+        data_widget.nelectrons = (n,)
+        data_widget.active_species = order.index(hindex)
+        data_widget.emf = emf
+        data_widget.titre = V
 
 
 def importSuperquad(filename):
@@ -1087,3 +1136,11 @@ def _bool(x):
 
 def _abool(x):
     return 'yes' if x else 'no'
+
+
+def __read_floats(xmle, tag):
+    return map(float, xmle.find(tag).text.split())
+
+
+def __read_ints(xmle, tag):
+    return map(int, xmle.find(tag).text.split())

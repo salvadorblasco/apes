@@ -59,3 +59,7 @@ class TooManyIterations(NotConvergenceException):
 
 class UnstableIteration(NotConvergenceException):
     """When iteration is unstable and must be stopped."""
+
+
+class DataFileException(Exception):
+    "An error ocurred while reading a data file."

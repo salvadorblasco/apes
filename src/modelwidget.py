@@ -59,25 +59,25 @@ class ModelWidget(QtWidgets.QWidget):
 
         self.setCurrentModel(0)     # must be after connections
 
-    # TODO REMOVE
-    def addCalorimetry(self):
-        '''Add calorimetry to the model.
+    # # TODO REMOVE
+    # def addCalorimetry(self):
+    #     '''Add calorimetry to the model.
 
-        If calorimetry is already present, it does nothing.
-        '''
-        # if self.__iscalori:
-        if self.__iscalori:
-            return
-        self.ui.table_model.setColumnCount(self.number_components + 8)
-        self.__iscalori = True
-        self.enthalpy = self.number_equilibria*[0.0]
-        self.enthalpy_error = self.number_equilibria*[0.0]
-        self.enthalpy_flags = self.number_equilibria*[consts.RF_REFINE]
-        self.__set_horizontal_headers()
-        self.updateEnthropy()
+    #     If calorimetry is already present, it does nothing.
+    #     '''
+    #     # if self.__iscalori:
+    #     if self.__iscalori:
+    #         return
+    #     self.ui.table_model.setColumnCount(self.number_components + 8)
+    #     self.__iscalori = True
+    #     self.enthalpy = self.number_equilibria*[0.0]
+    #     self.enthalpy_error = self.number_equilibria*[0.0]
+    #     self.enthalpy_flags = self.number_equilibria*[consts.RF_REFINE]
+    #     self.__set_horizontal_headers()
+    #     self.updateEnthropy()
 
-        # current_index = self.__models.index(self.__currentmodel)
-        # self.setCurrentModel(modelindex=current_index)
+    #     # current_index = self.__models.index(self.__currentmodel)
+    #     # self.setCurrentModel(modelindex=current_index)
 
     def addEquilibrium(self, position=None):
         '''Add new equilibrium.
@@ -158,7 +158,6 @@ class ModelWidget(QtWidgets.QWidget):
             for col in range(self.ui.table_model.columnCount()):
                 self.__setdefaults(row, col)
 
-
     def current_model(self):
         """The current model.
 
@@ -183,29 +182,29 @@ class ModelWidget(QtWidgets.QWidget):
         # print("len1 = ", len(self))
         return newmodel
 
-    # TODO REMOVE
-    def isCalori(self):
-        'Whether calorimetry data are present in the model.'
-        # breakpoint()
-        return self.__iscalori
+    # # TODO REMOVE
+    # def isCalori(self):
+    #     'Whether calorimetry data are present in the model.'
+    #     # breakpoint()
+    #     return self.__iscalori
 
-    # TODO REMOVE
-    def removeCalorimetry(self):
-        '''Delete calorimetry from the model.
+    # # TODO REMOVE
+    # def removeCalorimetry(self):
+    #     '''Delete calorimetry from the model.
 
-        If no calorimetry data is present, exits silently. If there is, data
-        will be deleted.
+    #     If no calorimetry data is present, exits silently. If there is, data
+    #     will be deleted.
 
-        .. note:: Use with care, can cause data loss.
-            '''
-        if not self.__iscalori:
-            return
-        self.__iscalori = False
-        # self.__rewritemodels()
-        # TODO replace with current model index
-        # self.setCurrentModel(0)
-        current_index = self.__models.index(self.__currentmodel)
-        self.setCurrentModel(modelindex=current_index)
+    #     .. note:: Use with care, can cause data loss.
+    #         '''
+    #     if not self.__iscalori:
+    #         return
+    #     self.__iscalori = False
+    #     # self.__rewritemodels()
+    #     # TODO replace with current model index
+    #     # self.setCurrentModel(0)
+    #     current_index = self.__models.index(self.__currentmodel)
+    #     self.setCurrentModel(modelindex=current_index)
 
     def removeEquilibrium(self, position=None, confirm=True):
         '''Remove one beta from current model.
@@ -285,9 +284,9 @@ class ModelWidget(QtWidgets.QWidget):
         self.__currentmodel = model
         columns = model.n_species + 3
         # if model.enthalpy is not None:
-        if self.isCalori():
-            columns += 5
-            # self.__iscalori = True
+        # if self.isCalori():
+        #     columns += 5
+        #     # self.__iscalori = True
         rows = model.n_equil
         table = self.ui.table_model
         with libqt.table_locked(self.ui.table_model):
@@ -301,11 +300,11 @@ class ModelWidget(QtWidgets.QWidget):
         self.beta_raw = model.const
         self.beta_error = model.const_error
 
-        if self.__iscalori:
-            self.enthalpy = model.enthalpy
-            self.enthalpy_flags = model.enthalpy_flags
-            self.enthalpy_error = model.enthalpy_error
-            self.updateEnthropy()
+        # if self.__iscalori:
+        #     self.enthalpy = model.enthalpy
+        #     self.enthalpy_flags = model.enthalpy_flags
+        #     self.enthalpy_error = model.enthalpy_error
+        #     self.updateEnthropy()
 
     def beta_update(self, new_beta):
         raise DeprecationWarning
@@ -316,31 +315,31 @@ class ModelWidget(QtWidgets.QWidget):
                 cell.setText(str(beta))
 
     # TODO REMOVE
-    def updateEnthropy(self):
-        'Calculate enthropy as well and update table.'
-        def pack(c):
-            return (float(i) for i in libqt.iter_column_text(self.ui.table_model, c))
+    # def updateEnthropy(self):
+    #     'Calculate enthropy as well and update table.'
+    #     def pack(c):
+    #         return (float(i) for i in libqt.iter_column_text(self.ui.table_model, c))
 
-        beta = pack(self.column_beta)
-        ebeta = pack(self.column_betaerror)
-        enthalpy = pack(self.column_enthalpy)
-        eenthalpy = pack(self.column_enthalpyerror)
+    #     beta = pack(self.column_beta)
+    #     ebeta = pack(self.column_betaerror)
+    #     enthalpy = pack(self.column_enthalpy)
+    #     eenthalpy = pack(self.column_enthalpyerror)
 
-        # R = 8.314472  # gas constant(J ∕ (K⋅mol))
-        # TΔS = ΔH + RTlogβ
-        entropy = (h/self._temperature + consts.R*consts.LOGK*b
-                   for h, b in zip(enthalpy, beta))
-        with libqt.table_locked(self.ui.table_model):
-            libqt.fill_column(self.ui.table_model, self.column_enthropy, entropy)
+    #     # R = 8.314472  # gas constant(J ∕ (K⋅mol))
+    #     # TΔS = ΔH + RTlogβ
+    #     entropy = (h/self._temperature + consts.R*consts.LOGK*b
+    #                for h, b in zip(enthalpy, beta))
+    #     with libqt.table_locked(self.ui.table_model):
+    #         libqt.fill_column(self.ui.table_model, self.column_enthropy, entropy)
 
-        # R = 8.314472  # gas constant(J / (K⋅mol))
-        elnB = (consts.LOGK*i for i in ebeta)
-        # e²(ΔS) = e²(ΔH)/T + R e²(logβ)
-        eS = ((eh**2/self._temperature + consts.R*elnb**2)**0.5
-              for eh, elnb in zip(eenthalpy, elnB))
-        with libqt.table_locked(self.ui.table_model):
-            libqt.fill_column(self.ui.table_model, self.column_enthropyerror,
-                              eS)
+    #     # R = 8.314472  # gas constant(J / (K⋅mol))
+    #     elnB = (consts.LOGK*i for i in ebeta)
+    #     # e²(ΔS) = e²(ΔH)/T + R e²(logβ)
+    #     eS = ((eh**2/self._temperature + consts.R*elnb**2)**0.5
+    #           for eh, elnb in zip(eenthalpy, elnB))
+    #     with libqt.table_locked(self.ui.table_model):
+    #         libqt.fill_column(self.ui.table_model, self.column_enthropyerror,
+    #                           eS)
 
     def updateLabel(self, position, new_label):
         "Slot for when a label changes"
@@ -426,109 +425,109 @@ class ModelWidget(QtWidgets.QWidget):
         'The column where the beta flags are suposed to be.'
         return 2 + self.number_components
 
-    # TODO REMOVE
-    @property
-    def column_enthalpy(self) -> int:
-        'Column index for the enthalpy error.'
-        return 3 + self.number_components if self.__iscalori else None
+    # # TODO REMOVE
+    # @property
+    # def column_enthalpy(self) -> int:
+    #     'Column index for the enthalpy error.'
+    #     return 3 + self.number_components if self.__iscalori else None
 
-    # TODO REMOVE
-    @property
-    def column_enthalpyerror(self) -> int:
-        'Column index for the enthalpy error.'
-        return 4 + self.number_components if self.__iscalori else None
+    # # TODO REMOVE
+    # @property
+    # def column_enthalpyerror(self) -> int:
+    #     'Column index for the enthalpy error.'
+    #     return 4 + self.number_components if self.__iscalori else None
 
-    # TODO REMOVE
-    @property
-    def column_enthalpyflag(self) -> int:
-        'Column index for the enthalpy flag.'
-        return 5 + self.number_components if self.__iscalori else None
+    # # TODO REMOVE
+    # @property
+    # def column_enthalpyflag(self) -> int:
+    #     'Column index for the enthalpy flag.'
+    #     return 5 + self.number_components if self.__iscalori else None
 
-    # TODO REMOVE
-    @property
-    def column_enthropy(self) -> int:
-        'Column index for the entropy.'
-        return 6 + self.number_components if self.__iscalori else None
+    # # TODO REMOVE
+    # @property
+    # def column_enthropy(self) -> int:
+    #     'Column index for the entropy.'
+    #     return 6 + self.number_components if self.__iscalori else None
 
-    # TODO REMOVE
-    @property
-    def column_enthropyerror(self) -> int:
-        'Column index for the entropy error.'
-        return 7 + self.number_components if self.__iscalori else None
+    # # TODO REMOVE
+    # @property
+    # def column_enthropyerror(self) -> int:
+    #     'Column index for the entropy error.'
+    #     return 7 + self.number_components if self.__iscalori else None
 
-    # TODO REMOVE
-    @property
-    def enthalpy(self):
-        'The enthalpy value in kJ.'
-        if not self.isCalori():
-            return None
-        return tuple(self.__retcolcal(self.column_enthalpy))
+    # # TODO REMOVE
+    # @property
+    # def enthalpy(self):
+    #     'The enthalpy value in kJ.'
+    #     if not self.isCalori():
+    #         return None
+    #     return tuple(self.__retcolcal(self.column_enthalpy))
 
-    # TODO REMOVE
-    @enthalpy.setter
-    def enthalpy(self, value):
-        if not self.isCalori():
-            self.addCalorimetry()
-        with libqt.table_locked(self.ui.table_model):
-            libqt.fill_column(self.ui.table_model, self.column_enthalpy, value)
+    # # TODO REMOVE
+    # @enthalpy.setter
+    # def enthalpy(self, value):
+    #     if not self.isCalori():
+    #         self.addCalorimetry()
+    #     with libqt.table_locked(self.ui.table_model):
+    #         libqt.fill_column(self.ui.table_model, self.column_enthalpy, value)
 
-    # TODO REMOVE
-    @property
-    def enthalpy_error(self):
-        'Error asociated to the enthalpy.'
-        if not self.isCalori():
-            return None
-        return tuple(self.__retcolcal(self.column_enthalpyerror))
+    # # TODO REMOVE
+    # @property
+    # def enthalpy_error(self):
+    #     'Error asociated to the enthalpy.'
+    #     if not self.isCalori():
+    #         return None
+    #     return tuple(self.__retcolcal(self.column_enthalpyerror))
 
-    # TODO REMOVE
-    @enthalpy_error.setter
-    def enthalpy_error(self, value):
-        with libqt.table_locked(self.ui.table_model):
-            libqt.fill_column(self.ui.table_model, self.column_enthalpyerror,
-                              value)
+    # # TODO REMOVE
+    # @enthalpy_error.setter
+    # def enthalpy_error(self, value):
+    #     with libqt.table_locked(self.ui.table_model):
+    #         libqt.fill_column(self.ui.table_model, self.column_enthalpyerror,
+    #                           value)
 
-    # TODO REMOVE
-    @property
-    def enthalpy_flags(self):
-        'The refinement flags for the :term:`equilibrium constants array`.'
-        if not self.isCalori():
-            return None
-        indices = libqt.iter_column_comboindex(self.ui.table_model,
-                                               self.column_enthalpyflag)
-        iterable = (item for item, use
-                    in zip(indices, self.__isrowignored()) if use)
-        return tuple(iterable)
+    # # TODO REMOVE
+    # @property
+    # def enthalpy_flags(self):
+    #     'The refinement flags for the :term:`equilibrium constants array`.'
+    #     if not self.isCalori():
+    #         return None
+    #     indices = libqt.iter_column_comboindex(self.ui.table_model,
+    #                                            self.column_enthalpyflag)
+    #     iterable = (item for item, use
+    #                 in zip(indices, self.__isrowignored()) if use)
+    #     return tuple(iterable)
 
-    # TODO REMOVE
-    @enthalpy_flags.setter
-    def enthalpy_flags(self, flags):
-        hflagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag)
-                        for flag in flags)
-        with libqt.table_locked(self.ui.table_model):
-            for row, widget in enumerate(hflagwidgets):
-                self.ui.table_model.setCellWidget(row,
-                                                  self.column_enthalpyflag,
-                                                  widget)
+    # # TODO REMOVE
+    # @enthalpy_flags.setter
+    # def enthalpy_flags(self, flags):
+    #     hflagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag)
+    #                     for flag in flags)
+    #     with libqt.table_locked(self.ui.table_model):
+    #         for row, widget in enumerate(hflagwidgets):
+    #             self.ui.table_model.setCellWidget(row,
+    #                                               self.column_enthalpyflag,
+    #                                               widget)
 
-    # TODO REMOVE
-    @property
-    def enthropy(self):
-        'The enthropy of the system in ΔS units.'
-        if not self.isCalori():
-            return None
-        return tuple(self.__retcolcal(self.column_enthropy))
+    # # TODO REMOVE
+    # @property
+    # def enthropy(self):
+    #     'The enthropy of the system in ΔS units.'
+    #     if not self.isCalori():
+    #         return None
+    #     return tuple(self.__retcolcal(self.column_enthropy))
 
-    # TODO REMOVE
-    @property
-    def enthropy_error(self):
-        "Error of enthropy of the system in ΔS units."
-        if not self.isCalori():
-            return None
-        return tuple(self.__retcolcal(self.column_enthropyerror))
+    # # TODO REMOVE
+    # @property
+    # def enthropy_error(self):
+    #     "Error of enthropy of the system in ΔS units."
+    #     if not self.isCalori():
+    #         return None
+    #     return tuple(self.__retcolcal(self.column_enthropyerror))
 
-    def _check_calori(self):
-        if not self.__iscalori:
-            raise RuntimeError('No calorimetry data available')
+    # def _check_calori(self):
+    #     if not self.__iscalori:
+    #         raise RuntimeError('No calorimetry data available')
 
     @property
     def labels(self):
@@ -546,8 +545,8 @@ class ModelWidget(QtWidgets.QWidget):
                 columns += 5
             self.ui.table_model.setColumnCount(columns)
         header_labels = labels + ['Value', 'Error', 'Flag']
-        if self.isCalori():
-            header_labels.extend(('ΔH', 'ΔH flag', 'err ΔH', 'ΔS', 'err ΔS'))
+        # if self.isCalori():
+        #     header_labels.extend(('ΔH', 'ΔH flag', 'err ΔH', 'ΔS', 'err ΔS'))
         self.ui.table_model.setHorizontalHeaderLabels(header_labels)
         self.__labels = labels
 
@@ -633,9 +632,9 @@ class ModelWidget(QtWidgets.QWidget):
         cmod.stoich = self.stoich
         cmod.const_flags = self.beta_flags
         cmod.const_error = self.beta_error
-        cmod.enthalpy = self.enthalpy
-        cmod.enthalpy_error = self.enthalpy_error
-        cmod.enthalpy_flags = self.enthalpy_flags
+        # cmod.enthalpy = self.enthalpy
+        # cmod.enthalpy_error = self.enthalpy_error
+        # cmod.enthalpy_flags = self.enthalpy_flags
 
     def __isrowignored(self):
         "Bools listing whether row is to be used (True) or ignored (False)."
@@ -693,17 +692,11 @@ class ModelWidget(QtWidgets.QWidget):
         if col < self.number_components:
             table.setItem(row, self.column_stoich + col,
                           QtWidgets.QTableWidgetItem('0'))
-        elif col in (self.column_beta,
-                     self.column_betaerror,
-                     self.column_enthalpy,
-                     self.column_enthalpyerror,
-                     self.column_enthropy,
-                     self.column_enthropyerror):
+        elif col in (self.column_beta, self.column_betaerror):
             table.setItem(row, col,
                           QtWidgets.QTableWidgetItem('0.0000'))
-        elif col in (self.column_betaflags, self.column_enthalpyflag):
-            table.setCellWidget(row, col,
-                                libqt.create_combo(consts.REFINE_LABELS, 1))
+        elif col == self.column_betaflags:
+            table.setCellWidget(row, col, libqt.create_combo(consts.REFINE_LABELS, 1))
 
     def __set_horizontal_headers(self):
         header_labels = self.ui.table_model.columnCount() * [None]
@@ -711,12 +704,12 @@ class ModelWidget(QtWidgets.QWidget):
         header_labels[self.column_betaerror] = 'Error'
         header_labels[:self.number_components] = self.__labels
         header_labels[self.column_betaflags] = 'Flag'
-        if self.isCalori():
-            header_labels[self.column_enthalpy] = 'ΔH'
-            header_labels[self.column_enthalpyflag] = 'ΔH flag'
-            header_labels[self.column_enthalpyerror] = 'err ΔH'
-            header_labels[self.column_enthropy] = 'ΔS'
-            header_labels[self.column_enthropyerror] = 'err ΔS'
+        # if self.isCalori():
+        #     header_labels[self.column_enthalpy] = 'ΔH'
+        #     header_labels[self.column_enthalpyflag] = 'ΔH flag'
+        #     header_labels[self.column_enthalpyerror] = 'err ΔH'
+        #     header_labels[self.column_enthropy] = 'ΔS'
+        #     header_labels[self.column_enthropyerror] = 'err ΔS'
         self.ui.table_model.setHorizontalHeaderLabels(header_labels)
 
     def __srange(self):
@@ -803,18 +796,18 @@ class SolidModelWidget(QtWidgets.QWidget):
         self.__parent_model = parent_model
 
 
-class CalorModelWidget(QtWidgets.QWidget):
-    '''Calorimetry model.
-
-    This class contains and manages the data corresponding to a model,
-    namely the equilibrium constants, the stoichiometric coefficients and
-    other.
-    '''
-
-    def __init__(self):
-        super().__init__()
-        self.ui = ui_model.Ui_ModelWidget()
-        self.ui.setupUi(self)
+# class CalorModelWidget(QtWidgets.QWidget):
+#     '''Calorimetry model.
+# 
+#     This class contains and manages the data corresponding to a model,
+#     namely the equilibrium constants, the stoichiometric coefficients and
+#     other.
+#     '''
+# 
+#     def __init__(self):
+#         super().__init__()
+#         self.ui = ui_model.Ui_ModelWidget()
+#         self.ui.setupUi(self)
 
 
 def _evaluate(item, itype):

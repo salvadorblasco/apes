@@ -40,6 +40,11 @@ class TabWidget(QtWidgets.QTabWidget):
         name = self.__stamp(widget, "Ionic Strength")
         return widget
 
+    def add_nmr(self):
+        widget = NmrWidget(self._model)
+        name = self.__stamp(widget, "NMR")
+        return widget
+
     def add_model(self):
         if self._model is None:
             widget = ModelWidget()
@@ -57,6 +62,11 @@ class TabWidget(QtWidgets.QTabWidget):
     def add_spectrumuv(self):
         widget = SpecWidget(self._model)
         name = self.__stamp(widget, "UV-vis")
+        return widget
+
+    def add_titration(self):
+        widget = TitrationWidget(self._model)
+        name = self.__stamp(widget, "Titration Simulation")
         return widget
 
     def add_titrationbase(self):
@@ -124,8 +134,9 @@ class TabWidget(QtWidgets.QTabWidget):
 
     @QtCore.pyqtSlot(object, str)
     def __titration_changed(self, widget, txt):
-        print("slot activated: ", widget, txt)
+        # print("slot activated: ", widget, txt)
         titration = self.__tabdicts[txt]
-        titre = titration.titre()
-        widget.npoints = titration.n_points()
-        widget.titre = titre
+        if titration.is_titre_implicit():
+            titre = titration.titre()
+            widget.npoints = titration.n_points()
+            widget.titre = titre

@@ -80,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/znedta.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/kk.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
-        # _debug_fname_ = '../data/phosphate.xml'
+        _debug_fname_ = '../data/phosphate.xml'
         # _debug_fname_ = '../data/hdtc.xml'
         # _debug_fname_ = '../data/hpytren4q.xml'
         # _debug_fname_ = '../data/distri_cudtc.xml'
@@ -94,9 +94,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.newTitration()
         # self.newSpeciation()
         # self.newSpectr()
-        self.ui.tab_main.add_titrationbase()
-        self.ui.tab_main.add_titrationbase()
-        self.ui.tab_main.add_emf()
+        # t1 = self.ui.tab_main.add_titrationbase()
+        # t1.set_volume_explicit(False)
+        # self.ui.tab_main.add_titrationbase()
+        # self.ui.tab_main.add_emf()
         # self.ui.tab_main.add_spectrumuv()
         # self.ui.tab_main.add_calor()
         # self.ui.tab_main.add_ionic()
@@ -105,6 +106,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
+        libio.importSuperquadApp(self, '../data/hpytren1.sup')
         # END TESTING PART
 
     def go(self):
