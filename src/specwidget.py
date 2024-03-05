@@ -29,6 +29,8 @@ class SpecWidget(datawidget.DataWidget):
         #  self.table_data.setObjectName("tab_data")
         #  # TODO use model to reshape table
 
+        self.ui.cb_titration.currentIndexChanged.connect(super()._DataWidget__titration_changed)
+
         #  self.table_data.setRowCount(model.number_components+1)
         #  self.table_data.setColumnCount(2)
         #  labels = list(model.labels)

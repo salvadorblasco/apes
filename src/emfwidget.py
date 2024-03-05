@@ -23,6 +23,7 @@ class EmfWidget(datawidget.DataWidget):
     The data is encapsulated in three tables: (1) table_titration,
     (2) table_params and (3) table_data.
     """
+
     def __init__(self, model):
         """Initiate widget."""
         super().__init__(model)
@@ -55,6 +56,8 @@ class EmfWidget(datawidget.DataWidget):
         # self._buildmenu()
         # self.ui.table_data.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         # self.ui.table_data.customContextMenuRequested.connect(self._pmtd)
+
+        self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
     def add_component(self, label, position=-1):
         table = self.ui.table_titration
@@ -303,6 +306,10 @@ class EmfWidget(datawidget.DataWidget):
         'Number of points in the data set.'
         return self.ui.table_data.rowCount()
 
+    @npoints.setter
+    def npoints(self, number: int):
+        self.ui.table_data.setRowCount(number)
+
     @property
     def name(self):
         'The title for this set.'
@@ -362,6 +369,9 @@ class EmfWidget(datawidget.DataWidget):
             lbls2 = ['titre'] + ['emf({})'.format(i) for i in range(nelectrs)]
             self.ui.table_params.setHorizontalHeaderLabels(lbls1)
             self.ui.table_data.setHorizontalHeaderLabels(lbls2)
+
+    # def __titration_changed(self, index):
+    #     self.titrationChanged.emit(self, index)
 
     def _newlectrode(self):
         nels = self.nelectrodes

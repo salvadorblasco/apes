@@ -72,7 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.newSpeciation()
         # self.ui.tab_main.clear()
         # _debug_fname_ = '../data/hcit1.xml'
-        _debug_fname_ = '../data/cuimpy33333_.xml'
+        # _debug_fname_ = '../data/cuimpy33333_.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
@@ -95,10 +95,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.newSpeciation()
         # self.newSpectr()
         self.ui.tab_main.add_titrationbase()
+        self.ui.tab_main.add_titrationbase()
         self.ui.tab_main.add_emf()
-        self.ui.tab_main.add_spectrumuv()
-        self.ui.tab_main.add_calor()
-        self.ui.tab_main.add_ionic()
+        # self.ui.tab_main.add_spectrumuv()
+        # self.ui.tab_main.add_calor()
+        # self.ui.tab_main.add_ionic()
         # self.go()
         # self._manual_fitting()
         # self.refresh()

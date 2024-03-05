@@ -19,6 +19,7 @@ class DataWidget(QtGui.QWidget):
         labelsChanged: when the user changes manually a label
     '''
     # labelsChanged = QtCore.pyqtSignal(int, str)
+    titrationChanged = QtCore.pyqtSignal(object, str)
 
     def __init__(self, model):
         super().__init__()
@@ -33,6 +34,10 @@ class DataWidget(QtGui.QWidget):
         self._freeconcentration = None
         # self.__totalconc = None
         self._buildmenu()
+
+    def __titration_changed(self, txt):
+        # print("signal emitted", self, index)
+        self.titrationChanged.emit(self, txt)
 
     def calc_freec(self, altbeta=None, altstoich=None):
         beta = 10**np.array(self._model.beta if altbeta is None else altbeta)

@@ -593,6 +593,9 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         ctext = libqt.iter_column_text(self.ui.table_titration, col=self._cols.init.value)
         return tuple(float(b) for b in ctext)
 
+    def n_points(self):
+        return self.ui.sb_NPoints.value()
+
     def set_initial_amount(self, initial_amount):
         """The initial amount values in millimole.
 

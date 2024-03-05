@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>438</width>
-    <height>407</height>
+    <width>585</width>
+    <height>376</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Titration</string>
        </property>
@@ -29,100 +35,75 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Optically active components</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QScrollArea" name="colored_input">
+    <widget class="QSplitter" name="splitter">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="widgetResizable">
-      <bool>true</bool>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>418</width>
-        <height>73</height>
-       </rect>
-      </property>
+     <widget class="QTableWidget" name="table_components">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <widget class="QCheckBox" name="checkBox">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>26</y>
-         <width>87</width>
-         <height>21</height>
-        </rect>
-       </property>
+      <row>
        <property name="text">
-        <string>CheckBox</string>
+        <string>coloured</string>
        </property>
-      </widget>
+      </row>
+      <row>
+       <property name="text">
+        <string>280</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>H</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>L</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>HL</string>
+       </property>
+      </column>
      </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTableWidget" name="table_data">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>1</verstretch>
-      </sizepolicy>
-     </property>
-     <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>80</number>
-     </attribute>
-     <row>
-      <property name="text">
-       <string>L</string>
+     <widget class="QTableWidget" name="table_data">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
       </property>
-     </row>
-     <row>
-      <property name="text">
-       <string>H</string>
-      </property>
-     </row>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>λ</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </column>
-     <item row="2" column="0">
-      <property name="text">
-       <string>220.0</string>
-      </property>
-     </item>
-     <item row="2" column="1">
-      <property name="text">
-       <string>0.12344</string>
-      </property>
-     </item>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>80</number>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>280</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string>0.12344</string>
+       </property>
+      </item>
+     </widget>
     </widget>
    </item>
   </layout>

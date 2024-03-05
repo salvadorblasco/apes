@@ -33,6 +33,7 @@ class CalorWidget(datawidget.DataWidget):
         self.ui = ui_calords.Ui_CalorWidget()
         self.ui.setupUi(self)
         self._connectMenu(self.ui.table_data)
+        self.ui.cb_titration.currentIndexChanged.connect(super()._DataWidget__titration_changed)
 
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position: int, new_label: str):
