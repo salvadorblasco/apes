@@ -35,18 +35,38 @@ class CalorWidget(datawidget.DataWidget):
         self.ui = ui_calords.Ui_CalorWidget()
         self.ui.setupUi(self)
         self._cols = enum.IntEnum('col', 'label enthalpy enthalpy_flag entropy', start=0)
+        self.__default_value = '0.0000'
 
         self.ui.table_titration.setRowCount(model.number_components)
         for n, l in enumerate(model.labels):
             self.updateLabel(n, l)
-            self.ui.table_titration.setItem(n, 1, QtWidgets.QTableWidgetItem('0.000'))
-            self.ui.table_titration.setItem(n, 3, QtWidgets.QTableWidgetItem('0.000'))
+            self.ui.table_titration.setItem(n, 1, QtWidgets.QTableWidgetItem(self.__default_value))
+            self.ui.table_titration.setItem(n, 3, QtWidgets.QTableWidgetItem(self.__default_value))
         self.enthalpy_flags = [consts.RF_REFINE]*model.number_components
         libqt.freeze_column(self.ui.table_titration, 0)
         libqt.freeze_column(self.ui.table_titration, 3)
 
+        model.componentAdded.connect(self.componentAdded)
         self._connectMenu(self.ui.table_data)
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
+
+    @QtCore.pyqtSlot(int, str)
+    def componentAdded(self, which, label):
+        with libqt.table_locked(self.ui.table_titration) as t:
+            t.insertRow(which)
+            tw = QtWidgets.QTableWidgetItem(label)
+            tw.setFlags(QtCore.Qt.ItemIsSelectable)
+            self.ui.table_titration.setItem(which, self._cols.label, tw)
+
+            tw = QtWidgets.QTableWidgetItem(self.__default_value)
+            t.setItem(which, self._cols.enthalpy, tw)
+
+            tw = QtWidgets.QTableWidgetItem(self.__default_value)
+            tw.setFlags(QtCore.Qt.ItemIsSelectable)
+            t.setItem(which, self._cols.entropy, tw)
+
+            combo1 = libqt.create_combo(consts.REFINE_LABELS, consts.RF_CONSTANT)
+            t.setCellWidget(which, self._cols.enthalpy_flag, combo1)
 
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position: int, new_label: str):

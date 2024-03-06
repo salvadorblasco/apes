@@ -36,6 +36,7 @@ class ModelWidget(QtWidgets.QWidget):
     labelsChanged = QtCore.pyqtSignal(int, str)
     componentAdded = QtCore.pyqtSignal(int, str)
     componentDeleted = QtCore.pyqtSignal(int)
+    equilibriaChanged = QtCore.pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -106,6 +107,7 @@ class ModelWidget(QtWidgets.QWidget):
                     table.setItem(position, col, QtWidgets.QTableWidgetItem(f'{error:.4f}'))
                 elif col == self.column_betaflags:
                     table.setCellWidget(position, col, libqt.create_combo(consts.REFINE_LABELS, flag))
+        self.equilibriaChanged.emit()
 
     def addComponent(self, label, position=None):
         '''Add one reagent.

@@ -32,6 +32,8 @@ class SpecWidget(datawidget.DataWidget):
         self._populate_checkboxes()
         self.labels_changed()
         model.labelsChanged.connect(self.updateLabel)
+        model.componentAdded.connect(self.componentAdded)
+        model.equilibriaChanged.connect(self.labels_changed)
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
         #  self.table_data.setRowCount(model.number_components+1)
@@ -201,6 +203,10 @@ class SpecWidget(datawidget.DataWidget):
         with libqt.table_locked(self.ui.table_components) as t:
             self.__change_columns(len(extended_labels))
             t.setHorizontalHeaderLabels(extended_labels)
+
+    @QtCore.pyqtSlot(int, str)
+    def componentAdded(self, which, label):
+        self.labels_changed()       # change all
 
     def _cchch(self, c):
         c.setText("coloured" if c.isChecked() else "transparent")

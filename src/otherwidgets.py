@@ -578,6 +578,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.set_labels(model.labels)
         libqt.freeze_column(self.ui.table_titration, 0)
         model.labelsChanged.connect(self.updateLabel)
+        model.componentAdded.connect(self.componentAdded)
 
     def is_titre_implicit(self):
         return self.ui.dsb_Vf.isEnabled()
@@ -712,3 +713,28 @@ class TitrationBaseWidget(QtWidgets.QWidget):
             item = t.takeItem(position, self._cols.label)
             item.setText(new_label)
             t.setItem(position, self._cols.label, item)
+
+    @QtCore.pyqtSlot(int, str)
+    def componentAdded(self, which, label):
+        with libqt.table_locked(self.ui.table_titration) as t:
+            t.insertRow(which)
+            tw = QtWidgets.QTableWidgetItem(label)
+            tw.setFlags(QtCore.Qt.ItemIsSelectable)
+            self.ui.table_titration.setItem(which, self._cols.label, tw)
+            self.__default_init(which)
+            self.__default_buret(which)
+            self.__default_flags(which)
+
+    def __default_init(self, row):
+        tw = QtWidgets.QTableWidgetItem('0.0000')
+        self.ui.table_titration.setItem(row, self._cols.init, tw)
+
+    def __default_buret(self, row):
+        tw = QtWidgets.QTableWidgetItem('0.0000')
+        self.ui.table_titration.setItem(row, self._cols.buret, tw)
+
+    def __default_flags(self, row):
+        combo1 = libqt.create_combo(consts.REFINE_LABELS, consts.RF_CONSTANT)
+        self.ui.table_titration.setCellWidget(row, self._cols.init_flags, combo1)
+        combo2 = libqt.create_combo(consts.REFINE_LABELS, consts.RF_CONSTANT)
+        self.ui.table_titration.setCellWidget(row, self._cols.buret_flags, combo2)
