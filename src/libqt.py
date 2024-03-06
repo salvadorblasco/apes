@@ -265,6 +265,13 @@ def filter_tabwidget(table, ctype):
                       iter_tabwidget(table))
 
 
+def freeze_column(table, col: int):
+    "Make whole column not editable."
+    for row in range(table.rowCount()):
+        item = table.item(row, col)
+        item.setFlags(QtCore.Qt.ItemIsSelectable)
+
+
 def iter_column(table, col, row0=0):
     '''Iterate over items in a column.
 

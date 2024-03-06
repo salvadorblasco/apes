@@ -575,6 +575,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.init_flags = [consts.RF_CONSTANT] * n
         self.buret_flags = [consts.RF_CONSTANT] * n
         self.set_labels(model.labels)
+        libqt.freeze_column(self.ui.table_titration, 0)
 
     def is_titre_implicit(self):
         return self.ui.dsb_Vf.isEnabled()

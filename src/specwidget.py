@@ -29,6 +29,7 @@ class SpecWidget(datawidget.DataWidget):
         #  self.table_data.setObjectName("tab_data")
         #  # TODO use model to reshape table
 
+        self.labels_changed()
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
         #  self.table_data.setRowCount(model.number_components+1)
@@ -187,6 +188,11 @@ class SpecWidget(datawidget.DataWidget):
         "Return a generator containing wavelengths."
         yield from (float(self.ui.table_data.takeverticalHeaderItem(index).text())
                     for index in self.row_range_data)
+
+    @QtCore.pyqtSlot()
+    def labels_changed(self):
+        extended_labels = list(libaux.extended_labels(self._model.labels, self._model.stoich))
+        self.ui.table_components.setHorizontalHeaderLabels(extended_labels)
 
     def _cchch(self, c):
         c.setText("coloured" if c.isChecked() else "transparent")
