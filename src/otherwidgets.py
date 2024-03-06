@@ -577,6 +577,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.buret_flags = [consts.RF_CONSTANT] * n
         self.set_labels(model.labels)
         libqt.freeze_column(self.ui.table_titration, 0)
+        model.labelsChanged.connect(self.updateLabel)
 
     def is_titre_implicit(self):
         return self.ui.dsb_Vf.isEnabled()
@@ -704,3 +705,10 @@ class TitrationBaseWidget(QtWidgets.QWidget):
     @volume_error.setter
     def volume_error(self, error: float):
         self.ui.dsb_Verror.setValue(error)
+
+    @QtCore.pyqtSlot(int, str)
+    def updateLabel(self, position, new_label):
+        with libqt.table_locked(self.ui.table_titration) as t:
+            item = t.takeItem(position, self._cols.label)
+            item.setText(new_label)
+            t.setItem(position, self._cols.label, item)

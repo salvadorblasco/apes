@@ -44,6 +44,8 @@ class EmfWidget(datawidget.DataWidget):
         for n, l in enumerate(model.labels):
             self.updateLabel(n, l)
 
+        model.labelsChanged.connect(self.updateLabel)
+
         popup = self._popupm
         action = popup.addAction('New electrode')
         action.triggered.connect(self._newlectrode)

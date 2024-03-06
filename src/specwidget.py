@@ -31,6 +31,7 @@ class SpecWidget(datawidget.DataWidget):
 
         self._populate_checkboxes()
         self.labels_changed()
+        model.labelsChanged.connect(self.updateLabel)
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
         #  self.table_data.setRowCount(model.number_components+1)
@@ -190,11 +191,16 @@ class SpecWidget(datawidget.DataWidget):
         yield from (float(self.ui.table_data.takeverticalHeaderItem(index).text())
                     for index in self.row_range_data)
 
+    @QtCore.pyqtSlot(int, str)
+    def updateLabel(self, position, new_label):
+        self.labels_changed()
+
     @QtCore.pyqtSlot()
     def labels_changed(self):
         extended_labels = list(libaux.extended_labels(self._model.labels, self._model.stoich))
-        self.__change_columns(len(extended_labels))
-        self.ui.table_components.setHorizontalHeaderLabels(extended_labels)
+        with libqt.table_locked(self.ui.table_components) as t:
+            self.__change_columns(len(extended_labels))
+            t.setHorizontalHeaderLabels(extended_labels)
 
     def _cchch(self, c):
         c.setText("coloured" if c.isChecked() else "transparent")
