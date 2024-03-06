@@ -41,6 +41,9 @@ class EmfWidget(datawidget.DataWidget):
         # self.amount_flags = (0, 0)
         # self.buret_flags = (0, 0)
 
+        for n, l in enumerate(model.labels):
+            self.updateLabel(n, l)
+
         popup = self._popupm
         action = popup.addAction('New electrode')
         action.triggered.connect(self._newlectrode)
@@ -121,9 +124,12 @@ class EmfWidget(datawidget.DataWidget):
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position, new_label):
         "Slot for when a label changes"
-        item = QtWidgets.QTableWidgetItem(new_label)
-        item.setFlags(QtCore.Qt.ItemIsSelectable)
-        self.ui.table_titration.setItem(position, 0, item)
+        # item = QtWidgets.QTableWidgetItem(new_label)
+        # item.setFlags(QtCore.Qt.ItemIsSelectable)
+        # self.ui.table_titration.setItem(position, 0, item)
+        for col in range(self.ui.table_params.columnCount()):
+            combo = self.ui.table_params.cellWidget(4, col)
+            combo.setItemText(position, new_label)
 
     @property
     def active_species(self):
@@ -137,16 +143,16 @@ class EmfWidget(datawidget.DataWidget):
         libqt.fill_row_comboindex(self.ui.table_params, self.__num2it(activ),
                                   self.labels, row=4)
 
-    @property
-    def amount_flags(self):
-        'Flags for the starting amounts'
-        return tuple(libqt.iter_column_comboindex(self.ui.table_titration,
-                                                  col=3))
+    # @property
+    # def amount_flags(self):
+    #     'Flags for the starting amounts'
+    #     return tuple(libqt.iter_column_comboindex(self.ui.table_titration,
+    #                                               col=3))
 
-    @amount_flags.setter
-    def amount_flags(self, flags):
-        libqt.fill_column_comboindex(self.ui.table_titration, flags,
-                                     consts.REFINE_LABELS, col=3)
+    # @amount_flags.setter
+    # def amount_flags(self, flags):
+    #     libqt.fill_column_comboindex(self.ui.table_titration, flags,
+    #                                  consts.REFINE_LABELS, col=3)
 
     @property
     def electrodes(self):

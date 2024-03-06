@@ -138,5 +138,5 @@ class TabWidget(QtWidgets.QTabWidget):
         titration = self.__tabdicts[txt]
         if titration.is_titre_implicit():
             titre = titration.titre()
-            widget.npoints = titration.n_points()
+            widget.npoints = titration.n_points
             widget.titre = titre

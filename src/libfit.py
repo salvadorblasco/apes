@@ -424,3 +424,7 @@ def max_ratio_capping(x, dx, ratio):
 
 def fit_sigma(residuals, weights, npoints, nparams):
     return np.sum(weights*residuals**2)/(npoints-nparams)
+
+
+def preprocess(*datawidgets):
+    ...

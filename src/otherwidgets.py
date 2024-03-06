@@ -574,6 +574,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         n = model.number_components
         self.init_flags = [consts.RF_CONSTANT] * n
         self.buret_flags = [consts.RF_CONSTANT] * n
+        self.set_labels(model.labels)
 
     def is_titre_implicit(self):
         return self.ui.dsb_Vf.isEnabled()
@@ -664,7 +665,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
             float: the value of the titre.
         """
         yield from ((self.final_volume - self.starting_volume)
-                    / self.n_points() * i for i in range(self.n_points()))
+                    / self.n_points * i for i in range(self.n_points))
 
     def volume_increment(self):
         'The step volume in mL.'

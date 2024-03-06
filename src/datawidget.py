@@ -32,6 +32,7 @@ class DataWidget(QtGui.QWidget):
         self._tabtitr = None
         self._datafit = None    # slot for data from fitting
         self._freeconcentration = None
+        self._setweight: float = 1.0    # the weight of the whole dataset
         # self.__totalconc = None
         self._buildmenu()
 

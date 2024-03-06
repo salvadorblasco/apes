@@ -33,7 +33,7 @@ class CalorWidget(datawidget.DataWidget):
         self.ui = ui_calords.Ui_CalorWidget()
         self.ui.setupUi(self)
         self._connectMenu(self.ui.table_data)
-        self.ui.cb_titration.currentIndexChanged.connect(super()._DataWidget__titration_changed)
+        self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position: int, new_label: str):
@@ -91,6 +91,14 @@ class CalorWidget(datawidget.DataWidget):
         libqt.fill_column(self.ui.table_data, col=1, data=q)
 
     @property
+    def n_points(self):
+        return self.ui.table_data.rowCount()
+
+    @n_points.setter
+    def n_points(self, size: int):
+        self.__recheck_table_size(size)
+
+    @property
     def starting_volume(self):
         'Starting volume, in mL'
         return self.ui.dsb_V0.value()
@@ -105,9 +113,9 @@ class CalorWidget(datawidget.DataWidget):
         return tuple(libqt.iter_column_text(self.ui.table_data, col=0))
 
     @titre.setter
-    def titre(self, volume: float):
+    def titre(self, volume):
         # TODO check input
-        self.__recheck_table_size(len(volume))
+        # self.__recheck_table_size(len(volume))
         libqt.fill_column(self.ui.table_data, col=0, data=volume)
 
     @property
