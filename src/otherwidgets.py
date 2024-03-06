@@ -572,6 +572,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self._column_buret_flags = 4
         self._column_init_flags = 2
         n = model.number_components
+        self.ui.table_titration.setRowCount(n)
         self.init_flags = [consts.RF_CONSTANT] * n
         self.buret_flags = [consts.RF_CONSTANT] * n
         self.set_labels(model.labels)

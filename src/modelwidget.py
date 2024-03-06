@@ -79,7 +79,7 @@ class ModelWidget(QtWidgets.QWidget):
     #     # current_index = self.__models.index(self.__currentmodel)
     #     # self.setCurrentModel(modelindex=current_index)
 
-    def addEquilibrium(self, position=None):
+    def addEquilibrium(self, position=None, stoich=None, value=0.0, error=0.0, flag=consts.RF_REFINE):
         '''Add new equilibrium.
 
         Add a new row to the table and fills it with the default values.
@@ -96,8 +96,16 @@ class ModelWidget(QtWidgets.QWidget):
             table.insertRow(position)
             self.__renumber()
             for col in range(1+table.columnCount()):
-                self.__setdefaults(position, col)
-        # self.updateEnthropy()
+                if stoich is None and col < self.number_components:
+                    table.setItem(position, self.column_stoich + col, QtWidgets.QTableWidgetItem('0'))
+                elif stoich is not None and col < self.number_components:
+                    table.setItem(position, self.column_stoich + col, QtWidgets.QTableWidgetItem(str(stoich[col])))
+                elif col == self.column_beta:
+                    table.setItem(position, col, QtWidgets.QTableWidgetItem(f'{value:.4f}'))
+                elif col == self.column_betaerror:
+                    table.setItem(position, col, QtWidgets.QTableWidgetItem(f'{error:.4f}'))
+                elif col == self.column_betaflags:
+                    table.setCellWidget(position, col, libqt.create_combo(consts.REFINE_LABELS, flag))
 
     def addComponent(self, label, position=None):
         '''Add one reagent.

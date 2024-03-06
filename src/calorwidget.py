@@ -6,7 +6,9 @@ Widget for calorimetry.
 
 """
 
-from PyQt5 import QtWidgets as QtGui
+import enum
+
+from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
 import consts
@@ -32,14 +34,25 @@ class CalorWidget(datawidget.DataWidget):
         super().__init__(model)
         self.ui = ui_calords.Ui_CalorWidget()
         self.ui.setupUi(self)
+        self._cols = enum.IntEnum('col', 'label enthalpy enthalpy_flag entropy', start=0)
+
+        self.ui.table_titration.setRowCount(model.number_components)
+        for n, l in enumerate(model.labels):
+            self.updateLabel(n, l)
+            self.ui.table_titration.setItem(n, 1, QtWidgets.QTableWidgetItem('0.000'))
+            self.ui.table_titration.setItem(n, 3, QtWidgets.QTableWidgetItem('0.000'))
+        self.enthalpy_flags = [consts.RF_REFINE]*model.number_components
+        libqt.freeze_column(self.ui.table_titration, 0)
+        libqt.freeze_column(self.ui.table_titration, 3)
+
         self._connectMenu(self.ui.table_data)
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position: int, new_label: str):
         "Slot for when a label changes"
-        self.ui.table_titration.setItem(position, 0,
-                                        QtGui.QTableWidgetItem(new_label))
+        self.ui.table_titration.setItem(position, self._cols.label,
+                                        QtWidgets.QTableWidgetItem(new_label))
 
     @property
     def amount_flags(self):
@@ -60,6 +73,18 @@ class CalorWidget(datawidget.DataWidget):
     @buret.setter
     def buret(self, buret):
         libqt.fill_column(self.ui.table_titration, col=2, data=buret)
+
+    @property
+    def enthalpy_flags(self):
+        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._cols.enthalpy_flags)
+        return tuple(item - 1 for item in indices)
+
+    @enthalpy_flags.setter
+    def enthalpy_flags(self, flags):
+        flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
+        with libqt.table_locked(self.ui.table_titration):
+            for row, widget in enumerate(flagwidgets):
+                self.ui.table_titration.setCellWidget(row, self._cols.enthalpy_flag, widget)
 
     @property
     def initial_amount(self):

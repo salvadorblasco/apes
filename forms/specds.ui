@@ -90,17 +90,17 @@
       </attribute>
       <row>
        <property name="text">
-        <string>1</string>
+        <string>280</string>
        </property>
       </row>
       <column>
        <property name="text">
-        <string>280</string>
+        <string>1</string>
        </property>
       </column>
       <item row="0" column="0">
        <property name="text">
-        <string>0.12344</string>
+        <string>0.00000</string>
        </property>
       </item>
      </widget>

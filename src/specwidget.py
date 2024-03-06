@@ -29,6 +29,7 @@ class SpecWidget(datawidget.DataWidget):
         #  self.table_data.setObjectName("tab_data")
         #  # TODO use model to reshape table
 
+        self._populate_checkboxes()
         self.labels_changed()
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
@@ -192,6 +193,7 @@ class SpecWidget(datawidget.DataWidget):
     @QtCore.pyqtSlot()
     def labels_changed(self):
         extended_labels = list(libaux.extended_labels(self._model.labels, self._model.stoich))
+        self.__change_columns(len(extended_labels))
         self.ui.table_components.setHorizontalHeaderLabels(extended_labels)
 
     def _cchch(self, c):
@@ -214,15 +216,20 @@ class SpecWidget(datawidget.DataWidget):
         pass
 
     def _populate_checkboxes(self):
-        all_species = libaux.extended_labels(self._model.labels, self._model.stoich)        
-        self._colored_checkboxes = [
-            QtWidgets.QCheckBox(f"{species} is optically active")
-            for species in all_species]
-        layout = self.ui.layout_checkboxes
-        for item in reversed(range(layout.count())):
-            layout.itemAt(item).widget().setParent(None)
-        for item in self._colored_checkboxes:
-            layout.addWidget(item)
+        table = self.ui.table_components
+        for col in range(table.columnCount()):
+            qchk = QtWidgets.QCheckBox('active')
+            qchk.setChecked(True)
+            table.setCellWidget(0, col, qchk)
+    #     all_species = libaux.extended_labels(self._model.labels, self._model.stoich)        
+    #     self._colored_checkboxes = [
+    #         QtWidgets.QCheckBox(f"{species} is optically active")
+    #         for species in all_species]
+    #     layout = self.ui.layout_checkboxes
+    #     for item in reversed(range(layout.count())):
+    #         layout.itemAt(item).widget().setParent(None)
+    #     for item in self._colored_checkboxes:
+    #         layout.addWidget(item)
 
     def _tdwmuse(self):
         use = {x.column() for x in self._tabdata.selectedIndexes()}
@@ -236,6 +243,17 @@ class SpecWidget(datawidget.DataWidget):
 
     def _tdwmdel(self):
         raise NotImplementedError
+
+    def __change_columns(self, new_size):
+        table = self.ui.table_components
+        current_count = table.columnCount()
+        table.setColumnCount(new_size)
+        
+        if current_count < new_size:
+            for col in range(current_count, new_size):
+                qchk = QtWidgets.QCheckBox('active')
+                qchk.setChecked(True)
+                table.setCellWidget(0, col, qchk)
 
     def __set_component_labels(self):
         # this function assumes the new rows have already been added/deleted
