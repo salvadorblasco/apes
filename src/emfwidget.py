@@ -46,6 +46,7 @@ class EmfWidget(datawidget.DataWidget):
 
         model.labelsChanged.connect(self.updateLabel)
         model.componentAdded.connect(self.componentAdded)
+        model.componentDeleted.connect(self.componentDeleted)
 
         popup = self._popupm
         action = popup.addAction('New electrode')
@@ -139,6 +140,12 @@ class EmfWidget(datawidget.DataWidget):
         for col in range(self.ui.table_params.columnCount()):
             combo = self.ui.table_params.cellWidget(4, col)
             combo.insertItem(which, label)
+
+    @QtCore.pyqtSlot(int)
+    def componentDeleted(self, which):
+        for col in range(self.ui.table_params.columnCount()):
+            combo = self.ui.table_params.cellWidget(4, col)
+            combo.removeItem(which)
 
     @property
     def active_species(self):

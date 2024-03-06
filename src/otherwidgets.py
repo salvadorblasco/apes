@@ -579,6 +579,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         libqt.freeze_column(self.ui.table_titration, 0)
         model.labelsChanged.connect(self.updateLabel)
         model.componentAdded.connect(self.componentAdded)
+        model.componentDeleted.connect(self.componentDeleted)
 
     def is_titre_implicit(self):
         return self.ui.dsb_Vf.isEnabled()
@@ -724,6 +725,11 @@ class TitrationBaseWidget(QtWidgets.QWidget):
             self.__default_init(which)
             self.__default_buret(which)
             self.__default_flags(which)
+
+    @QtCore.pyqtSlot(int)
+    def componentDeleted(self, which):
+        with libqt.table_locked(self.ui.table_titration) as t:
+            t.removeRow(which)
 
     def __default_init(self, row):
         tw = QtWidgets.QTableWidgetItem('0.0000')
