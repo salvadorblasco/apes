@@ -107,7 +107,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
-        libio.importSuperquadApp(self, '../data/hpytren1.sup')
+        # libio.importSuperquadApp(self, '../data/hpytren1.sup')
+        # libio.saveXML(self, '../data/hpytren1.xml')
+        libio.loadXML(self, '../data/hpytren1.xml')
         # END TESTING PART
 
     def go(self):
@@ -1026,7 +1028,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _setup_vars(self):
         "initialize variables"
-        self.__filename = None
+        self._filename = None
         self.outputw = None
         self._multilock = True  # if true, forbid mixing different data types
         self._fmode = consts.FM_NONE
@@ -1188,6 +1190,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 yield widget
 
     def __itertabs(self):
+        raise DeprecationWarning
         'Iterate over widgets in the tab widget.'
         for tabn in range(self.ui.tab_main.count()):
             yield self.ui.tab_main.widget(tabn)

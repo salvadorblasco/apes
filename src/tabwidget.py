@@ -109,6 +109,17 @@ class TabWidget(QtWidgets.QTabWidget):
         tcombo.setCurrentIndex(index)
         spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
 
+    def widgets_to_save(self):
+        types = (ModelWidget, SpeciationWidget,
+                 TitrationWidget,
+                 EmfWidget, NmrWidget,
+                 SpecWidget, CalorWidget,
+                 ExternalDataWidget,
+                 TitrationBaseWidget)
+        for widget in self._itertabs():
+            if isinstance(widget, types):
+                yield widget
+
     def _freec_widgets(self):
         'Yield widgets which can calculate free concentrations.'
         for tab in self._itertabs():

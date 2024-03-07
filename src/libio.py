@@ -1,5 +1,6 @@
 """Routines for input/output and import/export data."""
 
+import datetime
 import itertools
 import xml.etree.ElementTree as ET
 
@@ -17,7 +18,7 @@ import simulationwidgets
 from excepts import DataFileException
 
 
-__version__ = 'dev'
+__version__ = '0.1'
 
 
 def loadXML(app, f):
@@ -77,10 +78,11 @@ def loadXML(app, f):
     tags = ('models', 'distri', 'simu', 'potentiometricdata', 'nmrdata',
             'specdata', 'calordata', 'externaldata')
     loaders = (loadModelsXML, loadSpeciationXML, loadTitrationXML, loadEmfXML,
-               loadNmrXML, loadSpectrXML, loadCalorXML, loadExternalXML)
+               loadNmrXML, loadSpectrXML, loadCalorXML, loadExternalXML,
+               loadTitrationBaseXML)
     callables = (tmain.add_model, tmain.add_speciation, tmain.add_titration,
                  tmain.add_emf, tmain.add_nmr, tmain.add_spectrumuv,
-                 tmain.add_calor, tmain.add_external_data)
+                 tmain.add_calor, tmain.add_external_data, tmain.add_titrationbase)
 
     for tag, call, loader in zip(tags, callables, loaders):
         for section in root.iter(tag):
@@ -250,19 +252,29 @@ def loadEmfXML(widget, xmle):
     widget.active_species = _read_seq(xmle, 'active', dtype=int)
     widget.flags_emf0 = _read_seq(xmle, 'emf0flags', dtype=int)
     # widget.nelectrons = _read_seq(xmle, 'n', dtype=int)
-    loadCurveXML(widget, xmle)
+    # loadCurveXML(widget, xmle)
 
-    titre = tuple(_read_seq(xmle, 'titre'))
-    # widget.volume = titre
-    exppoints = len(titre)
+
     nelectrod = widget.nelectrodes
-    flat_emf = _read_seq(xmle, 'emfread')
+    flat_emf = tuple(_read_seq(xmle, 'emfread'))
+
+    try:
+        titre = tuple(_read_seq(xmle, 'titre'))
+        exppoints = len(titre)
+    except AttributeError:
+        exppoints = len(flat_emf) // nelectrod
+
+    emf = np.array(flat_emf).reshape((exppoints, nelectrod))
+    table = widget.ui.table_data
+    table.setColumnCount(nelectrod+1)
+    table.setRowCount(exppoints)
+    libqt.array2tab(table, emf, col0=1)
     # flat_emf = tuple(_read_seq(xmle, 'emfread'))
     # data_feed = itertools.chain((titre,
     # *[flat_emf[(exppoints*i):(exppoints*(i+1))]for i in range(nelectrod)]))
-    data_feed = itertools.chain((titre, *zip(*[iter(flat_emf)]*exppoints)))
-    widget.reshape_data_table(exppoints, 1+nelectrod)
-    widget.feed_data_table(data_feed)
+    # data_feed = itertools.chain((titre, *zip(*[iter(flat_emf)]*exppoints)))
+    # widget.reshape_data_table(exppoints, 1+nelectrod)
+    # widget.feed_data_table(data_feed)
 
     t = xmle.find('key')
     if t is not None:
@@ -276,8 +288,10 @@ def loadNmrXML(widget, xmle):
     pass
 
 
+# deprecate
 def loadCurveXML(widget, xmle):
     "Loads the titration data from an XML file into self."
+    raise DeprecationWarning
 
     if 'title' in xmle.attrib:
         widget.name = xmle.attrib['title']
@@ -409,7 +423,7 @@ def saveXML(app, f):
     metadata = ET.SubElement(root, 'metadata')
     ET.SubElement(metadata, 'author').text = app.project.author
     ET.SubElement(metadata, 'comments').text = app.project.comments
-    ET.SubElement(metadata, 'lastmodified').text = app.project.last_modified
+    ET.SubElement(metadata, 'lastmodified').text = datetime.datetime.now().ctime()
     ET.SubElement(metadata, 'created').text = app.project.created
 
     ET.SubElement(root, 'labels').text = " ".join(app.modelwidget.labels)
@@ -418,15 +432,13 @@ def saveXML(app, f):
              simulationwidgets.TitrationWidget,
              emfwidget.EmfWidget, nmrwidget.NmrWidget,
              specwidget.SpecWidget, calorwidget.CalorWidget,
-             otherwidgets.ExternalDataWidget)
+             otherwidgets.ExternalDataWidget,
+             otherwidgets.TitrationBaseWidget)
     calls = (saveModelWidgetXML, saveSpeciationXML, saveTitrationXML,
              saveEmfXML, saveNmrXML, saveSpectrXML, saveCalorXML,
-             saveExternalXML)
+             saveExternalXML, saveTitrationBaseXML)
 
-    # for widget in app.widgets():
-    #     if not isinstance(widget, types):   # ignore OutputWidget and such
-    #         continue
-    for widget in filter(lambda x: not isinstance(x, otherwidgets.OutputWidget), app.widgets()):
+    for widget in app.ui.tab_main.widgets_to_save():
         which = types.index(type(widget))
         call = calls[which]
         dtag = call(widget)
@@ -496,7 +508,8 @@ def saveEmfXML(widget):
             return str(x)
 
     tcurve = ET.Element('potentiometricdata', {'title': widget.name,
-                                               'use': str(widget.use)})
+                                               'use': str(widget.use),
+                                               'titration': widget.ui.cb_titration.currentText()})
     ET.SubElement(tcurve, 'emf0', prop).text = j2(widget.emf0)
     ET.SubElement(tcurve, 'erroremf0', prop).text = j2(widget.emf0_error)
     ET.SubElement(tcurve, 'active').text = j2(widget.active_species)
@@ -506,11 +519,10 @@ def saveEmfXML(widget):
     #     ET.SubElement(tcurve, 'f').text = j2(widget.f)
     ET.SubElement(tcurve, 'fRTnF').text = j2(widget.fRTnF)
 
-    saveCurveXML(widget, tcurve)
+    # saveCurveXML(widget, tcurve)
 
     ET.SubElement(tcurve, 'emfread').text = j(itertools.chain(*widget.emf))
-    ET.SubElement(tcurve, 'key').text = \
-        " ".join("0" if i else "1" for i in widget.mask)
+    ET.SubElement(tcurve, 'key').text = " ".join("0" if i else "1" for i in widget.mask)
     return tcurve
 
 
@@ -621,16 +633,18 @@ def saveTitrationBaseXML(widget):
     Returns:
         :class:`xml.etree.ElementTree.Element`: the XML object.
     """
+    assert isinstance(widget, otherwidgets.TitrationBaseWidget)
     xmle = ET.Element('titration', {'name': widget.name})
-    ET.SubElement(xmle, 'init', {'unit': 'mmol'}).text = j(xmle.initial_amount)
-    ET.SubElement(xmle, 'initkey').text = j(xmle.init_flags)
-    ET.SubElement(xmle, 'buret', {'unit': 'mmol/mL'}).text = j(xmle.buret)
-    ET.SubElement(xmle, 'buretkey').text = j(xmle.buret_flags)
-    ET.SubElement(xmle, 'volumeerror').text = str(xmle.volume_error)
-    ET.SubElement(xmle, 'startingvolume', {'unit':'mL'}).text = str(xmle.starting_volume)
-    if xmlw.is_titre_implicit():
-        ET.SubElement(xmle, 'finalvolume', {'unit':'mL'}).text = str(xmle.final_volume)
-        ET.SubElement(xmle, 'totalpoints').text = str(xmle.n_points())
+    ET.SubElement(xmle, 'init', {'unit': 'mmol'}).text = j(widget.initial_amount)
+    ET.SubElement(xmle, 'initkey').text = j(widget.init_flags)
+    ET.SubElement(xmle, 'buret', {'unit': 'mmol/mL'}).text = j(widget.buret)
+    ET.SubElement(xmle, 'buretkey').text = j(widget.buret_flags)
+    ET.SubElement(xmle, 'volumeerror').text = str(widget.volume_error)
+    ET.SubElement(xmle, 'startingvolume', {'unit':'mL'}).text = str(widget.starting_volume)
+    if widget.is_titre_implicit():
+        ET.SubElement(xmle, 'finalvolume', {'unit':'mL'}).text = str(widget.final_volume)
+        ET.SubElement(xmle, 'totalpoints').text = str(widget.n_points())
+    return xmle
 
 
 def saveTitrationXML(widget):
