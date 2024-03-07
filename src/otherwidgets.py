@@ -563,16 +563,19 @@ class ExternalDataWidget(QtWidgets.QWidget):
     #     return ('1', '2') if r is None else r.group(1, 2)
 
 class TitrationBaseWidget(QtWidgets.QWidget):
+
+    implicitVolumeChanged = QtCore.pyqtSignal()
+
     def __init__(self, model):
         super().__init__()
         self.name = None
         self.ui = ui_titration.Ui_Titration()
         self.ui.setupUi(self)
         self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags', start=0)
-        self._column_buret_flags = 4
-        self._column_init_flags = 2
         n = model.number_components
         self.ui.table_titration.setRowCount(n)
+        self.initial_amount = [0.0] * n
+        self.buret = [0.0] * n
         self.init_flags = [consts.RF_CONSTANT] * n
         self.buret_flags = [consts.RF_CONSTANT] * n
         self.set_labels(model.labels)
@@ -580,6 +583,8 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         model.labelsChanged.connect(self.updateLabel)
         model.componentAdded.connect(self.componentAdded)
         model.componentDeleted.connect(self.componentDeleted)
+        self.ui.dsb_Vf.valueChanged.connect(self.__implicit_volume_changed)
+        self.ui.sb_NPoints.valueChanged.connect(self.__implicit_volume_changed)
 
     def is_titre_implicit(self):
         return self.ui.dsb_Vf.isEnabled()
@@ -602,7 +607,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
             initial_amount (sequence of floats): the values for this parameter.
                 The length must be equal to the number of components.
         """
-        libqt.fill_column(self.ui.table_titration, col=self._cols.init.value, data=initial_amount)
+        libqt.fill_column(self.ui.table_titration, col=self._cols.init.value, data=initial_amount, formatting="{:.4f}")
 
     @property
     def n_points(self):
@@ -630,7 +635,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
             buret (sequence of floats): the values for buret. The length must be equal
                 to the number of components.
         """
-        libqt.fill_column(self.ui.table_titration, data=buret, col=self._cols.buret.value)
+        libqt.fill_column(self.ui.table_titration, data=buret, col=self._cols.buret.value, formatting="{:.4f}")
 
     @property
     def starting_volume(self):
@@ -663,6 +668,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         for widget in (self.ui.dsb_Vf, self.ui.sb_NPoints):
             widget.setEnabled(value)
 
+    @property
     def titre(self):
         """The titre values in mL.
 
@@ -678,7 +684,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
 
     @property
     def buret_flags(self):
-        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._column_buret_flags)
+        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._cols.buret_flags)
         return tuple(item - 1 for item in indices)
 
     @buret_flags.setter
@@ -686,11 +692,11 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
         with libqt.table_locked(self.ui.table_titration):
             for row, widget in enumerate(flagwidgets):
-                self.ui.table_titration.setCellWidget(row, self._column_buret_flags, widget)
+                self.ui.table_titration.setCellWidget(row, self._cols.buret_flags, widget)
 
     @property
     def init_flags(self):
-        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._column_init_flags)
+        indices = libqt.iter_column_comboindex(self.ui.table_titration, self._cols.init_flags)
         return tuple(item - 1 for item in indices)
 
     @init_flags.setter
@@ -698,7 +704,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
         with libqt.table_locked(self.ui.table_titration):
             for row, widget in enumerate(flagwidgets):
-                self.ui.table_titration.setCellWidget(row, self._column_init_flags, widget)
+                self.ui.table_titration.setCellWidget(row, self._cols.init_flags, widget)
 
     @property
     def volume_error(self):
@@ -744,3 +750,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.ui.table_titration.setCellWidget(row, self._cols.init_flags, combo1)
         combo2 = libqt.create_combo(consts.REFINE_LABELS, consts.RF_CONSTANT)
         self.ui.table_titration.setCellWidget(row, self._cols.buret_flags, combo2)
+
+    def __implicit_volume_changed(self, _):
+        self.implicitVolumeChanged.emit()
+        print("signal emitted")

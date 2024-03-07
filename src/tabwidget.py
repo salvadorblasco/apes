@@ -73,6 +73,7 @@ class TabWidget(QtWidgets.QTabWidget):
         widget = TitrationBaseWidget(self._model)
         name = self.__stamp(widget, "Titration")
         self._update_titration_list()
+        widget.implicitVolumeChanged.connect(self.__implicit_titre_changed)
         return widget
 
     def clear(self):
@@ -137,6 +138,12 @@ class TabWidget(QtWidgets.QTabWidget):
         # print("slot activated: ", widget, txt)
         titration = self.__tabdicts[txt]
         if titration.is_titre_implicit():
-            titre = titration.titre()
+            titre = titration.titre
             widget.npoints = titration.n_points
             widget.titre = titre
+
+    @QtCore.pyqtSlot()
+    def __implicit_titre_changed(self):
+        for widget in self._itertabs():
+            if isinstance(widget, DataWidget):
+                widget.titre = self.sender().titre

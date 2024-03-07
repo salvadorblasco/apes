@@ -142,12 +142,13 @@ class CalorWidget(datawidget.DataWidget):
         libqt.fill_column(self.ui.table_data, col=1, data=q)
 
     @property
-    def n_points(self):
+    def npoints(self):
         return self.ui.table_data.rowCount()
 
-    @n_points.setter
-    def n_points(self, size: int):
-        self.__recheck_table_size(size)
+    @npoints.setter
+    def npoints(self, size: int):
+        self.ui.table_data.setRowCount(size)
+        # self.__recheck_table_size(size)
 
     @property
     def starting_volume(self):
@@ -167,7 +168,7 @@ class CalorWidget(datawidget.DataWidget):
     def titre(self, volume):
         # TODO check input
         # self.__recheck_table_size(len(volume))
-        libqt.fill_column(self.ui.table_data, col=0, data=volume)
+        libqt.fill_column(self.ui.table_data, col=0, data=volume, formatting="{:.4f}")
 
     @property
     def volume_error(self):
@@ -178,9 +179,9 @@ class CalorWidget(datawidget.DataWidget):
     def volume_error(self, verror: float):
         self.ui.dsb_errV.setValue(verror)
 
-    def __recheck_table_size(self, ndat):
-        if ndat != self.ui.table_data.rowCount():
-            self.ui.table_data.setRowCount(ndat)
+    # def __recheck_table_size(self, ndat):
+    #     if ndat != self.ui.table_data.rowCount():
+    #         self.ui.table_data.setRowCount(ndat)
 
     def _tflgch(self):
         raise NotImplementedError

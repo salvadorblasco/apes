@@ -368,8 +368,7 @@ class EmfWidget(datawidget.DataWidget):
     def titre(self, volume):
         # TODO check input
         # TODO reshape table if needed
-        libqt.fill_column(self.ui.table_data, col=0, data=volume,
-                          formatting="{:.4f}")
+        libqt.fill_column(self.ui.table_data, col=0, data=volume, formatting="{:.4f}")
 
     @property
     def volume_error(self):
