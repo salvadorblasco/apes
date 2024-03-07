@@ -71,21 +71,6 @@ class SpecWidget(datawidget.DataWidget):
         #  # self.ui.tab_data.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         #  # self.ui.tab_data.customContextMenuRequested.connect(self._pmtd)
 
-    # def add_component(self, position: int, label: str):
-    #     '''Add one component to the system.
-
-    #     Add one column to model table with a new label.
-
-    #     Parameters:
-    #         label (str): The label for the new reagent
-    #         position (int): position where the new reagent will be inserted.
-    #     Returns:
-    #         int: the position into which the component has been added.
-    #     '''
-    #     self._islog.insert(position, False)
-    #     with libqt.table_locked(self.table_data) as table:
-    #         table.insertRow(position)
-    #     self.__set_component_labels()
 
     def analyticalc(self):
         'Analytical concentrations'
@@ -109,28 +94,23 @@ class SpecWidget(datawidget.DataWidget):
         for col, data in enumerate(titration):
             libqt.fill_column(self.ui.table_data, col, data, formatting='{:.4e}')
 
-    # def delete_component(self, position: int):
-    #     with libqt.table_locked(self.table_data) as table:
-    #         table.removeRow(position)
-    #     del self._islog[position]
-
     def feed_data(self, wavelengths, spectra_data, analytical_concentrations=None):
-        total_rows = 1 + spectra_data.shape[0] + self._model.number_components
+        total_rows = len(wavelengths)
         total_columns = spectra_data.shape[1]
+
         with libqt.table_locked(self.ui.table_data) as table:
             table.clear()
             table.setRowCount(total_rows)
             table.setColumnCount(total_columns)
-            # libqt.fill_column(table, self.column_wavelength, wavelengths,
-            #                   row0=self._model.number_components, formatting="{:.1f}")
-            libqt.array2tab(table, spectra_data, row0=1+self._model.number_components,
-                            col0=0, formatting="{:.4f}")
-            if analytical_concentrations is not None:
-                libqt.array2tab(table, analytical_concentrations,
-                                col0=0, formatting="{:.4f}")
-            # breakpoint()
-            vertical_header_labels = self._model.labels + ["path"] + ["{:.1f}".format(w) for w in wavelengths]
+            libqt.array2tab(table, spectra_data, row0=0, col0=0, formatting="{:.4f}")
+            vertical_header_labels = ["{:.1f}".format(w) for w in wavelengths]
             table.setVerticalHeaderLabels(vertical_header_labels)
+
+        with libqt.table_locked(self.ui.table_components) as table:
+            table.setRowCount(total_rows)
+            table.setVerticalHeaderLabels([''] + vertical_header_labels)
+            fill_size = (total_rows+1,self._model.number_equilibria+self._model.number_components)
+            libqt.array2tab(table, np.zeros(fill_size), row0=1, col0=0, formatting="{:.4f}")
 
         self._populate_checkboxes()
         # self._fitdata.set_wavelengths(wavelengths)
@@ -147,9 +127,6 @@ class SpecWidget(datawidget.DataWidget):
     @QtCore.pyqtSlot(int)
     def componentDeleted(self, index):
         with libqt.table_locked(self.ui.table_components) as table:
-            # for i in sorted(self._model.deleted_components, reverse=True):
-            #     print(i)
-            #     table.removeColumn(i)
             table.removeColumn(index)
         self.labels_changed()
 
@@ -168,8 +145,12 @@ class SpecWidget(datawidget.DataWidget):
         pass
 
     @property
-    def number_titration_points(self):
+    def npoints(self):
         return self.ui.table_data.columnCount()
+
+    @npoints.setter
+    def npoints(self, value):
+        self.ui.table_data.setColumnCount(value)
 
     @property
     def row_optical_path(self) ->  int:
@@ -191,6 +172,14 @@ class SpecWidget(datawidget.DataWidget):
                                rows=self.row_range_data,
                                cols=self.column_range,
                                dtype=float)
+
+    @property
+    def titre(self):
+        return None
+
+    @titre.setter                   # do nothing for the time being but int he
+    def titre(self, new_titre):     # future it might show it somewhere in the table
+        pass
 
     @property
     def wavelengths(self):
@@ -238,15 +227,6 @@ class SpecWidget(datawidget.DataWidget):
             qchk = QtWidgets.QCheckBox('active')
             qchk.setChecked(True)
             table.setCellWidget(0, col, qchk)
-    #     all_species = libaux.extended_labels(self._model.labels, self._model.stoich)        
-    #     self._colored_checkboxes = [
-    #         QtWidgets.QCheckBox(f"{species} is optically active")
-    #         for species in all_species]
-    #     layout = self.ui.layout_checkboxes
-    #     for item in reversed(range(layout.count())):
-    #         layout.itemAt(item).widget().setParent(None)
-    #     for item in self._colored_checkboxes:
-    #         layout.addWidget(item)
 
     def _tdwmuse(self):
         use = {x.column() for x in self._tabdata.selectedIndexes()}
@@ -300,107 +280,3 @@ class SpecWidget(datawidget.DataWidget):
             menu = self._menuvh_wavel
 
         menu.popup(self.table_data.viewport().mapToGlobal(point))
-
-
-# class SpecFitWidget(QtWidgets.QWidget):
-#     def __init__(self, model):
-#         super().__init__()
-# 
-#         self._use_wavelength = []
-#         self._coloured = []
-#         self._fixed = []
-#         self._menu_location = -1
-#         self._model = model
-# 
-#         self.setObjectName("Spect. fit")
-#         self.verticalLayout = QtWidgets.QVBoxLayout(self)
-#         self.verticalLayout.setObjectName("verticalLayout")
-#         self.tab_data = QtWidgets.QTableWidget(self)
-#         self.tab_data.setObjectName("tab_data")
-#         # TODO use model to reshape table
-#         # self.tab_data.setRowCount(3)
-#         n_compounds = model.number_components+model.number_equilibria
-#         optically_active = [QtWidgets.QCheckBox("optically active", self) for _ in range(n_compounds)]
-#         self.tab_data.setColumnCount(n_compounds)
-#         self.tab_data.setRowCount(2)
-#         labels = list(libaux.extended_labels(model.labels, model.stoich))
-#         self.tab_data.setHorizontalHeaderLabels(labels)
-#         for col, checkbox in enumerate(optically_active):
-#             self.tab_data.setCellWidget(0, col, checkbox)
-# 
-#         self.verticalLayout.addWidget(self.tab_data)
-# 
-#         self._menuvheader = QtWidgets.QMenu(parent=self)
-#         self._action_usewl = QtWidgets.QAction('use', parent=self._menuvheader)
-#         self._action_usewl.setCheckable(True)
-#         self._action_usewl.triggered.connect(self.__use_wavelength)
-#         self._action_delwl = QtWidgets.QAction('delete', parent=self._menuvheader)
-#         self._menuvheader.addAction(self._action_usewl)
-#         self._menuvheader.addAction(self._action_delwl)
-# 
-#         self._menuhheader = QtWidgets.QMenu(parent=self)
-#         self._action_coloured = self._menuhheader.addAction('coloured')
-# 
-#         hheader = self.tab_data.horizontalHeader()
-#         hheader.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-#         hheader.customContextMenuRequested.connect(self._hheader_popup)
-# 
-#         vheader = self.tab_data.verticalHeader()
-#         vheader.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-#         vheader.customContextMenuRequested.connect(self._vheader_popup)
-# 
-#         model.componentAdded.connect(self.add_component)
-#         model.componentDeleted.connect(self.delete_component)
-# 
-#     def add_component(self, position: int, label: str):
-#         '''Add one component to the system.
-# 
-#         Add one column to model table with a new label.
-# 
-#         Parameters:
-#             label (str): The label for the new reagent
-#             position (int): position where the new reagent will be inserted.
-#         Returns:
-#             int: the position into which the component has been added.
-#         '''
-#         with libqt.table_locked(self.tab_data) as table:
-#             table.insertColumn(position)
-#             table.setHorizontalHeaderLabels(self._model.labels)
-#             libqt.fill_column(table, position, [0.0]*table.rowCount(), formatting="{:.4f}")
-# 
-#     def delete_component(self, position: int):
-#         with libqt.table_locked(self.tab_data) as table:
-#             table.removeColumn(position)
-# 
-#     def set_wavelengths(self, wavelengths):
-#         vertical_header_labels = ["{:.1f}".format(w) for w in wavelengths]
-#         with libqt.table_locked(self.tab_data) as table:
-#             table.setRowCount(1+len(wavelengths))
-#             table.setVerticalHeaderLabels([''] + vertical_header_labels)
-#             libqt.array2tab(table,
-#                             np.zeros((table.rowCount(), table.columnCount())),
-#                             formatting="{:.4f}", row0=1)
-#         self._use_wavelength = len(wavelengths) * [True]
-# 
-#     def _hheader_popup(self, point):
-#         qmodelindex = self.tab_data.indexAt(point)
-#         col = qmodelindex.column()
-#         self._menu_location = col
-#         self.__popup_menu(self._menuhheader, point)
-# 
-#     def _vheader_popup(self, point):
-#         qmodelindex = self.tab_data.indexAt(point)
-#         row = qmodelindex.row()
-#         self._menu_location = row
-#         self._action_usewl.setChecked(self._use_wavelength[row])
-#         self.__popup_menu(self._menuvheader, point)
-# 
-#     def __popup_menu(self, menu, point):
-#         menu.popup(self.tab_data.viewport().mapToGlobal(point))
-# 
-#     def __use_wavelength(self):
-#         assert self._menu_location >= 0
-#         use = not self._use_wavelength[self._menu_location]
-#         self._use_wavelength[self._menu_location] = use
-#         cells = libqt.iter_row(self.tab_data, self._menu_location)
-#         libqt.cross(cells)

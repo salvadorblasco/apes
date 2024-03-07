@@ -753,4 +753,3 @@ class TitrationBaseWidget(QtWidgets.QWidget):
 
     def __implicit_volume_changed(self, _):
         self.implicitVolumeChanged.emit()
-        print("signal emitted")

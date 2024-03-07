@@ -90,28 +90,24 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
         # libio.loadXML(self, _debug_fname_)
-        # self.import_txtsp('./spec1.txt')
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
-        m = self.ui.tab_main.add_model()
-        m.addComponent('A')
-        m.addComponent('B')
-        m.addEquilibrium(position=-1, stoich=(1,1,1, 1), value=10.0, error=0.0)
-        m.addEquilibrium(position=-1, stoich=(1,1,1, 2), value=20.0, error=0.0)
-        m.addEquilibrium(position=-1, stoich=(1,1,1, 3), value=20.0, error=0.0)
-        self.ui.tab_main.add_titrationbase()
-        self.ui.tab_main.add_emf()
-        self.ui.tab_main.add_spectrumuv()
-        self.ui.tab_main.add_calor()
+        # m = self.ui.tab_main.add_model()
+        # m.addEquilibrium(position=-1, stoich=(1, 2), value=10.0, error=0.0)
+        # m.addEquilibrium(position=-1, stoich=(1, 3), value=20.0, error=0.0)
+        # m.addEquilibrium(position=-1, stoich=(1, 4), value=20.0, error=0.0)
+        # self.ui.tab_main.add_titrationbase()
+        # self.ui.tab_main.add_spectrumuv()
         # m.removeComponent()
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()
+        # self.ui.tab_main.import_txtspectrum('./spec1.txt')
         # self.go()
         # self._manual_fitting()
         # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
-        # libio.importSuperquadApp(self, '../data/hpytren1.sup')
+        libio.importSuperquadApp(self, '../data/hpytren1.sup')
         # END TESTING PART
 
     def go(self):
@@ -138,12 +134,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self._fit_ionic()
         else:
             self.message("Nothing to do")
-
-    def import_txtsp(self, filename):
-        'Import data from text file.'
-        wavelength, data = libio.import_spectrum_text(filename)
-        spectwidget = self.ui.tab_main.add_spectrumuv()
-        spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
 
     def iterate(self):
         "Perform only one iteration."
@@ -843,7 +833,7 @@ class MainWindow(QtWidgets.QMainWindow):
         filename, ok = self.open_dialog(filters)
         if not ok:
             return
-        self.import_txtsp(filename)
+        self.ui.tab_main.import_txtsp(filename)
 
     def _is_current_tab(self, type_):
         "Check whether current tab is of a particular type."

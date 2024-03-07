@@ -3,6 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import libio
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
 from modelwidget import ModelWidget
@@ -22,27 +23,27 @@ class TabWidget(QtWidgets.QTabWidget):
 
     def add_external_data(self):
         widget = ExternalDataWidget()
-        name = self.__stamp(widget, "External")
+        self.__stamp(widget, "External")
         return widget
 
     def add_calor(self):
         widget = CalorWidget(self._model)
-        name = self.__stamp(widget, "Calor")
+        self.__stamp(widget, "Calor")
         return widget
 
     def add_emf(self):
         widget = EmfWidget(self._model)
-        name = self.__stamp(widget, "EMF")
+        self.__stamp(widget, "EMF")
         return widget
 
     def add_ionic(self):
         widget = IonicWidget()
-        name = self.__stamp(widget, "Ionic Strength")
+        self.__stamp(widget, "Ionic Strength")
         return widget
 
     def add_nmr(self):
         widget = NmrWidget(self._model)
-        name = self.__stamp(widget, "NMR")
+        self.__stamp(widget, "NMR")
         return widget
 
     def add_model(self):
@@ -56,27 +57,28 @@ class TabWidget(QtWidgets.QTabWidget):
 
     def add_speciation(self):
         widget = SpeciationWidget(self._model)
-        name = self.__stamp(widget, "Speciation")
+        self.__stamp(widget, "Speciation")
         return widget
 
     def add_spectrumuv(self):
         widget = SpecWidget(self._model)
-        name = self.__stamp(widget, "UV-vis")
+        self.__stamp(widget, "UV-vis")
         return widget
 
     def add_titration(self):
         widget = TitrationWidget(self._model)
-        name = self.__stamp(widget, "Titration Simulation")
+        self.__stamp(widget, "Titration Simulation")
         return widget
 
     def add_titrationbase(self):
         widget = TitrationBaseWidget(self._model)
-        name = self.__stamp(widget, "Titration")
+        self.__stamp(widget, "Titration")
         self._update_titration_list()
         widget.implicitVolumeChanged.connect(self.__implicit_titre_changed)
         return widget
 
     def clear(self):
+        "Clear all the tabs and delete everything."
         self._model = None
         self.__tabdicts = {}
         super().clear()
@@ -84,7 +86,7 @@ class TabWidget(QtWidgets.QTabWidget):
     def delete_current_tab(self):
         match self.currentWidget():
             case ModelWidget():
-                print("is model")
+                pass
             case TitrationBaseWidget():
                 self.__delete_current_tab()
                 self._update_titration_list()
@@ -96,11 +98,22 @@ class TabWidget(QtWidgets.QTabWidget):
             if isinstance(tab, TitrationBaseWidget):
                 yield tab.name
 
+    def import_txtspectrum(self, filename):
+        'Import data from text file.'
+        wavelength, data = libio.import_spectrum_text(filename)
+        titrwidget = self.add_titrationbase()
+        titrwidget.n_points = data.shape[1]
+        spectwidget = self.add_spectrumuv()
+        tcombo = spectwidget.ui.cb_titration
+        index = tcombo.findText(titrwidget.name)
+        tcombo.setCurrentIndex(index)
+        spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
+
     def _freec_widgets(self):
         'Yield widgets which can calculate free concentrations.'
-        for t in self._itertabs():
-            if hasattr(t, 'analyticalc'):
-                yield t
+        for tab in self._itertabs():
+            if hasattr(tab, 'analyticalc'):
+                yield tab
 
     def _itertabs(self):
         'Iterate over widgets in the tab widget.'
@@ -131,7 +144,6 @@ class TabWidget(QtWidgets.QTabWidget):
         self.__tabdicts[name] = widget
         self.addTab(widget, name)
         self.__tabcounter[group] = counter
-        return name
 
     @QtCore.pyqtSlot(object, str)
     def __titration_changed(self, widget, txt):
@@ -144,6 +156,8 @@ class TabWidget(QtWidgets.QTabWidget):
 
     @QtCore.pyqtSlot()
     def __implicit_titre_changed(self):
+        sender = self.sender()
         for widget in self._itertabs():
             if isinstance(widget, DataWidget):
-                widget.titre = self.sender().titre
+                widget.npoints = sender.n_points
+                widget.titre = sender.titre
