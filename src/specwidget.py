@@ -33,6 +33,7 @@ class SpecWidget(datawidget.DataWidget):
         self.labels_changed()
         model.labelsChanged.connect(self.updateLabel)
         model.componentAdded.connect(self.componentAdded)
+        model.componentDeleted.connect(self.componentDeleted)
         model.equilibriaChanged.connect(self.labels_changed)
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
@@ -70,21 +71,21 @@ class SpecWidget(datawidget.DataWidget):
         #  # self.ui.tab_data.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         #  # self.ui.tab_data.customContextMenuRequested.connect(self._pmtd)
 
-    def add_component(self, position: int, label: str):
-        '''Add one component to the system.
+    # def add_component(self, position: int, label: str):
+    #     '''Add one component to the system.
 
-        Add one column to model table with a new label.
+    #     Add one column to model table with a new label.
 
-        Parameters:
-            label (str): The label for the new reagent
-            position (int): position where the new reagent will be inserted.
-        Returns:
-            int: the position into which the component has been added.
-        '''
-        self._islog.insert(position, False)
-        with libqt.table_locked(self.table_data) as table:
-            table.insertRow(position)
-        self.__set_component_labels()
+    #     Parameters:
+    #         label (str): The label for the new reagent
+    #         position (int): position where the new reagent will be inserted.
+    #     Returns:
+    #         int: the position into which the component has been added.
+    #     '''
+    #     self._islog.insert(position, False)
+    #     with libqt.table_locked(self.table_data) as table:
+    #         table.insertRow(position)
+    #     self.__set_component_labels()
 
     def analyticalc(self):
         'Analytical concentrations'
@@ -108,10 +109,10 @@ class SpecWidget(datawidget.DataWidget):
         for col, data in enumerate(titration):
             libqt.fill_column(self.ui.table_data, col, data, formatting='{:.4e}')
 
-    def delete_component(self, position: int):
-        with libqt.table_locked(self.table_data) as table:
-            table.removeRow(position)
-        del self._islog[position]
+    # def delete_component(self, position: int):
+    #     with libqt.table_locked(self.table_data) as table:
+    #         table.removeRow(position)
+    #     del self._islog[position]
 
     def feed_data(self, wavelengths, spectra_data, analytical_concentrations=None):
         total_rows = 1 + spectra_data.shape[0] + self._model.number_components
@@ -144,9 +145,13 @@ class SpecWidget(datawidget.DataWidget):
             table.insertRow(index)
 
     @QtCore.pyqtSlot(int)
-    def component_deleted(index):
-        with libqt.table_locked(self.ui.table_data) as table:
-            table.removeRow(index)
+    def componentDeleted(self, index):
+        with libqt.table_locked(self.ui.table_components) as table:
+            # for i in sorted(self._model.deleted_components, reverse=True):
+            #     print(i)
+            #     table.removeColumn(i)
+            table.removeColumn(index)
+        self.labels_changed()
 
     @QtCore.pyqtSlot(int, str)
     def update_label(self, position, new_label):

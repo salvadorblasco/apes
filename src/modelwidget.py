@@ -14,6 +14,7 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 
 import consts
+import libaux
 import libqt
 import ui_model
 
@@ -203,14 +204,14 @@ class ModelWidget(QtWidgets.QWidget):
                 self.ui.table_model.removeRow(position)
         self.__renumber()
 
-    def removeComponent(self, position=None):
+    def removeComponent(self, which=None):
         '''Remove one reagent from all models.
 
         Remove selected reagent from current table and from all the models.
         If **position** is not given, a dialog will pop to ask for one.
 
         Parameters:
-            position (optional, int): the index of the component to be deleted
+            which (optional, int or str): the index or label of the component to be deleted
         Emits:
             componentDeleted(int)
         Raises:
@@ -220,23 +221,38 @@ class ModelWidget(QtWidgets.QWidget):
         .. note:: Use with care, can cause data loss.
         '''
         if self.number_components < 3:
-            raise ValueError('At least two components')
+            raise ValueError('Model must have at least two components')
 
-        table = self.ui.table_model
-        if position is None:
-            c = table.currentColumn()
-            table.selectColumn(c)  # aparently this does nothing
-            if libqt.confirm_delete(parent=self,
+        match which:
+            case str():
+                if which not in self.labels:
+                    raise ValueError(f'component {which} does not exist')
+                position = self.labels.index(which)
+                confirm = False
+            case int():
+                if which not in range(self.number_components):
+                    raise ValueError('Cannot delete this column')
+                position = which
+                confirm = False
+            case None:
+                position = self.ui.table_model.currentColumn()
+                confirm = True
+            case _:
+                raise ValueError(f"parameter {which} not recognised")
+
+        # table = self.ui.table_model
+        if confirm:
+            # c = table.currentColumn()
+            # table.selectColumn(c)  # aparently this does nothing
+            if not libqt.confirm_delete(parent=self,
                                     msg="Do you want to delete this reagent?"):
-                position = c
-            else:
                 return
-        if c > self.number_components:
-            raise ValueError('Cannot delete this column')
+        # if c > self.number_components:
+        #     raise ValueError('Cannot delete this column')
         with libqt.table_locked(self.ui.table_model):
-            table.removeColumn(c)
+            self.ui.table_model.removeColumn(position)
         # TODO delete from all models
-        self.componentDeleted.emit(c)
+        self.componentDeleted.emit(position)
 
     def setCurrentModel(self, modelindex=0):
         '''Initialize the widget with the new values.

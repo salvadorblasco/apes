@@ -103,6 +103,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.tab_main.add_emf()
         self.ui.tab_main.add_spectrumuv()
         self.ui.tab_main.add_calor()
+        m.removeComponent('A')
         # m.removeComponent()
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()

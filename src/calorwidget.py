@@ -47,6 +47,7 @@ class CalorWidget(datawidget.DataWidget):
         libqt.freeze_column(self.ui.table_titration, 3)
 
         model.componentAdded.connect(self.componentAdded)
+        model.componentDeleted.connect(self.componentDeleted)
         self._connectMenu(self.ui.table_data)
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
@@ -67,6 +68,11 @@ class CalorWidget(datawidget.DataWidget):
 
             combo1 = libqt.create_combo(consts.REFINE_LABELS, consts.RF_CONSTANT)
             t.setCellWidget(which, self._cols.enthalpy_flag, combo1)
+
+    @QtCore.pyqtSlot(int)
+    def componentDeleted(self, which):
+        with libqt.table_locked(self.ui.table_titration) as t:
+            t.removeRow(which)
 
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position: int, new_label: str):

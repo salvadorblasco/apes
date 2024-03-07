@@ -11,7 +11,7 @@ import re
 import numpy as np
 
 
-__version__ = 'dev'
+__version__ = '0.1'
 
 
 def assert_array(*args):
@@ -735,6 +735,13 @@ def extract_groups(array, xref, yref=None):
 
     aux_dict = {t: n for n, t in enumerate(set(c))}
     return [aux_dict[q] for  n, q in enumerate(c)]
+
+
+def related_components(component: int, stoich):
+    _stoich = np.array(stoich)
+    size = _stoich.shape[1]
+    yield component
+    yield from (size + i for i in np.flatnonzero(_stoich[:, component]))
 
 
 def _utf_subscr(string):
