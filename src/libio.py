@@ -76,7 +76,7 @@ def loadXML(app, f):
     tmain = app.ui.tab_main
 
     tags = ('models', 'distri', 'simu', 'potentiometricdata', 'nmrdata',
-            'specdata', 'calordata', 'externaldata')
+            'specdata', 'calordata', 'externaldata', 'titration')
     loaders = (loadModelsXML, loadSpeciationXML, loadTitrationXML, loadEmfXML,
                loadNmrXML, loadSpectrXML, loadCalorXML, loadExternalXML,
                loadTitrationBaseXML)
@@ -372,12 +372,12 @@ def loadTitrationBaseXML(widget, xmle):
     Parameters:
         xmle (:class:`xml.etree.ElementTree`): object with the XML info.
     """
-    verr = float(xml.find('volumeerror').text)
-    init = __read_floats('init')
-    initk = __read_ints('initkey')
-    buret = __read_floats('buret')
-    buretk = __read_ints( 'buretkey')
-    vinit = float(xml.find('startingvolume').text)
+    verr = float(xmle.find('volumeerror').text)
+    init = __read_floats(xmle, 'init')
+    initk = __read_ints(xmle, 'initkey')
+    buret = __read_floats(xmle, 'buret')
+    buretk = __read_ints(xmle,  'buretkey')
+    vinit = float(xmle.find('startingvolume').text)
     vfinal = xmle.find('finalvolume')
     npoints = xmle.find('totalpoints')
     if vfinal is not None and npoints is not None:

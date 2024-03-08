@@ -708,7 +708,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
 
     @property
     def volume_error(self):
-        return self.ui.dsb_Verror
+        return self.ui.dsb_Verror.value()
 
     @volume_error.setter
     def volume_error(self, error: float):
