@@ -43,6 +43,8 @@ class SpecWidget(datawidget.DataWidget):
         #  self.table_data.setVerticalHeaderLabels(labels + ['200'])
         #  self.verticalLayout.addWidget(self.table_data)
 
+        self._extpopupmenu()
+        self._connectMenu(self.ui.table_data)
         #  self._menuvh_wavel = QtWidgets.QMenu(parent=self)
         #  self._action_usewl = QtWidgets.QAction('use', parent=self._menuvh_wavel)
         #  self._action_usewl.setCheckable(True)
@@ -70,7 +72,8 @@ class SpecWidget(datawidget.DataWidget):
 
         #  # self.ui.tab_data.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         #  # self.ui.tab_data.customContextMenuRequested.connect(self._pmtd)
-
+        self.__ignored_wavelengths = set()
+        self.__ignored_points = set()
 
     def analyticalc(self):
         'Analytical concentrations'
@@ -205,9 +208,9 @@ class SpecWidget(datawidget.DataWidget):
     def _cchch(self, c):
         c.setText("coloured" if c.isChecked() else "transparent")
 
-    def _pmtd(self, p):
-        "pop-up menu for tab_data"
-        print("context menu raised!")
+    # def _pmtd(self, p):
+    #     "pop-up menu for tab_data"
+    #     print("context menu raised!")
 
     def _extpopupmenu(self):
         p = self._popupm
@@ -215,8 +218,8 @@ class SpecWidget(datawidget.DataWidget):
         a.triggered.connect(self._tdwmuse)
         a = p.addAction("ignore wavelength(s)")
         a.triggered.connect(self._tdwmign)
-        a = p.addAction("delete wavelength(s)")
-        a.triggered.connect(self._tdwmdel)
+        # a = p.addAction("delete wavelength(s)")
+        # a.triggered.connect(self._tdwmdel)
 
     def _menuvh_makep(self):
         pass
@@ -228,15 +231,34 @@ class SpecWidget(datawidget.DataWidget):
             qchk.setChecked(True)
             table.setCellWidget(0, col, qchk)
 
+    def _tdpmign(self):
+        "Slot for popup menu option 'ignore points'"
+        for col in {x.column() for x in self._tabdata.selectedIndexes()}:
+            libqt.cross(libqt.iter_column(self._tabdata, col), True)
+            self.__ignored_points.add(col)
+
+    def _tdpmuse(self):
+        "Slot for popup menu option 'use points'"
+        for col in {x.column() for x in self._tabdata.selectedIndexes()}:
+            libqt.cross(libqt.iter_column(self._tabdata, col), False)
+            self.__ignored_points.discard(col)
+        for row in self.__ignored_wavelengths:
+            libqt.cross(libqt.iter_row(self._tabdata, row), True)
+
     def _tdwmuse(self):
-        use = {x.column() for x in self._tabdata.selectedIndexes()}
-        self.data.useWl(use)
-        libqt.strikeOutCols(self._tabdata, use, False)
+        for row in {x.row() for x in self._tabdata.selectedIndexes()}:
+            libqt.cross(libqt.iter_row(self._tabdata, row), False)
+            libqt.cross(libqt.iter_row(self.ui.table_components, 1+row), False)
+            self.__ignored_wavelengths.discard(row)
+        print(self.__ignored_points)
+        for col in self.__ignored_points:
+            libqt.cross(libqt.iter_column(self._tabdata, col), True)
 
     def _tdwmign(self):
-        ignore = {x.column() for x in self._tabdata.selectedIndexes()}
-        self.data.ignoreWl(ignore)
-        libqt.strikeOutCols(self._tabdata, ignore, True)
+        for row in {x.row() for x in self._tabdata.selectedIndexes()}:
+            libqt.cross(libqt.iter_row(self._tabdata, row), True)
+            libqt.cross(libqt.iter_row(self.ui.table_components, 1+row), True)
+            self.__ignored_wavelengths.add(row)
 
     def _tdwmdel(self):
         raise NotImplementedError

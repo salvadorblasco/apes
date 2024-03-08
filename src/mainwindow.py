@@ -101,7 +101,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # m.removeComponent()
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()
-        # self.ui.tab_main.import_txtspectrum('./spec1.txt')
+        self.ui.tab_main.import_txtspectrum('./spec1.txt')
         # self.go()
         # self._manual_fitting()
         # self.refresh()
@@ -109,7 +109,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
         # libio.importSuperquadApp(self, '../data/hpytren1.sup')
         # libio.saveXML(self, '../data/hpytren1.xml')
-        libio.loadXML(self, '../data/hpytren1.xml')
+        # libio.loadXML(self, '../data/hpytren1.xml')
         # END TESTING PART
 
     def go(self):
