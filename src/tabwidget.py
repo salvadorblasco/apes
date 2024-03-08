@@ -17,6 +17,7 @@ from datawidget import DataWidget
 class TabWidget(QtWidgets.QTabWidget):
     def __init__(self, parent):
         super().__init__(parent)
+        super().setMovable(True)
         self._model = None
         self.__tabdicts = {}
         self.__tabcounter = {}

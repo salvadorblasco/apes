@@ -265,10 +265,12 @@ def loadEmfXML(widget, xmle):
         exppoints = len(flat_emf) // nelectrod
 
     emf = np.array(flat_emf).reshape((exppoints, nelectrod))
-    table = widget.ui.table_data
-    table.setColumnCount(nelectrod+1)
-    table.setRowCount(exppoints)
-    libqt.array2tab(table, emf, col0=1)
+    widget.nelectrodes = nelectrod
+    widget.npoints = exppoints
+    # table.setColumnCount(nelectrod+1)
+    # table.setRowCount(exppoints)
+    with libqt.table_locked(widget.ui.table_data) as table:
+        libqt.array2tab(table, emf, col0=1)
     # flat_emf = tuple(_read_seq(xmle, 'emfread'))
     # data_feed = itertools.chain((titre,
     # *[flat_emf[(exppoints*i):(exppoints*(i+1))]for i in range(nelectrod)]))

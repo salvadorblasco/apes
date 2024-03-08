@@ -174,14 +174,14 @@ class DataWidget(QtGui.QWidget):
 
     def _buildmenu(self):
         p = QtGui.QMenu(parent=self)
-        a = p.addAction("new point(s)")
-        a.triggered.connect(self._newpoint)
+        # a = p.addAction("new point(s)")
+        # a.triggered.connect(self._newpoint)
         a = p.addAction("use point(s)")
         a.triggered.connect(self._tdpmuse)
         a = p.addAction("ignore point(s)")
         a.triggered.connect(self._tdpmign)
-        a = p.addAction("delete point(s)")
-        a.triggered.connect(self._tdpmdel)
+        # a = p.addAction("delete point(s)")
+        # a.triggered.connect(self._tdpmdel)
         self._popupm = p
 
     def _set_default_titration(self):

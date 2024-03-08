@@ -49,34 +49,16 @@ class EmfWidget(datawidget.DataWidget):
         model.componentDeleted.connect(self.componentDeleted)
 
         popup = self._popupm
-        action = popup.addAction('New electrode')
-        action.triggered.connect(self._newlectrode)
-        action = popup.addAction('Remove electrode')
-        action.triggered.connect(self._dellectrode)
-
-        # self._set_default_titration()
-        # self.ui.table_data.cellChanged.connect(self.__tdatch)
-        # self.ui.table_titration.cellChanged.connect(self.__titr_params_changed)
-        # self.ui.table_params.cellChanged.connect(self.__tparch)
-
-        # pop-up menu for tab_data
-        # self._buildmenu()
-        # self.ui.table_data.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # self.ui.table_data.customContextMenuRequested.connect(self._pmtd)
+        # action = popup.addAction('New electrode')
+        # action.triggered.connect(self._newlectrode)
+        # action = popup.addAction('Remove electrode')
+        # action.triggered.connect(self._dellectrode)
 
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
     def add_component(self, label, position=-1):
         table = self.ui.table_titration
         ncomps = self.model.number_components
-        # print("Component changed. Update needed. Total: ", ncomps)
-        # if position is None:
-        #     position = self.ui.table.currentColumn()
-
-        # if position > ncomps:
-        #     position = ncomps
-        # if position < 0:
-        #     position = ncomps - position
 
         _buret = list(self.buret) + [0.1]
         _initial_amount = list(self.initial_amount) + [0.001]
@@ -309,6 +291,19 @@ class EmfWidget(datawidget.DataWidget):
     def nelectrodes(self):
         'Number of electrodes used.'
         return self.ui.table_params.columnCount()
+
+    @nelectrodes.setter
+    def nelectrodes(self, n: int):
+        if n < 1:
+            raise ValueError(f"At least one electrode is needed. {n} given.")
+        with libqt.table_locked(self.ui.table_params) as t:
+            t.setColumnCount(n)
+            labels = [f"electrode{i}" for i in range(n)]
+            t.setHorizontalHeaderLabels(labels)
+        with libqt.table_locked(self.ui.table_data) as t:
+            t.setColumnCount(1+n)
+            labels = ["titre"] + [f"emf{i}" for i in range(n)]
+            t.setHorizontalHeaderLabels(labels)
 
     @property
     def nelectrons(self):
