@@ -13,6 +13,7 @@ Common parameters and constants used applicationwide.
 LOGK = 2.3025851      # ln(10)
 R = 8.314472          # gas constant(J ∕ (K⋅mol))
 fRTnF = 25.6926       # mV
+NERNST = 25.6926      # mV
 RoverF = 0.086173424  # mV/K
 
 FM_NONE, FM_SIM, FM_EMF, FM_CALOR, FM_SPEC, FM_NMR = range(6)

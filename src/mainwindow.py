@@ -101,7 +101,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # m.removeComponent()
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()
-        self.ui.tab_main.import_txtspectrum('./spec1.txt')
+        # self.ui.tab_main.import_txtspectrum('./spec1.txt')
         # self.go()
         # self._manual_fitting()
         # self.refresh()
