@@ -375,6 +375,11 @@ class ModelWidget(QtWidgets.QWidget):
         return 2 + self.number_components
 
     @property
+    def extended_labels(self):
+        labelstyle = 'plain'
+        yield from libaux.extended_labels(self.labels, self.stoich, kind=labelstyle)
+
+    @property
     def labels(self):
         'List of labels for every component.'
         self.__labels = [self.ui.table_model.horizontalHeaderItem(col).text()

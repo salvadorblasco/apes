@@ -61,3 +61,81 @@ def jacobian_f_solid(solubility_stoich):
 def jacobian_g_solid(concentration, solubility_stoich, solubility_product):
     g = fobj.gobj(concentration, solubility_stoich, solubility_product)
     return (1 + g[..., None])*solubility_stoich[None,...]/concentration[:,None,:]
+
+
+def dlogcdlogbeta(Amatrix, concentration, stoichiometry):
+    r"""Return ∂logc_k/∂logβ_i.
+
+    It returns the solution of the lineal system:
+    .. math :: \sum_{k=1}^S \left(
+                 c_k\delta_{ki} + \sum_{j=1}^E {
+                  p_{ji} p_{jk} c_{j+S}
+                 }
+                \right) \frac{\partial\log c_k}{\partial \log\beta_b}
+                = -p_{bi}c_{b+S}
+    """
+    n_species = stoichiometry.shape[1]
+    B = -stoichiometry[np.newaxis, ...] *  concentration[:, n_species:, None]
+    return np.linalg.solve(Amatrix, B.swapaxes(-1,-2))
+
+
+def dlogcdt(Amatrix, vol, vol0):
+    r"""Return ∂logc_k/∂t_i.
+
+    The definition is the following
+    .. math::
+
+        \sum_{k=1}^S \left(
+         c_k\delta_{ki} + \sum_{j=1}^E p_{ji}p_{jk} c_{j+S}
+        \right) \frac{\partial\log c_k}{\partial t_j} = \frac{v_0\cdot \delta_{ij}}{v+v_0}
+
+    The matrix **A** can be obtained from :func:`matrix_a`.
+
+    Parameters:
+        Amatrix (:class:`numpy.ndarray`): the matrix **A** which is a (N, S, S) float array.
+        vol (:class:`numpy.ndarray`): the titre
+        vol0 (float): the starting volume:
+    Returns:
+        :class:`numpy.ndarray`: an (N, S, S) array
+    """
+    n_points, n_species, *_ = Amatrix.shape
+    B = np.eye(n_species)[np.newaxis, ...] / (vol0 + vol[:, np.newaxis, np.newaxis])
+    return np.squeeze(np.linalg.solve(Amatrix, B))
+
+
+def dlogcdb(Amatrix, vol, vol0):
+    r"""Return ∂logc_k/∂b_i.
+
+    The definition is the following
+    .. math::
+
+        \sum_{k=1}^S \left(
+         c_k\delta_{ki} + \sum_{j=1}^E p_{ji}p_{jk} c_{j+S}
+        \right) \frac{\partial\log c_k}{\partial b_j} = \frac{v\cdot\delta_{ij}}{v+v_0}
+
+    The matrix **A** can be obtained from :func:`matrix_a`.
+
+    Parameters:
+        Amatrix (:class:`numpy.ndarray`): the matrix **A** which is a (N, S, S) float array.
+        vol (:class:`numpy.ndarray`): the titre
+        vol0 (float): the starting volume:
+    Returns:
+        :class:`numpy.ndarray`: an (N, S, S) array
+    """
+    n_points, n_species, *_ = Amatrix.shape
+    B = vol[:, np.newaxis, np.newaxis] * np.eye(n_species)[np.newaxis, ...] / (vol0 + vol[:, np.newaxis, np.newaxis])
+    return np.squeeze(np.linalg.solve(Amatrix, B))
+
+
+def amatrix(concentration, stoichiometryx):
+    r"""Calculate the matrix **A**.
+
+    **A** is a matrix that apperars commonly in many equations for the elaboration
+    of the jacobian. It is defined  as follows:
+
+    .. math::
+
+        A_{nij} = c_{nk}\delta_{ki} + \sum_{j=1}^E p_{ki}p_{jk}c_{n,j+S}
+    """
+    return np.einsum('ji,jk,...j->...ik', stoichiometryx, stoichiometryx, concentration)
+

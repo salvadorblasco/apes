@@ -1,21 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>SUPYQUAD script &#8212; APES 1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +32,8 @@
           <a href="qsi.html" title="qsi module"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SUPYQUAD script</a></li> 
       </ul>
     </div>  
 
@@ -43,59 +42,51 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="supyquad-script">
+  <section id="supyquad-script">
 <h1>SUPYQUAD script<a class="headerlink" href="#supyquad-script" title="Permalink to this headline">¶</a></h1>
 <p>SUPYQUAD is a python implementation of SUPERQUAD.[1]_ It aims to use the same
 data format to fit equilibrium constants from potentiometric data.</p>
-<div class="section" id="usage">
+<section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt><a href="#id1"><span class="problematic" id="id2">``</span></a>$ supyquad.py [-h] [–max-iterations N] [–verbosity VERBOSITY] [–version]</dt>
-<dd>[–leastsquares | –simplex] &lt; input &gt; output``</dd>
-<dt>optional arguments:</dt>
-<dd><table class="first last docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group">
-<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
-<td>show this help message and exit</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--max-iterations <var>N</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>Sets the maximum number of iterations</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--verbosity <var>VERBOSITY</var></span>, <span class="option">-v <var>VERBOSITY</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>increase output verbosity</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--version</span></kbd></td>
-<td>show program’s version number and exit</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--leastsquares</span>, <span class="option">-l<var>m</var></span>, <span class="option">-l<var>s</var></span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td>sets the Levenberg-Marquardt algorithm (least squares)
-as the algorithm to be used for fitting.</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--simplex</span>, <span class="option">-n<var>m</var></span></kbd></td>
-<td>sets the Nelder-Mead algorithm (simplex) as the
-algorithm to be used for fitting.</td></tr>
-</tbody>
-</table>
+<dl>
+<dt><a href="#id1"><span class="problematic" id="id2">``</span></a>$ supyquad.py [-h] [–max-iterations N] [–verbosity VERBOSITY] [–version]</dt><dd><p>[–leastsquares | –simplex] &lt; input &gt; output``</p>
+</dd>
+<dt>optional arguments:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>show this help message and exit</p>
+</dd>
+<dt><kbd><span class="option">--max-iterations <var>N</var></span></kbd></dt>
+<dd><p>Sets the maximum number of iterations</p>
+</dd>
+<dt><kbd><span class="option">--verbosity <var>VERBOSITY</var></span>, <span class="option">-v <var>VERBOSITY</var></span></kbd></dt>
+<dd><p>increase output verbosity</p>
+</dd>
+<dt><kbd><span class="option">--version</span></kbd></dt>
+<dd><p>show program’s version number and exit</p>
+</dd>
+<dt><kbd><span class="option">--leastsquares</span>, <span class="option">-l<var>m</var></span>, <span class="option">-l<var>s</var></span></kbd></dt>
+<dd><p>sets the Levenberg-Marquardt algorithm (least squares)
+as the algorithm to be used for fitting.</p>
+</dd>
+<dt><kbd><span class="option">--simplex</span>, <span class="option">-n<var>m</var></span></kbd></dt>
+<dd><p>sets the Nelder-Mead algorithm (simplex) as the
+algorithm to be used for fitting.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <p>Where <code class="docutils literal notranslate"><span class="pre">input</span></code> is an input with complies with the input format for SUPERQUAD.
 The input is processed and the output is sent to the standard output.</p>
-<table class="docutils footnote" frame="void" id="id3" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[1]</td><td>Peter Gans, Antonio Sabatini, Alberto Vacca, <em>J. Chem. Soc. Dalton Trans.</em> 1985, 1195-1200</td></tr>
-</tbody>
-</table>
-</div>
-</div>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
+<dd><p>Peter Gans, Antonio Sabatini, Alberto Vacca, <em>J. Chem. Soc. Dalton Trans.</em> 1985, 1195-1200</p>
+</dd>
+</dl>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -120,17 +111,15 @@ The input is processed and the output is sent to the standard output.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -148,12 +137,13 @@ The input is processed and the output is sent to the standard output.</p>
           <a href="qsi.html" title="qsi module"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SUPYQUAD script</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Salvador Blasco.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

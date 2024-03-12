@@ -18,6 +18,7 @@ import numpy as np
 import consts
 import libaux
 import libeq.consol
+import libeq.jacobian
 import libfit
 import libmath
 import excepts
@@ -26,75 +27,20 @@ import excepts
 __version__ = '0.5'
 
 
-def emf_jac_beta(amatrix, concentration, stoichiometry, beta, slope=1.0):
-    dlcdlb = dlogcdlogbeta(amatrix, concentration, stoichiometry)
+def emf_jac_beta(dlogc_dlogbeta, beta, slope=1.0):
     return slope*consts.NERNST*dlogcdlogbeta/beta
 
 
-def emf_jac_init(amatrix, vol, vol0, slope=1.0):
-    dlcdlt = dlogcdt(amatrix, vol, vol0)
-    return slope*consts.NERNST*dlogcdt
+def emf_jac_init(dlogc_dt, slope=1.0):
+    return slope*consts.NERNST*dlogc_dt
 
 
-def emf_jac_buret(amatrix, vol, vol0, slope=1.0):
-    dlcdlb = dlogcdb(amatrix, vol, vol0)
+def emf_jac_buret(dlogc_db, slope=1.0):
     return slope*consts.NERNST*dlogcdb
 
 
 def emf_jac_e0(size):
     return np.ones(size)
-
-
-def dlogcdlogbeta(Amatrix, concentration, stoichiometry):
-    r"""Return ∂logc_k/∂logβ_i.
-
-    It returns the solution of the lineal system:
-    .. math :: \sum_{k=1}^S \left(
-                 c_k\delta_{ki} + \sum_{j=1}^E {
-                  p_{ji} p_{jk} c_{j+S}
-                 }
-                \right) \frac{\partial\log c_k}{\partial \log\beta_b}
-                = -p_{bi}c_{b+S}
-    """
-    n_species = stoichiometry.shape[1]
-    B = -stoichiometry[np.newaxis, ...] *  concentration[:, n_species:, None]
-    return np.linalg.solve(Amatrix, B.swapaxes(-1,-2))
-
-
-def dlogcdt(Amatrix, vol, vol0):
-    r"""Return ∂logc_k/∂t_i.
-
-    \sum_{k=1}^S \left(
-     c_k\delta_{ki} + \sum_{j=1}^E p_{ji}p_{jk} c_{j+S}
-    \right) \frac{\partial\log c_k}{\partial t_j} = \frac{v_0\cdot \delta_{ij}}{v+v_0}
-    """
-    n_points, n_species, *_ = Amatrix.shape
-    B = np.eye(n_species)[np.newaxis, ...] / (vol0 + vol[:, np.newaxis, np.newaxis])
-    return np.squeeze(np.linalg.solve(Amatrix, B))
-
-
-def dlogcdb(Amatrix, vol, vol0):
-    r"""Return ∂logc_k/∂b_i.
-
-    \sum_{k=1}^S \left(
-     c_k\delta_{ki} + \sum_{j=1}^E p_{ji}p_{jk} c_{j+S}
-    \right) \frac{\partial\log c_k}{\partial b_j} = \frac{v\cdot\delta_{ij}}{v+v_0}
-    """
-    n_points, n_species, *_ = Amatrix.shape
-    B = vol[:, np.newaxis, np.newaxis] * np.eye(n_species)[np.newaxis, ...] / (vol0 + vol[:, np.newaxis, np.newaxis])
-    return np.squeeze(np.linalg.solve(Amatrix, B))
-
-
-
-def amatrix(concentration, stoichiometryx):
-    """Calculate the matrix **A**.
-
-    **A** is a matrix that apperars commonly in many equations for the elaboration
-    of the jacobian. It is defined  as follows:
-
-    .. math :: A_{nij} = c_{nk}\delta_{ki} + \sum_{j=1}^E p_{ki}p_{jk}c_{n,j+S}
-    """
-    return np.einsum('ji,jk,...j->...ik', stoichiometryx, stoichiometryx, concentration)
 
 
 def emffit(beta, beta_flags, stoichiometry, titration_data, electrodes,

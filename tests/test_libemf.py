@@ -18,28 +18,6 @@ class LibEmfTests(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def test_amatrix(self):
-        amatrix = libemf.amatrix(hexaprotic.free_concentration, hexaprotic.stoichx)
-        np.testing.assert_array_almost_equal(amatrix, hexaprotic.matrix_a, decimal=4)
-
-    def test_dlogcdlogbeta(self):
-        tested = libemf.dlogcdlogbeta(hexaprotic.matrix_a,
-                                      hexaprotic.free_concentration,
-                                      hexaprotic.stoich)
-        np.testing.assert_array_almost_equal(tested, hexaprotic.dlogc_dlogbeta, decimal=2)
-
-    def test_dlogcdt(self):
-        tested = libemf.dlogcdt(hexaprotic.matrix_a,
-                                hexaprotic.titre,
-                                hexaprotic.v0)
-        np.testing.assert_allclose(tested, hexaprotic.dlogc_dt, rtol=1e-2)
-
-    def test_dlogcdb(self):
-        tested = libemf.dlogcdb(hexaprotic.matrix_a,
-                                hexaprotic.titre,
-                                hexaprotic.v0)
-        np.testing.assert_allclose(tested, hexaprotic.dlogc_db, rtol=1e-2)
-
     def test_hselect(self):
         C = np.array([[0.255, 0.638, 0.898, 0.503, 0.418],
                       [0.383, 0.789, 0.731, 0.713, 0.629],

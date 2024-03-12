@@ -1,3 +1,6 @@
+
+import libeq
+
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
 from modelwidget import ModelWidget
@@ -17,7 +20,10 @@ class Bridge():
         self.variable_size = []
         self.variable_flags = []
         self.variable_values = []
-        self.__stoichiometry = np.array(model.stoich)
+        self.stoichiometry = np.array(model.stoich)
+        self.stoichiometryx = np.vstack((np.eye(model.number_components, dtype=int),
+                                         self.stoichiometry))
+        self.model = model
         self.free_concentrations = None
 
         self._fjacobian = {
@@ -40,7 +46,8 @@ class Bridge():
             self.function_size.extend(fsize)
 
     def generate_jacobian(self):
-        def jacobian(values, free_concentrations):
+        def jacobian(values, free_concentration):
+            amatrix = libeq.jacobian.amatrix(free_concentration, self.stoichiometryx)
             ...
 
         return jacobian

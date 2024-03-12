@@ -170,15 +170,6 @@ class MainWindow(QtWidgets.QMainWindow):
             widget.set_free_concentration(c)
             self.refresh()
 
-    # deprecated
-    def menuDeleteDs(self):
-        "Delete the current dataset."
-        # t = self.ui.tab_main
-        # # self.data.delete(t.currentWidget().data)
-        # # TODO remove signals/slots
-        # t.removeTab(t.currentIndex())
-        t = self.ui.tab_main.delete_current_tab()
-
     def menuModelRename(self):
         """Change the name of the current model.
 
@@ -922,7 +913,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionNewTitrSim.triggered.connect(self.newTitration)
         ui.actionNewSpeciesDist.triggered.connect(self.newSpeciation)
         ui.actionNewExternalData.triggered.connect(self.new_external_data)
-        ui.actionDeleteDS.triggered.connect(self.menuDeleteDs)
+        ui.actionDeleteDS.triggered.connect(self.ui.tab_main.delete_current_tab)
         ui.actionNewTitration.triggered.connect(self.new_titration_base)
         ui.actionUse.triggered.connect(self.menu_toggle_use)
         ui.actionImportPASAT.triggered.connect(self._import_pasat)
@@ -1236,15 +1227,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def __saveconc(self):
         "Save free concentrations to a file."
         current_widget = self.ui.tab_main.currentWidget()
-        # fail_msg = 'No concentration values available'
-        # if not hasattr(current_widget, 'free_concentration'):
-        #     self.message(fail_msg)
-        #     return
-        # conc = current_widget.free_concentration()
-        # if conc is None:
-        #     self.message(fail_msg)
-        #     return
-        # assert isinstance(conc, np.ndarray)
         conc = self.__concentration_matrix()
 
         filters = ("Numpy files (*.npy)",
@@ -1258,7 +1240,7 @@ class MainWindow(QtWidgets.QMainWindow):
             np.save(filename, conc)
         elif type_ == filters[1]:
             er_conc = current_widget.free_concentration_error()
-            labels = current_widget.extended_labels()
+            labels = tuple(self.modelwidget.extended_labels)
             beta = np.array(self.modelwidget.beta)
             analc = current_widget.analyticalc()
             stoich = np.array(self.modelwidget.stoich)

@@ -5,6 +5,8 @@ import unittest
 import sys
 import numpy as np
 
+import hexaprotic
+
 sys.path.append('../src')
 # pylint: disable=import-error
 
@@ -182,6 +184,33 @@ class Test2Jacobian(unittest.TestCase):
                     jout /= c[j]
                     jout += 1 if i == j else 0
                     self.assertAlmostEqual(jin[i, j], jout)
+
+    def test_amatrix(self):
+        import libeq.jacobian
+        amatrix = libeq.jacobian.amatrix(hexaprotic.free_concentration, hexaprotic.stoichx)
+        np.testing.assert_array_almost_equal(amatrix, hexaprotic.matrix_a, decimal=4)
+
+    def test_dlogcdlogbeta(self):
+        import libeq.jacobian
+        tested = libeq.jacobian.dlogcdlogbeta(hexaprotic.matrix_a,
+                                              hexaprotic.free_concentration,
+                                              hexaprotic.stoich)
+        np.testing.assert_array_almost_equal(tested, hexaprotic.dlogc_dlogbeta, decimal=2)
+
+    def test_dlogcdt(self):
+        import libeq.jacobian
+        tested = libeq.jacobian.dlogcdt(hexaprotic.matrix_a,
+                                        hexaprotic.titre,
+                                        hexaprotic.v0)
+        np.testing.assert_allclose(tested, hexaprotic.dlogc_dt, rtol=1e-2)
+
+    def test_dlogcdb(self):
+        import libeq.jacobian
+        tested = libeq.jacobian.dlogcdb(hexaprotic.matrix_a,
+                                        hexaprotic.titre,
+                                        hexaprotic.v0)
+        np.testing.assert_allclose(tested, hexaprotic.dlogc_db, rtol=1e-2)
+
 
 
 class Test3Fobj(unittest.TestCase):

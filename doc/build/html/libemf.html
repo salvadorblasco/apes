@@ -1,21 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>libemf module &#8212; APES 1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,7 +37,8 @@
           <a href="libaux.html" title="libaux module"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">&lt;no title&gt;</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">libemf module</a></li> 
       </ul>
     </div>  
 
@@ -47,7 +47,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-libemf">
+  <section id="module-libemf">
 <span id="libemf-module"></span><h1>libemf module<a class="headerlink" href="#module-libemf" title="Permalink to this headline">¶</a></h1>
 <p>Routines for constant fitting from potentiometric data.</p>
 <p>Module <a class="reference internal" href="#module-libemf" title="libemf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">libemf</span></code></a> contains the routines needed for fitting equilibrium
@@ -55,73 +55,64 @@ constants from potentiometric data. The main function to invoke here is
 <a class="reference internal" href="#libemf.emffit" title="libemf.emffit"><code class="xref py py-func docutils literal notranslate"><span class="pre">emffit()</span></code></a> which handles most of the work. This is the only public
 function for this module.</p>
 <p class="rubric">Functions included in this module</p>
-<dl class="function">
-<dt id="libemf.build_reduced_emf">
-<code class="descclassname">libemf.</code><code class="descname">build_reduced_emf</code><span class="sig-paren">(</span><em>emf</em>, <em>emf0</em>, <em>nernst</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.build_reduced_emf" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.build_reduced_emf">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">build_reduced_emf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emf0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nernst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.build_reduced_emf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build reduced EMF.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>emf</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – </li>
-<li><strong>emf0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – </li>
-<li><strong>nernst</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emf</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – </p></li>
+<li><p><strong>emf0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – </p></li>
+<li><p><strong>nernst</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.dcdt">
-<code class="descclassname">libemf.</code><code class="descname">dcdt</code><span class="sig-paren">(</span><em>concentration</em>, <em>stoichiometry</em>, <em>starting_volume</em>, <em>titre</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.dcdt" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.dcdt">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">dcdt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concentration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.dcdt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate ∂c/∂T.</p>
 <p>T is the analytical concentration which is defined as
 <span class="math notranslate nohighlight">\(T_i = \frac{a_i v_0 + b_i v}{v_0 + v}\)</span>
 where <span class="math notranslate nohighlight">\(a_i\)</span> is the initial ammount for the component <em>i</em> and
 <span class="math notranslate nohighlight">\(b_i\)</span> is the buret concentration for the component <em>i</em>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>concentration</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The full free concentration
-array (N, E+S).</li>
-<li><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The stoichiometry array.</li>
-<li><strong>starting_volume</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or float) – The starting volume</li>
-<li><strong>titre</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The titre volume</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concentration</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The full free concentration
+array (N, E+S).</p></li>
+<li><p><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The stoichiometry array.</p></li>
+<li><p><strong>starting_volume</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or float) – The starting volume</p></li>
+<li><p><strong>titre</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The titre volume</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>where the first element is an (N, S, S) array where each element</dt>
-<dd><p class="first last">(i,j,k) is ∂c[i,j]/∂a[k]. The second element of the tuple is also
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>where the first element is an (N, S, S) array where each element</dt><dd><p>(i,j,k) is ∂c[i,j]/∂a[k]. The second element of the tuple is also
 an (N,S,S) array each element (i,j,k) are ∂c[i,j]/∂b[k].</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.emf_jac1">
-<code class="descclassname">libemf.</code><code class="descname">emf_jac1</code><span class="sig-paren">(</span><em>stoichiometry</em>, <em>free_conc</em>, <em>fh</em>, <em>var=()</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac1" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_jac1">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_jac1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_conc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate jacobian.</p>
 <p>Return jacobian for potentiometric titrations when
 T and E0 are constant, based on logarithmic betas and
 dimmensionless potentials.</p>
-<dl class="docutils">
-<dt>Notes: It is done this way because requires less input for the function</dt>
-<dd>and the result can be conveniently transformed by the calling function
-with simple operations. <span class="math notranslate nohighlight">\(E* = E / (fRT/nF)\)</span></dd>
+<dl class="simple">
+<dt>Notes: It is done this way because requires less input for the function</dt><dd><p>and the result can be conveniently transformed by the calling function
+with simple operations. <span class="math notranslate nohighlight">\(E* = E / (fRT/nF)\)</span></p>
+</dd>
 </dl>
 <div class="math notranslate nohighlight">
 \[\frac{\partial E^*}{\partial \log \beta} =
@@ -136,264 +127,255 @@ first from the set of linear equations</p>
   }
 \right) \frac{\partial c_k}{\partial \log\beta_b}
 = -p_{bi}c_{b+S}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – stoichiometric coefficients</li>
-<li><strong>free_conc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats) – free concentrations</li>
-<li><strong>fh</strong> (<em>callable</em>) – Function that applied to an array returns from it the
-electroactive species only.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – stoichiometric coefficients</p></li>
+<li><p><strong>free_conc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats) – free concentrations</p></li>
+<li><p><strong>fh</strong> (<em>callable</em>) – Function that applied to an array returns from it the
+electroactive species only.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>2D-array of floats containing the jacobian</dt>
-<dd><p class="first last">in the form ∂emf/∂logβ.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>2D-array of floats containing the jacobian</dt><dd><p>in the form ∂emf/∂logβ.</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> – if jacobian couldn’t be computed</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – if jacobian couldn’t be computed</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.emf_jac2">
-<code class="descclassname">libemf.</code><code class="descname">emf_jac2</code><span class="sig-paren">(</span><em>stoichiometry</em>, <em>free_conc</em>, <em>fh</em>, <em>titration</em>, <em>electrode</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac2" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_jac2">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_jac2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_conc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">electrode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the full jacobian.</p>
 <p>Order of parameters:</p>
 <blockquote>
 <div><ul class="simple">
-<li>Equilibrium constants</li>
-<li>starting ammounts</li>
-<li>buret concentrations</li>
-<li>standard potentials</li>
+<li><p>Equilibrium constants</p></li>
+<li><p>starting ammounts</p></li>
+<li><p>buret concentrations</p></li>
+<li><p>standard potentials</p></li>
 </ul>
 </div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a></li>
-<li><strong>free_conc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the free concentration array</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a></p></li>
+<li><p><strong>free_conc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the free concentration array</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.emf_res">
-<code class="descclassname">libemf.</code><code class="descname">emf_res</code><span class="sig-paren">(</span><em>electroactive_conc</em>, <em>emf</em>, <em>emf0</em>, <em>nernst</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_res" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_jac_beta">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_jac_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlogc_dlogbeta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac_beta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_jac_buret">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_jac_buret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlogc_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac_buret" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_jac_e0">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_jac_e0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac_e0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_jac_init">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_jac_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlogc_dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_jac_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emf_res">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emf_res</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">electroactive_conc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emf0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nernst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emf_res" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the residuals for potentiometric data.</p>
 <p>The residuals are calculated as <span class="math notranslate nohighlight">\(\chi = emf_{meas}-emf_{calc}\)</span>.
 and <span class="math notranslate nohighlight">\(emf_{calc}\)</span> is calculated through Nernst’s equation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>electroactive_conc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a 1D array of floats
-representing the free concentrations of the electroactive species.</li>
-<li><strong>emf</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a 1D array of floats representing the
-experimental values for the potential</li>
-<li><strong>emf0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The <a class="reference internal" href="index.html#term-standard-potential"><span class="xref std std-term">standard potential</span></a></li>
-<li><strong>nernst</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The slope for <a class="reference internal" href="index.html#term-nernst-s-equation"><span class="xref std std-term">Nernst’s equation</span></a></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>electroactive_conc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a 1D array of floats
+representing the free concentrations of the electroactive species.</p></li>
+<li><p><strong>emf</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a 1D array of floats representing the
+experimental values for the potential</p></li>
+<li><p><strong>emf0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The <a class="reference internal" href="index.html#term-standard-potential"><span class="xref std std-term">standard potential</span></a></p></li>
+<li><p><strong>nernst</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The slope for <a class="reference internal" href="index.html#term-Nernst-s-equation"><span class="xref std std-term">Nernst’s equation</span></a></p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a 1D array of floats containing the residuals.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a 1D array of floats containing the residuals.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.emffit">
-<code class="descclassname">libemf.</code><code class="descname">emffit</code><span class="sig-paren">(</span><em>beta</em>, <em>beta_flags</em>, <em>stoichiometry</em>, <em>titration_data</em>, <em>electrodes</em>, <em>method=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emffit" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emffit">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emffit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titration_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">electrodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emffit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Potentiometry data fitting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>beta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
-initial guess for the constants in log<sub>10</sub>units.</li>
-<li><strong>beta_flags</strong> (<em>sequence</em>) – refinement flags for values in
-‘beta’.</li>
-<li><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>
-in the usual format.</li>
-<li><strong>titration_data</strong> (<em>iterable of dict</em>) – <p>Information about the titrations.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+initial guess for the constants in log<sub>10</sub>units.</p></li>
+<li><p><strong>beta_flags</strong> (<em>sequence</em>) – refinement flags for values in
+‘beta’.</p></li>
+<li><p><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>
+in the usual format.</p></li>
+<li><p><strong>titration_data</strong> (<em>iterable of dict</em>) – <p>Information about the titrations.
 Each member of the list is one titrations. Every element in the
 list is a dict for which the accepted keys are:</p>
 <ul>
-<li>V (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): volume of titre in mL.</li>
-<li><dl class="first docutils">
-<dt>emf (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): containing emf measured in mV. It</dt>
-<dd>must be of the same size than <a href="#id1"><span class="problematic" id="id2">:var:`V`</span></a>. Each element can be a
+<li><p>V (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): volume of titre in mL.</p></li>
+<li><dl class="simple">
+<dt>emf (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): containing emf measured in mV. It</dt><dd><p>must be of the same size than <a href="#id1"><span class="problematic" id="id2">:var:`V`</span></a>. Each element can be a
 float or a tuple of floats if more then one electrode is being
-used.</dd>
+used.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>weights (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): The weights for each</dt>
-<dd>experimental point. It must be of the same size than
-<a href="#id3"><span class="problematic" id="id4">:var:`emf`</span></a>.</dd>
+<li><dl class="simple">
+<dt>weights (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): The weights for each</dt><dd><p>experimental point. It must be of the same size than
+<a href="#id3"><span class="problematic" id="id4">:var:`emf`</span></a>.</p>
+</dd>
 </dl>
 </li>
-<li>V0 (float): the initial volume in mL</li>
-<li>T0 (sequence): total amount of initial components in mmol</li>
-<li>buret (sequence): concentration in the buret for
-each component in mmol/mL.</li>
-<li>Tflags (sequence, optional): The refinement flag for T0</li>
-<li>buret_flags (sequence, optional): The refinement flag for emf0</li>
-<li>T (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): An (N, S)-array with the initial
+<li><p>V0 (float): the initial volume in mL</p></li>
+<li><p>T0 (sequence): total amount of initial components in mmol</p></li>
+<li><p>buret (sequence): concentration in the buret for
+each component in mmol/mL.</p></li>
+<li><p>Tflags (sequence, optional): The refinement flag for T0</p></li>
+<li><p>buret_flags (sequence, optional): The refinement flag for emf0</p></li>
+<li><p>T (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): An (N, S)-array with the initial
 concentrations. If provided, V, V0, T0, buret and Tflags are
-ignored.</li>
-<li>error_V (float):</li>
+ignored.</p></li>
+<li><p>error_V (float):</p></li>
 </ul>
-</li>
-<li><strong>electrodes</strong> (<em>iterable of dict</em>) – <ul>
-<li>E0 (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): Value for standard potential for
+</p></li>
+<li><p><strong>electrodes</strong> (<em>iterable of dict</em>) – <ul>
+<li><p>E0 (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>): Value for standard potential for
 each curve in mV. If more than one electrode is used, tuples are
-accepted.</li>
-<li>E0flags (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, optional): refinement flags for
-<strong>E0</strong> in the same format.</li>
-<li>hindex (list of ints or tuples of ints): Index or indices for the
-electrode sensitive species (usually, the proton H <sup>+</sup>).</li>
-<li>fRTnF (float or list of Nd-floats): by default 25.67968mV (1 atm,
+accepted.</p></li>
+<li><p>E0flags (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, optional): refinement flags for
+<strong>E0</strong> in the same format.</p></li>
+<li><p>hindex (list of ints or tuples of ints): Index or indices for the
+electrode sensitive species (usually, the proton H <sup>+</sup>).</p></li>
+<li><p>fRTnF (float or list of Nd-floats): by default 25.67968mV (1 atm,
 298K, 1 electron, f=1). If float, assume it is the same value
-for all sets and internally converted into a list.</li>
-<li>error_emf (float):</li>
+for all sets and internally converted into a list.</p></li>
+<li><p>error_emf (float):</p></li>
 </ul>
-</li>
-<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – A number indicating the method to be used to mimize
+</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – A number indicating the method to be used to mimize
 the objective functions. Allowed values are 0 for the algorithm
 by Levenberg-Marquardt (nonlinear least squares, this is the
 default one) and 1 for the Nelder-Mead algorithm (the simplex
-method).</li>
-<li><strong>logbeta_flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em><em>[</em><em>True</em><em>]</em>) – False by default. If true B0 is
-assumed to be the log:sup:<cite>10</cite> of the constants to be refined.</li>
-<li><strong>free_concentration_guess</strong> (<em>sequence</em><em>, </em><em>optional</em>) – The free concentrations
-used as initial guess for concentration calculations.</li>
-<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – returns a text with debug information</li>
-<li><strong>verbosity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – An 0-2 number indicating the level of
+method).</p></li>
+<li><p><strong>logbeta_flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em><em>[</em><em>True</em><em>]</em>) – False by default. If true B0 is
+assumed to be the log:sup:<cite>10</cite> of the constants to be refined.</p></li>
+<li><p><strong>free_concentration_guess</strong> (<em>sequence</em><em>, </em><em>optional</em>) – The free concentrations
+used as initial guess for concentration calculations.</p></li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – returns a text with debug information</p></li>
+<li><p><strong>verbosity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – An 0-2 number indicating the level of
 verbosity to be printed. 0 for mute, 1 for normal and 2 for
-pedanting output.</li>
-<li><strong>htmlout</strong> (<em>callable</em><em>, </em><em>optional</em>) – A callable function that accepts an html
-snippet to be output.</li>
+pedanting output.</p></li>
+<li><p><strong>htmlout</strong> (<em>callable</em><em>, </em><em>optional</em>) – A callable function that accepts an html
+snippet to be output.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">First element is a 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats: The
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>First element is a 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats: The
 values of the refined parameters. The second element is a list of
-2D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats which are the final values of
+2D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of floats which are the final values of
 the free concentrations.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.emfsim">
-<code class="descclassname">libemf.</code><code class="descname">emfsim</code><span class="sig-paren">(</span><em>beta</em>, <em>stoichiometry</em>, <em>titration</em>, <em>electrodes</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emfsim" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.emfsim">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">emfsim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">electrodes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.emfsim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulate emf titrations. Return calculated emf.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>beta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
-stability constants.</li>
-<li><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>
-in the usual format.</li>
-<li><strong>titration</strong> (<em>iterable of dict</em>) – Information about the titrations. Each
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – 1D-array of floats representing the
+stability constants.</p></li>
+<li><p><strong>stoichiometry</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-stoichiometry-array"><span class="xref std std-term">stoichiometry array</span></a>
+in the usual format.</p></li>
+<li><p><strong>titration</strong> (<em>iterable of dict</em>) – Information about the titrations. Each
 member of the list is one titrations. See structure of this dict
-at <a class="reference internal" href="#libemf.emffit" title="libemf.emffit"><code class="xref py py-func docutils literal notranslate"><span class="pre">emffit()</span></code></a>.</li>
-<li><strong>electrodes</strong> (<em>iterable of dict</em>) – See structure of this dict
-at <a class="reference internal" href="#libemf.emffit" title="libemf.emffit"><code class="xref py py-func docutils literal notranslate"><span class="pre">emffit()</span></code></a>.</li>
+at <a class="reference internal" href="#libemf.emffit" title="libemf.emffit"><code class="xref py py-func docutils literal notranslate"><span class="pre">emffit()</span></code></a>.</p></li>
+<li><p><strong>electrodes</strong> (<em>iterable of dict</em>) – See structure of this dict
+at <a class="reference internal" href="#libemf.emffit" title="libemf.emffit"><code class="xref py py-func docutils literal notranslate"><span class="pre">emffit()</span></code></a>.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last">calculated emf.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p>calculated emf.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.fit_final_calcs">
-<code class="descclassname">libemf.</code><code class="descname">fit_final_calcs</code><span class="sig-paren">(</span><em>J</em>, <em>F</em>, <em>W</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.fit_final_calcs" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.fit_final_calcs">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">fit_final_calcs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jacobian</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.fit_final_calcs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform final calculations common to some routines.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>J</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – the jacobian</li>
-<li><strong>F</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – the residuals</li>
-<li><strong>W</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – the weights</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jacobian</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – the jacobian</p></li>
+<li><p><strong>resids</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – the residuals</p></li>
+<li><p><strong>weights</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – the weights</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li>the error in beta</li>
-<li>the correlation matrix</li>
-<li>the covariance matrix</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>the error in beta</p></li>
+<li><p>the correlation matrix</p></li>
+<li><p>the covariance matrix</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="libemf.hselect">
-<code class="descclassname">libemf.</code><code class="descname">hselect</code><span class="sig-paren">(</span><em>array</em>, <em>hindices</em>, <em>slices</em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.hselect" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="libemf.hselect">
+<span class="sig-prename descclassname"><span class="pre">libemf.</span></span><span class="sig-name descname"><span class="pre">hselect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hindices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libemf.hselect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select columns that correspond to the electroactive species.</p>
 <p>Given the concentrations array, selects the columns that correspond
 to the electroactive species.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-free-concentrations-array"><span class="xref std std-term">free concentrations array</span></a></li>
-<li><strong>hindices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – List of ints or list of lists of ints with the indices
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – The <a class="reference internal" href="index.html#term-free-concentrations-array"><span class="xref std std-term">free concentrations array</span></a></p></li>
+<li><p><strong>hindices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of ints or list of lists of ints with the indices
 of the electroactive species. Example: [[0,1],[1,2],[3,4],[4,5]].
-hindices are applied along axis=0</li>
-<li><strong>slices</strong> (<em>list of ints</em>) – Where to divide C. Example: [ 0, 5, 10, 15 ]
-slices are applied along axis=1</li>
+hindices are applied along axis=0</p></li>
+<li><p><strong>slices</strong> (<em>list of ints</em>) – Where to divide C. Example: [ 0, 5, 10, 15 ]
+slices are applied along axis=1</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The part of C which is electroactive</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The part of C which is electroactive</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hindices</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.255</span><span class="p">,</span>  <span class="mf">0.638</span><span class="p">,</span>  <span class="mf">0.898</span><span class="p">,</span>  <span class="mf">0.503</span><span class="p">,</span>  <span class="mf">0.418</span><span class="p">],</span>
 <span class="gp">... </span>              <span class="p">[</span> <span class="mf">0.383</span><span class="p">,</span>  <span class="mf">0.789</span><span class="p">,</span>  <span class="mf">0.731</span><span class="p">,</span>  <span class="mf">0.713</span><span class="p">,</span>  <span class="mf">0.629</span><span class="p">],</span>
@@ -412,9 +394,10 @@ slices are applied along axis=1</li>
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -434,17 +417,15 @@ slices are applied along axis=1</li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -465,12 +446,13 @@ slices are applied along axis=1</li>
           <a href="libaux.html" title="libaux module"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">APES 1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="modules.html" >&lt;no title&gt;</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">libemf module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Salvador Blasco.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>
