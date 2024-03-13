@@ -68,9 +68,6 @@ def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **
     chisq_hist = []
     sigma_hist = []
 
-    # import pudb
-    # pudb.set_trace()
-
     iterations = 1
     W = np.diag(weights)
     assert W.shape == (n_points, n_points)

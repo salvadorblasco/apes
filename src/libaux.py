@@ -445,6 +445,10 @@ def build_T(T0, pT, N):
     return tuple(zip(*aux))
 
 
+def build_analyticalc(init, buret, starting_volume, titre):
+    return (init[None,:] + buret[None,:]*titre[:,None])/(starting_volume + titre[:,None])
+
+
 def linspace(init, end, N):
     """Provide **N** evenly spaced numbers between **init** and **end**
 
