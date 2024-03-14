@@ -248,6 +248,11 @@ class EmfWidget(datawidget.DataWidget):
                                   consts.REFINE_LABELS, row=2)
 
     @property
+    def slope(self):
+        ...
+
+    # deprecate - use slope
+    @property
     def fRTnF(self):
         "Nernst slope factor."
         r = consts.RoverF*self.temperature
@@ -352,6 +357,9 @@ class EmfWidget(datawidget.DataWidget):
     def starting_volume(self, starting_volume):
         self.ui.dsb_V0.setValue(starting_volume)
 
+    @property
+    def titration_name(self):
+        return self.ui.cb_titration.currentText()
 
     @property
     def titre(self):
