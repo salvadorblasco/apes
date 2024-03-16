@@ -12,6 +12,7 @@ Basic rundown.
 
 
 import collections
+import enum
 
 import consts
 import libaux
@@ -29,8 +30,8 @@ from datawidget import DataWidget
 
 class Bridge():
     def __init__(self, model, titrationwidgets, datawidgets):
-        self.jacobian_functions = {}
-        self.residual_functions = {}
+        self.jacobian_function = {}
+        self.residual_function = {}
         #self.function_names = []
         self.function_size = []
         self.variables = collections.OrderedDict()
@@ -46,13 +47,7 @@ class Bridge():
         self.titrations = []
         self.free_concentration = {}
         self.analyticalc = {}
-
-        self._fjacobian = {
-            EmfWidget: {'beta': libemf.jac_beta, 'init': libemf.jac_init}
-        }
-        self._fobj = {
-            EmfWidget: libemf.fobj
-        }
+        self.jacobian_parts = []
 
         # start collecting information
 
@@ -70,15 +65,12 @@ class Bridge():
                     raise NotImplementedError
                 case EmfWidget():
                     self.variables[dw.name + '|E0'] = list(dw.emf0)      # it must be mutable
+                    self.variable_flags[dw.name] = dw.emf0_flags
+                    if any(dw.emf0_flags):
+                        self.jacobian_parts.append(dw.name + '|emf0')
                     self.data_to_titration[dw.name] = dw.titration_name
-                    self.jacobian_functions[dw.name] = (libemf.demf_dbeta,
-                                                        self.zeros, 
-                                                        self.zeros, 
-                                                        self.zeros, 
-                                                        libemf.demf_demf0,
-                                                        libemf.demf_dt,
-                                                        libemf.demf_db)
-                    self.residual_functions[dw.name] = (libemf.fobj, )
+                    self.jacobian_function[dw.name] = self.__emf_jacobian
+                    self.residual_function[dw.name] = self.__emd_residual
                 case NmrWidget():
                     raise NotImplementedError
                 case SpecWidget():
@@ -91,7 +83,10 @@ class Bridge():
             self.variables[tw.name + '|v0'] = tw.starting_volume
             self.variables[tw.name + '|titre'] = tw.titre
             self.variable_flags[tw.name + '|init'] = tw.init_flags
+            if any(tw.init_flags):
+                self.build_jac_parts
             self.variable_flags[tw.name + '|buret'] = tw.buret_flags
+
 
     def generate_jacobian(self):
         """The jacobian must be an array of dimmensions (number of titration points, number of
@@ -166,3 +161,19 @@ class Bridge():
 
     def __process_emf(self, widget):
         ...
+
+    def __emf_jacobian(self, name:str, amatrix): 
+        """Compose the sub-jacobian related to potentiometry.
+
+        The composition should be the following:
+
+         ← constants → ← specific parameters  → ← dangerous parameters →
+        +----- β -----+--- ε -+----Δ--+-- ΔH --+-- E₀ --+-- t --+-- b --+
+        |             |       |       |        |        |       |       |
+        |    ∂E/∂β    |    0  |    0  |    0   |   1    | ∂E/∂t | ∂E/∂b |
+        |             |       |       |        |        |       |       |
+        +-------------+-------+-------+--------+--------+-------+-------+
+        """
+        free_concentration = self.free_concentration[name]
+        dlogc_dlogbeta = libeq.jacobian.dlogcdlogbeta(amatrix, free_concentration, self.stoichiometry)
+        

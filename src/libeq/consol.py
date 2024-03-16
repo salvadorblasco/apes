@@ -26,7 +26,7 @@ import excepts
 
 from libeq import LIBEQ_ENGINE
 
-__version__ = 'dev'
+__version__ = '0.5'
 
 
 def consol(beta, stoichiometry, analytc, initial_values, **kwargs):

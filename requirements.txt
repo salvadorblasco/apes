@@ -1,5 +1,5 @@
 numpy
 scipy
 matplotlib
-PyQt4
+PyQt5
 SIP
