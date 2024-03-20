@@ -36,7 +36,7 @@ def emf_jac_init(dlogc_dt, slope=1.0):
 
 
 def emf_jac_buret(dlogc_db, slope=1.0):
-    return slope*consts.NERNST*dlogcdb
+    return slope*consts.NERNST*dlogc_db
 
 
 def emf_jac_e0(size):
