@@ -35,6 +35,7 @@ class DataWidget(QtGui.QWidget):
         self._setweight: float = 1.0    # the weight of the whole dataset
         # self.__totalconc = None
         self._buildmenu()
+        self._titrationid = None
 
     def __titration_changed(self, txt):
         # print("signal emitted", self, index)

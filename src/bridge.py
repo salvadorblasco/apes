@@ -14,6 +14,8 @@ Basic rundown.
 import collections
 import enum
 
+import numpy as np
+
 import consts
 import libaux
 import libeq
@@ -56,54 +58,41 @@ class Bridge():
         self.stoichiometry = np.array(model.stoich)
         self.stoichiometryx = np.vstack((np.eye(model.number_components, dtype=int),
                                          self.stoichiometry))
-        self.titrations = []
+        self.titration = {}
         self.free_concentration: dict = {}   # key is the id of the titration associated
                                              # value is the array of free concentration
         self.analyticalc = {}                # key is the id of the titration associated
 
-
         # start collecting information
 
         # betas are always included first
-        parameter['beta'] = list(model.beta)        # it must be mutable
-        parameter_flag['beta'] = model.beta_flags   # is should be immutable
+        self.parameter['beta'] = list(model.beta)        # it must be mutable
+        self.parameter_flag['beta'] = model.beta_flags   # is should be immutable
         current_jacobian_size: int = 0
         current_residual_size: int = 0
-        for v, f in zip(model.beta, model.beta_flags):
-            if f == const.RF_CONSTANT:
-                pass
-            elif f == const.RF_REFINE:
-                current_jacobian_size += 1
-                # TODO add value to variables
-            elif const.RF_CONSTRAINT1 <= f <= const.RF_CONSTRAINT6:
-                nconst = f - const.RF_CONSTRAINT1
-                if self.constraint[nconst] is None:
-                    current_jacobian_size += 1
-                    self.constraint[nconst] = [v]
-                    # TODO add value to variables
-                else:
-                    self.constraint[nconst].append(v)
-            
-        jacobian_part['beta'] = slice(0, current_size)
+
+        current_jacobian_size += self._process_flags(model.beta, model.beta_flags)
+        self.jacobian_part['beta'] = slice(0, current_jacobian_size)
         self.data_to_titration = {}
         self.data_order = []    # the id of the datawidgets in order of appearance
 
         for dw in datawidgets:                          # for each datawidget
             self.data_order.append((id(dw), type(dw)))  # store the order of appearance, id and type
+            self.titration[id(dw)] = dw._titrationid
 
             match dw:
                 case CalorWidget():
                     raise NotImplementedError
                 case EmfWidget():
-                    self.parameter[(id(name), 'emf0')] = list(dw.emf0)      # it must be mutable
-                    self.magnitudes[id(dw)] = np.array(dw.emf)              # it must be mutable
-                    current_residual_size += self.magnitudes[id(dw)].size
+                    self.parameter[(id(dw), 'emf0')] = list(dw.emf0)      # it must be mutable
+                    self.magnitude[id(dw)] = np.array(dw.emf)              # it must be mutable
+                    current_residual_size += self.magnitude[id(dw)].size
                     self.parameter_flag[id(dw)] = dw.emf0_flags
-                    if any(dw.emf0_flags):
-                        self.jacobian_part.append((id(dw), 'emf0'))
-                    self.data_to_titration[id(dw)] = dw.titration_name
-                    self.jacobian_function[id(dw)] = self.__emf_jacobian
-                    self.residual_function[id(dw)] = self.__emd_residual
+                    increment = self._process_flags(dw.emf0, dw.emf0_flags)
+                    if increment > 0:
+                        self.jacobian_part[(id(dw), 'emf0')] = slice(current_jacobian_size,
+                                                                     current_jacobian_size+increment)
+                        current_jacobian_size += increment
                 case NmrWidget():
                     raise NotImplementedError
                 case SpecWidget():
@@ -112,24 +101,15 @@ class Bridge():
         self.__refine_titr = {}
 
         for tw in titrationwidgets:
-            self.titrations.append(id(tw))
-            self.variables[(id(tw, 'init')] = list(tw.initial_amount)  # it must be mutable
-            if any(tw.init_flags):
-                self.build_jac_parts.append((id(tw), 'init'))
-                __refine_init = True
-            else:
-                __refine_init = False
-            self.variables[(id(tw, 'buret')] = list(tw.buret)          # it must be mutable
-            if any(tw.buret_flags):
-                self.build_jac_parts.append((id(tw), 'buret'))
-                __refine_buret = True
-            else:
-                __refine_buret = False
-            self.__refine_titr[id(tw)] = (__refine_init, __refine_buret)
-            self.variables[(id(tw, 'v0')] = tw.starting_volume
-            self.variables[(id(tw, 'titre')] = tw.titre
-            self.variable_flags[(id(tw), 'init')] = tw.init_flags
-            self.variable_flags[(id(tw), 'buret')] = tw.buret_flags
+            rf_init, incr = self._process_titration_aux((id(tw), 'init'), current_jacobian_size,
+                                                        tw.initial_amount, tw.init_flags)
+            current_jacobian_size += incr
+            rf_buret, incr = self._process_titration_aux((id(tw), 'buret'), current_jacobian_size,
+                                                         tw.buret, tw.buret_flags)
+            current_jacobian_size += incr
+            self.__refine_titr[id(tw)] = (rf_init, rf_buret)
+            self.parameter[(id(tw), 'v0')] = tw.starting_volume
+            self.parameter[(id(tw), 'titre')] = tw.titre
 
         self.jacobian = np.empty((current_residual_size, current_jacobian_size), dtype=float)
         self.residual = np.empty(current_residual_size, dtype=float)
@@ -160,12 +140,12 @@ class Bridge():
         """
         def jacobian(values, free_concentration):
             amatrix = libeq.jacobian.amatrix(free_concentration, self.stoichiometryx)
-            dlc_dlbeta = libeq.jacobian.dlogcdlogbeta(amatrix, free_concentration, stoichiometry):
+            dlc_dlbeta = libeq.jacobian.dlogcdlogbeta(amatrix, free_concentration, stoichiometry)
             for dataid, datatype in self.data_order:
                 # calculate the beta part
                 match datatype:
                     case EmfWidget():           # calculate ∂E/∂β
-                        libemf.emf_jac_beta(dlc_dlbeta, beta, slope=1.0):
+                        libemf.emf_jac_beta(dlc_dlbeta, beta, slope=1.0)
                 for jpart, var in self.jacobian_parts:
                     # calculated the rest as needed
                     ...
@@ -180,7 +160,7 @@ class Bridge():
         return fobj
 
     def generate_freeconcs(self):
-        def fconcs(values, init_concs):
+        def fconcs(values):
             self.update_variables(values)
 
             betas = self.variables['beta']
@@ -193,7 +173,7 @@ class Bridge():
                 anc = libaux.build_analyticalc(init, buret, v0, v0)
                 analyticalc[titration] = anc
 
-                if init_concs is None
+                if init_concs is None:
                     c = libeq.consol.initial_guess(beta, self.stoichiometry, analyticalc)
                 else:
                     c = libeq.consol.consol(beta, self.stoichiometry, analyticalc, init_concs)
@@ -213,7 +193,34 @@ class Bridge():
     def weights(self):
         ...
 
-    def __betas(values):
+    def _process_flags(self, values, flags):
+        current_size = 0
+        for v, f in zip(values, flags):
+            if f == consts.RF_CONSTANT:
+                pass
+            elif f == consts.RF_REFINE:
+                current_size += 1
+                # TODO add value to variables
+            elif consts.RF_CONSTRAINT1 <= f <= consts.RF_CONSTRAINT6:
+                nconst = f - const.RF_CONSTRAINT1
+                if self.constraint[nconst] is None:
+                    current_size += 1
+                    self.constraint[nconst] = [v]
+                    # TODO add value to variables
+                else:
+                    self.constraint[nconst].append(v)
+        return current_size
+
+    def _process_titration_aux(self, key, init_size, value, flag):
+        # key = (_id, what)
+        self.parameter[key] = list(value)  # it must be mutable
+        self.parameter_flag[key] = flag
+        if any(flag):
+            increment = self._process_flags(value, flag)
+            self.jacobian_part[key] = slice(init_size, init_size+increment)
+        return any(flag), increment
+
+    def __betas(self, values):
         ...
 
     def __process_emf(self, widget):
@@ -242,7 +249,7 @@ class Bridge():
         """
         dlc_dlbeta = libeq.jacobian.dlogcdlogbeta(amatrix, free_concentration, self.stoichiometry)
 
-        for kw, val in self.jacobian_parts:
+        for kw, val in self.jacobian_part:
             view = self.jacobian[block, val]
             hsize = val.end - val.start
             match kw:

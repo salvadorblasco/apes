@@ -563,7 +563,6 @@ class ExternalDataWidget(QtWidgets.QWidget):
     #     return ('1', '2') if r is None else r.group(1, 2)
 
 class TitrationBaseWidget(QtWidgets.QWidget):
-
     implicitVolumeChanged = QtCore.pyqtSignal()
 
     def __init__(self, model):

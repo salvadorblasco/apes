@@ -87,7 +87,7 @@ class ModelWidget(QtWidgets.QWidget):
                 elif col == self.column_betaerror:
                     table.setItem(position, col, QtWidgets.QTableWidgetItem(f'{error:.4f}'))
                 elif col == self.column_betaflags:
-                    table.setCellWidget(position, col, libqt.create_combo(consts.REFINE_LABELS, flag))
+                    table.setCellWidget(position, col, libqt.create_combo(consts.REFINE_BLABELS, flag+1))
         self.equilibriaChanged.emit()
 
     def addComponent(self, label, position=None):
