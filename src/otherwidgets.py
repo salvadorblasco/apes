@@ -584,6 +584,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         model.componentDeleted.connect(self.componentDeleted)
         self.ui.dsb_Vf.valueChanged.connect(self.__implicit_volume_changed)
         self.ui.sb_NPoints.valueChanged.connect(self.__implicit_volume_changed)
+        self._explicit_titre = None
 
     def is_fixed(self):
         return np.all(i == consts.RF_CONSTANT for i in self.init_flags) and \
@@ -678,8 +679,18 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         Yields:
             float: the value of the titre.
         """
-        yield from ((self.final_volume - self.starting_volume)
-                    / self.n_points * i for i in range(self.n_points))
+        if self.is_titre_implicit():
+            return libaux.calc_titre(self.final_volume - self.starting_volume, self.n_points)
+        else:
+            return self._explicit_titre
+
+    @titre.setter
+    def titre(self, explicit_titre):
+        self.ui.dsb_Vf.setValue(explicit_titre[-1])
+        self.ui.dsb_Vf.setEnabled(False)
+        self.ui.sb_NPoints.setValue(len(explicit_titre))
+        self.ui.sb_NPoints.setEnabled(False)
+        self._explicit_titre = tuple(explicit_titre)
 
     def volume_increment(self):
         'The step volume in mL.'

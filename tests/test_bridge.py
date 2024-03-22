@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 
 import unittest
-
 import sys
 
+import numpy as np
 from PyQt5 import QtWidgets
 
 sys.path.append('../src')
+
+import hexaprotic
+import consts
 
 
 class TestBridge(unittest.TestCase):
@@ -16,45 +19,57 @@ class TestBridge(unittest.TestCase):
     def setUp(self):
         self.app = QtWidgets.QApplication(sys.argv)
 
-    def test_emf_only(self):
-        import hexaprotic
-        import consts
-
-        from modelwidget import ModelWidget
+        from modelwidget import ModelWidget, ModelData
         model = ModelWidget()
-        model.addEquilibrium(-1, (1,1), 10.00, 0.0, consts.RF_REFINE)
-        model.addEquilibrium(-1, (1,2), 18.00, 0.0, consts.RF_REFINE)
-        model.addEquilibrium(-1, (1,3), 24.00, 0.0, consts.RF_REFINE)
-        model.addEquilibrium(-1, (1,4), 28.00, 0.0, consts.RF_REFINE)
-        model.addEquilibrium(-1, (1,5), 31.00, 0.0, consts.RF_REFINE)
-        model.addEquilibrium(-1, (1,6), 33.00, 0.0, consts.RF_REFINE)
-        model.addEquilibrium(-1, (0,-1), -13.77, 0.0, consts.RF_CONSTANT)
-        print(model.stoich)
-        print(model.beta)
-        print(model.beta_flags)
-        sys.exit(0)
+        mdata = ModelData(n_equils=7, n_species=2)
+        mdata.stoich = hexaprotic.stoich
+        mdata.const = hexaprotic.logbeta
+        mdata.const_flags = 6*[consts.RF_REFINE] + [consts.RF_CONSTANT]
+        model.append(mdata)
+        model.setCurrentModel(-1)
 
         from otherwidgets import TitrationBaseWidget
         titr = TitrationBaseWidget(model)
         titr.name = 'Titration'
-        titr.init = hexaprotic.init
+        titr.initial_amount = hexaprotic.init
         titr.buret = hexaprotic.buret
         titr.starting_volume = hexaprotic.v0
-        titr.final_volume = 12.00
-        titr.n_points = len(hexaprotic.titre)
+        titr.titre = hexaprotic.titre.tolist()
 
         from emfwidget import EmfWidget
         emfw = EmfWidget(model)
         emfw.emf0 = hexaprotic.emf0
         emfw.emf = hexaprotic.emf
+        emfw._titrationid = id(titr)
 
         from bridge import Bridge
-        b = Bridge(model, [titr], [emfw])
+        self.b = Bridge(model, [titr], [emfw])
 
-        print(b.jacobian.shape)
+    def test_dimmensions(self):
+        self.assertTupleEqual(self.b.jacobian.shape, (89, 6))
+        self.assertTupleEqual(self.b.residual.shape, (89, ))
+        self.assertEqual(len(self.b.variables), 6)
 
-        with self.subTest("generate free concs"):
-            f = b.generate_freeconcs()
+    def test_variables(self):
+        _vars = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+        self.b.update_parameters(_vars)
+        v = self.b.parameter['beta']
+        for x, y in zip(_vars, v):
+            self.assertEqual(x, y)
+
+    def test_freeconcs(self):
+        variables = 10**np.array([10.0, 18.0, 24.0, 28.0, 31.0, 33.0])
+        f = self.b.generate_freeconcs()
+        c = f(variables)
+        for cc in c.values():
+            np.testing.assert_allclose(cc, hexaprotic.free_concentration, atol=1e-2)
+
+    def test_jacobian(self):
+        variables = 10**np.array([10.0, 18.0, 24.0, 28.0, 31.0, 33.0])
+        f = self.b.generate_freeconcs()
+        _ = f(variables)
+        fjac = self.b.generate_jacobian()
+        ...
 
 
 if __name__ == '__main__':

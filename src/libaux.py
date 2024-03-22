@@ -415,6 +415,11 @@ def build_T_titr2(T0, buret, V0, V):
     return (tuple((t + b*v)/(v+V0) for t, b in zip(T0, buret)) for v in V)
 
 
+def build_T_titr3(init, buret, vinit, vfin, npoints):
+    vincr = (vfin-vinit)/npoints
+    return build_T_titr(init, buret, vinit, vincr, npoints)
+
+
 def build_T(T0, pT, N):
     """Build the total concentrations array from the starting values.
 
@@ -447,6 +452,10 @@ def build_T(T0, pT, N):
 
 def build_analyticalc(init, buret, starting_volume, titre):
     return (init[None,:] + buret[None,:]*titre[:,None])/(starting_volume + titre[:,None])
+
+
+def calc_titre(final_volume:float, n_points:int):
+    yield from (final_volume * i / (n_points-1) for i in range(n_points))
 
 
 def linspace(init, end, N):
