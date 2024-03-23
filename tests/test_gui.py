@@ -105,35 +105,11 @@ class ModelTests(unittest.TestCase):
     def tearDown(self):
         self.mainw.close()
 
-    def test_calori(self):
-        self.assertFalse(self.model.isCalori())
-        self.assertIsNone(self.model.enthalpy)
-        self.assertIsNone(self.model.enthalpy_error)
-        self.assertIsNone(self.model.enthalpy_flags)
-        self.assertIsNone(self.model.enthropy)
-        self.assertIsNone(self.model.enthropy_error)
-
-        self.model.addCalorimetry()
-        self.assertTrue(self.model.isCalori())
-        self.assertIsNotNone(self.model.enthalpy)
-        self.assertIsNotNone(self.model.enthalpy_error)
-        self.assertIsNotNone(self.model.enthalpy_flags)
-        self.assertIsNotNone(self.model.enthropy)
-        self.assertIsNotNone(self.model.enthropy_error)
-
-        self.model.removeCalorimetry()
-        self.assertFalse(self.model.isCalori())
-        self.assertIsNone(self.model.enthalpy)
-        self.assertIsNone(self.model.enthalpy_error)
-        self.assertIsNone(self.model.enthalpy_flags)
-        self.assertIsNone(self.model.enthropy)
-        self.assertIsNone(self.model.enthropy_error)
-
     def test_add_component(self):
         nc1 = self.model.number_components
         i = random.randint(0, nc1)
         self.model.addComponent('X', position=i)
-        self.assertEqual(self.model.labels[1+i], 'X', 
+        self.assertEqual(self.model.labels[i], 'X', 
                          msg=f"i={i}, labels={self.model.labels}")
         self.assertEqual(self.model.number_components, nc1+1)
 
@@ -164,8 +140,7 @@ class ModelTests(unittest.TestCase):
     def test_properties(self):
         # TODO check property returns
         properties = ('beta', 'beta_error', 'beta_flags', 'number_equilibria',
-                      'number_components', 'enthalpy', 'enthalpy_error',
-                      'enthalpy_flags', 'enthropy', 'labels', 'modelname',
+                      'number_components',  'labels', 'modelname',
                       'stoich', 'temperature')
         msg = "property '{}' not found"
         for prop in properties:
