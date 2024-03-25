@@ -12,13 +12,13 @@ Basic rundown.
 
 
 import collections
-import enum
 
 import numpy as np
 
 import consts
 import libaux
 import libeq
+import libemf
 
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
@@ -34,7 +34,7 @@ class Bridge():
     """Bridge between the GUI and the fitting engine.
     """
     def __init__(self, model, titrationwidgets, datawidgets):
-        self.model = model                          # store these values to 
+        self.model = model                          # store these values to
         self.titrationwidgets = titrationwidgets    # update their values after
         self.datawidgets = datawidgets              # the fitting
 
@@ -50,7 +50,7 @@ class Bridge():
         # related to the residual
         self.residual_function = {}
         self.magnitude = collections.OrderedDict()  # the experimental values to fit upon
-        self.magnitude_size = []
+        self.magnitude_size = {}
 
         # other variables
         self.constraint = [None, None, None, None, None, None]
@@ -86,7 +86,10 @@ class Bridge():
                     key = (id(dw), 'emf0')
                     self.parameter[key] = list(dw.emf0)      # it must be mutable
                     self.magnitude[id(dw)] = np.array(dw.emf)              # it must be mutable
-                    current_residual_size += self.magnitude[id(dw)].size
+                    increment_residual = self.magnitude[id(dw)].size
+                    self.magnitude_size[id(dw)] = slice(current_residual_size,
+                                                        current_residual_size+increment_residual)
+                    current_residual_size += increment_residual
                     self.parameter_flag[id(dw)] = dw.emf0_flags
                     increment = self._process_flags(key ,dw.emf0, dw.emf0_flags)
                     if increment > 0:
@@ -142,19 +145,33 @@ class Bridge():
         dlc_dlbeta = {}
 
         def jacobian(values):
-            for titrid, conc in self.free_concentration.items():
-                amatrix[titrid] = libeq.jacobian.amatrix(free_concentration, self.stoichiometryx)
-                dlc_dlbeta[titrid] = libeq.jacobian.dlogcdlogbeta(amatrix, free_concentration, stoichiometry)
+            self.update_parameters(values)
 
+            beta = np.array(self.parameter['beta'])
+            for titrid, conc in self.free_concentration.items():
+                amatrix[titrid] = libeq.jacobian.amatrix(conc, self.stoichiometryx)
+                dlc_dlbeta[titrid] = libeq.jacobian.dlogcdlogbeta(amatrix[titrid], conc, self.stoichiometry)
+
+            breakpoint()
             for dataid, datatype in self.data_order:
                 titrid = self.titration[dataid]
-                # calculate the beta part
+                row_slice = self.magnitude_size[dataid]
+
                 match datatype:
-                    case EmfWidget():           # calculate ∂E/∂β
-                        libemf.emf_jac_beta(dlc_dlbeta[titrid], beta, slope=1.0)
-                for jpart, var in self.jacobian_parts:
-                    # calculated the rest as needed
-                    ...
+                    case EmfWidget:
+                        for jpart, col_slice in self.jacobian_part.items():
+                            if jpart == "beta":
+                                insert = libemf.emf_jac_beta(dlc_dlbeta[titrid], beta, slope=1.0)
+                                # TODO remove unrefined columns
+                            elif data2id == (titrid, 'emf0'):
+                                insert = libemf_emf_jac_e0(_size(row_slice, col_slice))
+                            elif data2id == (titrid, 'init'):
+                                ...
+                            elif data2id == (titrid, 'buret'):
+                                ...
+                            else:       # zeros
+                                insert = np.zeros(_size(row_slice, col_slice))
+                            self.jacobian[row_slice, col_slice] = insert
 
         return jacobian
 
@@ -224,7 +241,7 @@ class Bridge():
                 # TODO add value to variables
                 self.variables.append((key, n))
             elif consts.RF_CONSTRAINT1 <= f <= consts.RF_CONSTRAINT6:
-                nconst = f - const.RF_CONSTRAINT1
+                nconst = f - consts.RF_CONSTRAINT1
                 constraint_signature = (key, n, v)
                 if self.constraint[nconst] is None:
                     current_size += 1
@@ -287,3 +304,7 @@ class Bridge():
                 case _id_, other:
                     vsize = block.end - block.start
                     view[...] = np.zeros((vsize, hsize))
+
+
+def _size(slice1, slice2):
+    return (slice1.stop-slice1.start, slice2.stop-slice2.start)

@@ -69,7 +69,7 @@ class TestBridge(unittest.TestCase):
         f = self.b.generate_freeconcs()
         _ = f(variables)
         fjac = self.b.generate_jacobian()
-        ...
+        jvals = fjac(variables)
 
 
 if __name__ == '__main__':

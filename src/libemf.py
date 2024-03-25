@@ -28,7 +28,7 @@ __version__ = '0.5'
 
 
 def emf_jac_beta(dlogc_dlogbeta, beta, slope=1.0):
-    return slope*consts.NERNST*dlogcdlogbeta/beta
+    return slope*consts.NERNST*dlogc_dlogbeta/beta
 
 
 def emf_jac_init(dlogc_dt, slope=1.0):
