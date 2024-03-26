@@ -67,11 +67,13 @@ class Bridge():
         # betas are always included first
         self.parameter['beta'] = list(model.beta)        # it must be mutable
         self.parameter_flag['beta'] = model.beta_flags   # is should be immutable
-        current_jacobian_size: int = 0
-        current_residual_size: int = 0
+        jacobian_slice = Increments()
+        residual_slice = Increments()
 
-        current_jacobian_size += self._process_flags('beta', model.beta, model.beta_flags)
-        self.jacobian_part['beta'] = slice(0, current_jacobian_size)
+        jstep = self._process_flags('beta', model.beta, model.beta_flags)
+        jacobian_slice.step(jstep)
+        self.jacobian_part['beta'] = jacobian_slice.yield_slice()
+
         self.data_to_titration = {}
         self.data_order = []    # the id of the datawidgets in order of appearance
 
@@ -83,19 +85,7 @@ class Bridge():
                 case CalorWidget():
                     raise NotImplementedError
                 case EmfWidget():
-                    key = (id(dw), 'emf0')
-                    self.parameter[key] = list(dw.emf0)      # it must be mutable
-                    self.magnitude[id(dw)] = np.array(dw.emf)              # it must be mutable
-                    increment_residual = self.magnitude[id(dw)].size
-                    self.magnitude_size[id(dw)] = slice(current_residual_size,
-                                                        current_residual_size+increment_residual)
-                    current_residual_size += increment_residual
-                    self.parameter_flag[id(dw)] = dw.emf0_flags
-                    increment = self._process_flags(key ,dw.emf0, dw.emf0_flags)
-                    if increment > 0:
-                        self.jacobian_part[key] = slice(current_jacobian_size,
-                                                        current_jacobian_size+increment)
-                        current_jacobian_size += increment
+                    self._process_emf(dw, self.jacobian_part, jacobian_slice, residual_slice)
                 case NmrWidget():
                     raise NotImplementedError
                 case SpecWidget():
@@ -104,18 +94,16 @@ class Bridge():
         self.__refine_titr = {}
 
         for tw in titrationwidgets:
-            rf_init, incr = self._process_titration_aux((id(tw), 'init'), current_jacobian_size,
-                                                        tw.initial_amount, tw.init_flags)
-            current_jacobian_size += incr
-            rf_buret, incr = self._process_titration_aux((id(tw), 'buret'), current_jacobian_size,
-                                                         tw.buret, tw.buret_flags)
-            current_jacobian_size += incr
+            rf_init = self._process_titration_aux((id(tw), 'init'), jacobian_slice,
+                                                  tw.initial_amount, tw.init_flags)
+            rf_buret = self._process_titration_aux((id(tw), 'buret'), jacobian_slice,
+                                                   tw.buret, tw.buret_flags)
             self.__refine_titr[id(tw)] = rf_init or rf_buret
             self.parameter[(id(tw), 'v0')] = tw.starting_volume
             self.parameter[(id(tw), 'titre')] = tuple(tw.titre)
 
-        self.jacobian = np.empty((current_residual_size, current_jacobian_size), dtype=float)
-        self.residual = np.empty(current_residual_size, dtype=float)
+        self.jacobian = np.empty((residual_slice.stop, jacobian_slice.stop), dtype=float)
+        self.residual = np.empty(residual_slice.stop, dtype=float)
 
     def generate_jacobian(self):
         """The jacobian must be an array of dimmensions (number of titration points, number of
@@ -128,12 +116,12 @@ class Bridge():
         |             |       |       |        |        |       |       |       ↓         |
         +-------------+-------+-------+--------+--------+-------+-------+
         |             |       |       |        |        |       |       |       ↑       number
-        |    ∂A/∂β    | ∂A/∂ε |    0  |    0   |   0    | ∂A/∂t | ∂A/∂b | spectrometry   of           
-        |             |       |       |        |        |       |       |       ↓      magnitudes   
-        +-------------+-------+-------+--------+--------+-------+-------+               times        
-        |             |       |       |        |        |       |       |       ↑       number       
-        |    ∂Q/∂β    |   0   |    0  | ∂Q/∂ΔH |   0    | ∂Q/∂t | ∂Q/∂b |  calorimetry   of           
-        |             |       |       |        |        |       |       |       ↓    observations 
+        |    ∂A/∂β    | ∂A/∂ε |    0  |    0   |   0    | ∂A/∂t | ∂A/∂b | spectrometry   of
+        |             |       |       |        |        |       |       |       ↓      magnitudes
+        +-------------+-------+-------+--------+--------+-------+-------+               times
+        |             |       |       |        |        |       |       |       ↑       number
+        |    ∂Q/∂β    |   0   |    0  | ∂Q/∂ΔH |   0    | ∂Q/∂t | ∂Q/∂b |  calorimetry   of
+        |             |       |       |        |        |       |       |       ↓    observations
         +-------------+-------+-------+--------+--------+-------+-------+
         |             |       |       |        |        |       |       |       ↑         |
         |    ∂δ/∂β    |   0   | ∂δ/∂Δ |    0   |   0    | ∂δ/∂t | ∂δ/∂b |      NMR        |
@@ -146,13 +134,13 @@ class Bridge():
 
         def jacobian(values):
             self.update_parameters(values)
+            breakpoint()
 
             beta = np.array(self.parameter['beta'])
             for titrid, conc in self.free_concentration.items():
                 amatrix[titrid] = libeq.jacobian.amatrix(conc, self.stoichiometryx)
                 dlc_dlbeta[titrid] = libeq.jacobian.dlogcdlogbeta(amatrix[titrid], conc, self.stoichiometry)
 
-            breakpoint()
             for dataid, datatype in self.data_order:
                 titrid = self.titration[dataid]
                 row_slice = self.magnitude_size[dataid]
@@ -163,11 +151,11 @@ class Bridge():
                             if jpart == "beta":
                                 insert = libemf.emf_jac_beta(dlc_dlbeta[titrid], beta, slope=1.0)
                                 # TODO remove unrefined columns
-                            elif data2id == (titrid, 'emf0'):
-                                insert = libemf_emf_jac_e0(_size(row_slice, col_slice))
-                            elif data2id == (titrid, 'init'):
+                            elif jpart == (titrid, 'emf0'):
+                                insert = libemf.emf_jac_e0(_size(row_slice, col_slice))
+                            elif jpart == (titrid, 'init'):
                                 ...
-                            elif data2id == (titrid, 'buret'):
+                            elif jpart == (titrid, 'buret'):
                                 ...
                             else:       # zeros
                                 insert = np.zeros(_size(row_slice, col_slice))
@@ -176,7 +164,7 @@ class Bridge():
         return jacobian
 
     def generate_fobj(self):
-        def fobj(values, free_concentrations):
+        def fobj(values):
             for name in self.data_order:
                 ...
 
@@ -251,23 +239,38 @@ class Bridge():
                     self.constraint[nconst].append(constraint_signature)
         return current_size
 
-    def _process_titration_aux(self, key, init_size, value, flag):
+    def _process_emf(self, widget: EmfWidget, jpart: collections.OrderedDict,
+                     jslice, rslice) -> None:
+        self.magnitude[id(widget)] = np.array(widget.emf)     # it must be mutable
+        rstep = self.magnitude[id(widget)].size
+        rslice.step(rstep)
+        self.magnitude_size[id(widget)] = rslice.yield_slice()
+
+        key = (id(widget), 'emf0')
+        self.parameter[key] = list(widget.emf0)               # it must be mutable
+        self.parameter_flag[id(widget)] = widget.emf0_flags
+        increment = self._process_flags(key, widget.emf0, widget.emf0_flags)
+        if increment > 0:
+            jslice.step(increment)
+            jpart[key] = jslice.yield_slice()
+
+        self.parameter[(id(widget), 'electroactive')] = widget.active_species  # it must be immutable
+
+    def _process_titration_aux(self, key, jslice, value, flag):
         # key = (_id, what)
         self.parameter[key] = list(value)  # it must be mutable
         self.parameter_flag[key] = flag
         if any(flag):
             increment = self._process_flags(key, value, flag)
-            self.jacobian_part[key] = slice(init_size, init_size+increment)
-        return any(flag), increment
+            jslice.step(increment)
+            self.jacobian_part[key] = jslice.yield_slice()
+        return any(flag)
 
     def __betas(self, values):
         ...
 
-    def __process_emf(self, widget):
-        ...
-
     def __emf_jacobian(self, free_concentration:np.ndarray, beta:np.ndarray, amatrix: np.ndarray,
-                       block: slice, dlc_dt=None, dlc_db=None): 
+                       block: slice, dlc_dt=None, dlc_db=None):
         """Compose the sub-jacobian related to potentiometry.
 
         The composition should be the following:
@@ -304,6 +307,23 @@ class Bridge():
                 case _id_, other:
                     vsize = block.end - block.start
                     view[...] = np.zeros((vsize, hsize))
+
+
+class Increments:
+    "Simple counter that returns a slice object."
+    def __init__(self, start=0):
+        self.start = start
+        self.stop = start
+
+    def step(self, step: int) -> None:
+        "Increment stop by given amount"
+        self.stop += step
+
+    def yield_slice(self) -> slice:
+        "Provide slice to be used."
+        retval = slice(self.start, self.stop)
+        self.start = self.stop
+        return retval
 
 
 def _size(slice1, slice2):
