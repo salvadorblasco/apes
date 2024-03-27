@@ -22,17 +22,130 @@ import libemf
 
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
-from modelwidget import ModelWidget
 from nmrwidget import NmrWidget
-from otherwidgets import OutputWidget, ExternalDataWidget, IonicWidget, TitrationBaseWidget
-from simulationwidgets import SpeciationWidget, TitrationWidget
 from specwidget import SpecWidget
-from datawidget import DataWidget
 
 
 class Bridge():
     """Bridge between the GUI and the fitting engine.
     """
+    def __init__(self, parameters):
+        self.parameters = parameters
+        self.stoichiometry = parameters.stoichiometry(extended=False)
+        self.stoichiometryx = parameters.stoichiometry(extended=True)
+
+        self.titration = {}
+        self.free_concentration: dict = {}   # key is the id of the titration associated
+                                             # value is the array of free concentration
+        self.analyticalc = {}                # key is the id of the titration associated
+
+        self.jacobian = np.empty(parameters.jacobian_shape, dtype=float)
+        self.residual = np.empty(parameters.residual_shape, dtype=float)
+
+    def generate_jacobian(self):
+        """The jacobian must be an array of dimmensions (number of titration points, number of
+        experimental points per titration point, number of parameters to refine).
+
+         ← constants → ← specific parameters  → ← dangerous parameters →
+        +----- β -----+--- ε -+----Δ--+-- ΔH --+-- E₀ --+-- t --+-- b --+
+        |             |       |       |        |        |       |       |       ↑         ↑
+        |    ∂E/∂β    |    0  |    0  |    0   |   1    | ∂E/∂t | ∂E/∂b | potentiometry   |
+        |             |       |       |        |        |       |       |       ↓         |
+        +-------------+-------+-------+--------+--------+-------+-------+
+        |             |       |       |        |        |       |       |       ↑       number
+        |    ∂A/∂β    | ∂A/∂ε |    0  |    0   |   0    | ∂A/∂t | ∂A/∂b | spectrometry   of
+        |             |       |       |        |        |       |       |       ↓      magnitudes
+        +-------------+-------+-------+--------+--------+-------+-------+               times
+        |             |       |       |        |        |       |       |       ↑       number
+        |    ∂Q/∂β    |   0   |    0  | ∂Q/∂ΔH |   0    | ∂Q/∂t | ∂Q/∂b |  calorimetry   of
+        |             |       |       |        |        |       |       |       ↓    observations
+        +-------------+-------+-------+--------+--------+-------+-------+
+        |             |       |       |        |        |       |       |       ↑         |
+        |    ∂δ/∂β    |   0   | ∂δ/∂Δ |    0   |   0    | ∂δ/∂t | ∂δ/∂b |      NMR        |
+        |             |       |       |        |        |       |       |       ↓         ↓
+        +-------------+-------+-------+--------+--------+-------+-------+
+         ← -------------  number of variables to refine -------------- →
+        """
+        amatrix = {}
+        dlc_dlbeta = {}
+
+        def jacobian(values):
+            breakpoint()
+            self.parameters.update_parameters(values)
+
+            beta =self.parameters.beta()
+            for titrid, conc in self.free_concentration.items():
+                amatrix[titrid] = libeq.jacobian.amatrix(conc, self.stoichiometryx)
+                dlc_dlbeta[titrid] = libeq.jacobian.dlogcdlogbeta(amatrix[titrid], conc, self.stoichiometry)
+
+            for dataid, datatype, titrid, row_slice, jpart, col_slice, data in self.parameters.iter_jacobian():
+                if datatype is EmfWidget:
+                    if jpart == "beta":
+                        # TODO replace slope with data['slope']
+                        # TODO remove non electroactive elements columns
+                        _dlcdlbeta = dlc_dlbeta[titrid][:,data['electroactive'],:]
+                        insert = libemf.emf_jac_beta(_dlcdlbeta, beta, slope=1.0)
+                    elif jpart == (titrid, 'emf0'):
+                        insert = libemf.emf_jac_e0(_size(row_slice, col_slice))
+                    elif jpart == (titrid, 'init'):
+                        ...
+                    elif jpart == (titrid, 'buret'):
+                        ...
+                    else:       # zeros
+                        insert = np.zeros(_size(row_slice, col_slice))
+                elif datatype is CalorWidget:
+                    raise NotImplementedError
+                elif datatype is NmrWidget:
+                    raise NotImplementedError
+                elif datatype is CalorWidget:
+                    raise NotImplementedError
+                elif datatype is SpecWidget:
+                    raise NotImplementedError
+
+                self.jacobian[row_slice, col_slice] = insert
+
+        return jacobian
+
+    def generate_fobj(self):
+        def fobj(values):
+            for dataid, datatype, titrid, row_slice in self.parameters.iter_ordered_data():
+                ...
+
+        return fobj
+
+    def generate_freeconcs(self):
+        def fconcs(values):
+            self.parameters.update_parameters(values)
+
+            beta = self.parameters.beta()
+
+            for titrid, to_refine in self.parameters.iter_titration():
+                if to_refine or (titrid not in self.analyticalc):
+                    init = self.parameters.titr_parm(titrid,'init')
+                    buret = self.parameters.titr_parm(titrid,'buret')
+                    v0 = self.parameters.titr_parm(titrid,'v0')
+                    v = self.parameters.titr_parm(titrid,'titre')
+                    anc = libaux.build_analyticalc(init, buret, v0, v)
+                    self.analyticalc[titrid] = anc
+                else:
+                    anc = self.analyticalc[titrid]
+
+                if titrid in self.free_concentration:
+                    c = libeq.consol.consol(beta, self.stoichiometry, anc, self.free_concentration[titrid])
+                else:
+                    c = libeq.consol.initial_guess(beta, self.stoichiometry, anc)
+                self.free_concentration[titrid] = c
+
+            return self.free_concentration
+
+        return fconcs
+
+    def weights(self):
+        ...
+
+
+class Parameters:
+    "Class that handles parameters."
     def __init__(self, model, titrationwidgets, datawidgets):
         self.model = model                          # store these values to
         self.titrationwidgets = titrationwidgets    # update their values after
@@ -54,21 +167,15 @@ class Bridge():
 
         # other variables
         self.constraint = [None, None, None, None, None, None]
-        self.stoichiometry = np.array(model.stoich)
-        self.stoichiometryx = np.vstack((np.eye(model.number_components, dtype=int),
-                                         self.stoichiometry))
         self.titration = {}
-        self.free_concentration: dict = {}   # key is the id of the titration associated
-                                             # value is the array of free concentration
-        self.analyticalc = {}                # key is the id of the titration associated
 
         # start collecting information
 
         # betas are always included first
-        self.parameter['beta'] = list(model.beta)        # it must be mutable
+        self.parameter['beta'] = np.array(model.beta)        # it must be mutable
         self.parameter_flag['beta'] = model.beta_flags   # is should be immutable
-        jacobian_slice = Increments()
-        residual_slice = Increments()
+        jacobian_slice = Slices()
+        residual_slice = Slices()
 
         jstep = self._process_flags('beta', model.beta, model.beta_flags)
         jacobian_slice.step(jstep)
@@ -100,109 +207,45 @@ class Bridge():
                                                    tw.buret, tw.buret_flags)
             self.__refine_titr[id(tw)] = rf_init or rf_buret
             self.parameter[(id(tw), 'v0')] = tw.starting_volume
-            self.parameter[(id(tw), 'titre')] = tuple(tw.titre)
+            self.parameter[(id(tw), 'titre')] = np.array(tw.titre)
 
-        self.jacobian = np.empty((residual_slice.stop, jacobian_slice.stop), dtype=float)
-        self.residual = np.empty(residual_slice.stop, dtype=float)
+        self.jacobian_shape = (residual_slice.stop, jacobian_slice.stop)
+        self.residual_shape = residual_slice.stop
 
-    def generate_jacobian(self):
-        """The jacobian must be an array of dimmensions (number of titration points, number of
-        experimental points per titration point, number of parameters to refine).
+    def beta(self) -> np.ndarray:
+        "Return an array with betas."
+        return self.parameter['beta']
 
-         ← constants → ← specific parameters  → ← dangerous parameters →
-        +----- β -----+--- ε -+----Δ--+-- ΔH --+-- E₀ --+-- t --+-- b --+
-        |             |       |       |        |        |       |       |       ↑         ↑
-        |    ∂E/∂β    |    0  |    0  |    0   |   1    | ∂E/∂t | ∂E/∂b | potentiometry   |
-        |             |       |       |        |        |       |       |       ↓         |
-        +-------------+-------+-------+--------+--------+-------+-------+
-        |             |       |       |        |        |       |       |       ↑       number
-        |    ∂A/∂β    | ∂A/∂ε |    0  |    0   |   0    | ∂A/∂t | ∂A/∂b | spectrometry   of
-        |             |       |       |        |        |       |       |       ↓      magnitudes
-        +-------------+-------+-------+--------+--------+-------+-------+               times
-        |             |       |       |        |        |       |       |       ↑       number
-        |    ∂Q/∂β    |   0   |    0  | ∂Q/∂ΔH |   0    | ∂Q/∂t | ∂Q/∂b |  calorimetry   of
-        |             |       |       |        |        |       |       |       ↓    observations
-        +-------------+-------+-------+--------+--------+-------+-------+
-        |             |       |       |        |        |       |       |       ↑         |
-        |    ∂δ/∂β    |   0   | ∂δ/∂Δ |    0   |   0    | ∂δ/∂t | ∂δ/∂b |      NMR        |
-        |             |       |       |        |        |       |       |       ↓         ↓
-        +-------------+-------+-------+--------+--------+-------+-------+
-         ← -------------  number of variables to refine -------------- →
-        """
-        amatrix = {}
-        dlc_dlbeta = {}
+    def stoichiometry(self, extended=False):
+        "Get stoichiometry array."
+        if extended:
+            return np.vstack((np.eye(self.model.number_components, dtype=int),
+                              np.array(self.model.stoich)))
+        else:
+            return np.array(self.model.stoich)
 
-        def jacobian(values):
-            self.update_parameters(values)
-            breakpoint()
+    def iter_jacobian(self):
+        for dataid, datatype, titrid, row_slice in self.iter_ordered_data():
+            for jpart, col_slice in self.iter_jacobian_part():
+                if datatype is EmfWidget and jpart == "beta":
+                    rkeys = ('slope', 'electroactive')
 
-            beta = np.array(self.parameter['beta'])
-            for titrid, conc in self.free_concentration.items():
-                amatrix[titrid] = libeq.jacobian.amatrix(conc, self.stoichiometryx)
-                dlc_dlbeta[titrid] = libeq.jacobian.dlogcdlogbeta(amatrix[titrid], conc, self.stoichiometry)
+                data = {k: self.parameter[(dataid, k)] for k in rkeys}
+                yield dataid, datatype, titrid, row_slice, jpart, col_slice, data
 
-            for dataid, datatype in self.data_order:
-                titrid = self.titration[dataid]
-                row_slice = self.magnitude_size[dataid]
+    def iter_jacobian_part(self):
+        yield from self.jacobian_part.items()
 
-                match datatype:
-                    case EmfWidget:
-                        for jpart, col_slice in self.jacobian_part.items():
-                            if jpart == "beta":
-                                insert = libemf.emf_jac_beta(dlc_dlbeta[titrid], beta, slope=1.0)
-                                # TODO remove unrefined columns
-                            elif jpart == (titrid, 'emf0'):
-                                insert = libemf.emf_jac_e0(_size(row_slice, col_slice))
-                            elif jpart == (titrid, 'init'):
-                                ...
-                            elif jpart == (titrid, 'buret'):
-                                ...
-                            else:       # zeros
-                                insert = np.zeros(_size(row_slice, col_slice))
-                            self.jacobian[row_slice, col_slice] = insert
+    def iter_ordered_data(self):
+        "For dataset, yield dataid, datatype and titrationid."
+        for dataid, datatype in self.data_order:
+            yield dataid, datatype, self.titration[dataid], self.magnitude_size[dataid]
 
-        return jacobian
+    def iter_titration(self):
+        yield from ((x,self.__refine_titr[x]) for x in set(self.titration.values()))
 
-    def generate_fobj(self):
-        def fobj(values):
-            for name in self.data_order:
-                ...
-
-        return fobj
-
-    def generate_freeconcs(self):
-        def fconcs(values):
-            self.update_parameters(values)
-
-            beta = np.array(self.parameter['beta'])
-
-            for titrid in set(self.titration.values()):
-                if (titrid in self.__refine_titr) or (titrid not in self.analyticalc):
-                    init = np.array(self.parameter[(titrid,'init')])
-                    buret = np.array(self.parameter[(titrid,'buret')])
-                    v0 = self.parameter[(titrid,'v0')]
-                    v = np.array(self.parameter[(titrid,'titre')])
-                    anc = libaux.build_analyticalc(init, buret, v0, v)
-                    self.analyticalc[titrid] = anc
-                else:
-                    anc = self.analyticalc[titrid]
-
-                if titrid in self.free_concentration:
-                    c = libeq.consol.consol(beta, self.stoichiometry, anc, self.free_concentration[titrid])
-                else:
-                    c = libeq.consol.initial_guess(beta, self.stoichiometry, anc)
-                self.free_concentration[titrid] = c
-
-            return self.free_concentration
-
-        return fconcs
-
-    def update_variables(self, values):
-        # update the values in the widgets
-        #   self.model
-        #   self.titrationwidgets
-        #   self.datawidgets
-        ...
+    def titr_parm(self, titrid, parm):
+        return self.parameter[(titrid, parm)]
 
     def update_parameters(self, values):
         for (key, n), value in zip(self.variables, values):
@@ -215,9 +258,6 @@ class Bridge():
                     ref = value/self.parameter[key][place]
                 else:
                     self.parameter[key][place] *= ref
-
-    def weights(self):
-        ...
 
     def _process_flags(self, key, values, flags):
         current_size = 0
@@ -253,12 +293,14 @@ class Bridge():
         if increment > 0:
             jslice.step(increment)
             jpart[key] = jslice.yield_slice()
-
+        
+        # TODO replace (1,) ... with a proper call to the parameter in EmfWidget
+        self.parameter[(id(widget), 'slope')] = (1.0,) *len(widget.active_species)  # it must be immutable
         self.parameter[(id(widget), 'electroactive')] = widget.active_species  # it must be immutable
 
     def _process_titration_aux(self, key, jslice, value, flag):
         # key = (_id, what)
-        self.parameter[key] = list(value)  # it must be mutable
+        self.parameter[key] = np.array(value)  # it must be mutable
         self.parameter_flag[key] = flag
         if any(flag):
             increment = self._process_flags(key, value, flag)
@@ -266,50 +308,8 @@ class Bridge():
             self.jacobian_part[key] = jslice.yield_slice()
         return any(flag)
 
-    def __betas(self, values):
-        ...
 
-    def __emf_jacobian(self, free_concentration:np.ndarray, beta:np.ndarray, amatrix: np.ndarray,
-                       block: slice, dlc_dt=None, dlc_db=None):
-        """Compose the sub-jacobian related to potentiometry.
-
-        The composition should be the following:
-
-         ← constants → ← specific parameters  → ← dangerous parameters →
-        +----- β -----+--- ε -+----Δ--+-- ΔH --+-- E₀ --+-- t --+-- b --+
-        |             |       |       |        |        |       |       |
-        |    ∂E/∂β    |    0  |    0  |    0   |   1    | ∂E/∂t | ∂E/∂b |
-        |             |       |       |        |        |       |       |
-        +-------------+-------+-------+--------+--------+-------+-------+
-
-        Parameters:
-           free_concentration(:class:`numpy.ndarray`):
-           beta(:class:`numpy.ndarray`):
-           amatrix(:class:`numpy.ndarray`):
-           block(slice):
-           dlc_dt(:class:`numpy.ndarray`):
-           dlc_db(:class:`numpy.ndarray`):
-        """
-        dlc_dlbeta = libeq.jacobian.dlogcdlogbeta(amatrix, free_concentration, self.stoichiometry)
-
-        for kw, val in self.jacobian_part:
-            view = self.jacobian[block, val]
-            hsize = val.end - val.start
-            match kw:
-                case "beta":
-                    view[...] = libemf.emf_jac_beta(dlc_dlbeta, beta)
-                case _id_, "emf0":
-                    view[...] = libemf.emf_jac_e0(hsize)
-                case _id_, "init":
-                    view[...] = libemf.emf_jac_init(dlc_dt)
-                case _id_, "buret":
-                    view[...] = libemf.emf_jac_buret(dlc_db)
-                case _id_, other:
-                    vsize = block.end - block.start
-                    view[...] = np.zeros((vsize, hsize))
-
-
-class Increments:
+class Slices:
     "Simple counter that returns a slice object."
     def __init__(self, start=0):
         self.start = start
