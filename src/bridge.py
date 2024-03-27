@@ -1,12 +1,12 @@
 r"""The class that bridges the main app with the fit routines.
 
-Basic rundown.
-    1. with titration data → analytical concentration
-    2. with analytical concentration + betas + other parameters → free concentration
-    3. with free concentration + other parameters → calculated magnitudes
-    4a. with calculated magnitudes + free concentration → jacobian
-    4b. with calculated + measured magnitudes → residual
-    5. with jacobian + residual → parameter update
+    Basic rundown.
+        1. with titration data → analytical concentration
+        2. with analytical concentration + betas + other parameters → free concentration
+        3. with free concentration + other parameters → calculated magnitudes
+        4a. with calculated magnitudes + free concentration → jacobian
+        4b. with calculated + measured magnitudes → residual
+        5. with jacobian + residual → parameter update
     6. loop back to 1
 """
 
@@ -70,10 +70,9 @@ class Bridge():
         dlc_dlbeta = {}
 
         def jacobian(values):
-            breakpoint()
             self.parameters.update_parameters(values)
 
-            beta =self.parameters.beta()
+            beta, beta_refine = self.parameters.beta()
             for titrid, conc in self.free_concentration.items():
                 amatrix[titrid] = libeq.jacobian.amatrix(conc, self.stoichiometryx)
                 dlc_dlbeta[titrid] = libeq.jacobian.dlogcdlogbeta(amatrix[titrid], conc, self.stoichiometry)
@@ -82,9 +81,9 @@ class Bridge():
                 if datatype is EmfWidget:
                     if jpart == "beta":
                         # TODO replace slope with data['slope']
-                        # TODO remove non electroactive elements columns
-                        _dlcdlbeta = dlc_dlbeta[titrid][:,data['electroactive'],:]
-                        insert = libemf.emf_jac_beta(_dlcdlbeta, beta, slope=1.0)
+                        # remove non electroactive elements columns and non-refinable betas
+                        _dlcdlbeta = np.squeeze(dlc_dlbeta[titrid][:,data['electroactive'],:][...,beta_refine])
+                        insert = libemf.emf_jac_beta(_dlcdlbeta, beta[beta_refine], slope=1.0)
                     elif jpart == (titrid, 'emf0'):
                         insert = libemf.emf_jac_e0(_size(row_slice, col_slice))
                     elif jpart == (titrid, 'init'):
@@ -103,6 +102,7 @@ class Bridge():
                     raise NotImplementedError
 
                 self.jacobian[row_slice, col_slice] = insert
+            return self.jacobian
 
         return jacobian
 
@@ -117,7 +117,7 @@ class Bridge():
         def fconcs(values):
             self.parameters.update_parameters(values)
 
-            beta = self.parameters.beta()
+            beta, _ = self.parameters.beta()
 
             for titrid, to_refine in self.parameters.iter_titration():
                 if to_refine or (titrid not in self.analyticalc):
@@ -177,8 +177,8 @@ class Parameters:
         jacobian_slice = Slices()
         residual_slice = Slices()
 
-        jstep = self._process_flags('beta', model.beta, model.beta_flags)
-        jacobian_slice.step(jstep)
+        self.to_refine_beta = self._process_flags('beta', model.beta, model.beta_flags)
+        jacobian_slice.step(len(self.to_refine_beta))
         self.jacobian_part['beta'] = jacobian_slice.yield_slice()
 
         self.data_to_titration = {}
@@ -214,7 +214,7 @@ class Parameters:
 
     def beta(self) -> np.ndarray:
         "Return an array with betas."
-        return self.parameter['beta']
+        return self.parameter['beta'], self.to_refine_beta
 
     def stoichiometry(self, extended=False):
         "Get stoichiometry array."
@@ -260,24 +260,24 @@ class Parameters:
                     self.parameter[key][place] *= ref
 
     def _process_flags(self, key, values, flags):
-        current_size = 0
+        to_refine = []
         for n, (v, f) in enumerate(zip(values, flags)):
             if f == consts.RF_CONSTANT:
                 pass
             elif f == consts.RF_REFINE:
-                current_size += 1
+                to_refine.append(n)
                 # TODO add value to variables
                 self.variables.append((key, n))
             elif consts.RF_CONSTRAINT1 <= f <= consts.RF_CONSTRAINT6:
                 nconst = f - consts.RF_CONSTRAINT1
                 constraint_signature = (key, n, v)
                 if self.constraint[nconst] is None:
-                    current_size += 1
+                    to_refine.append(n)
                     self.constraint[nconst] = [constraint_signature]
                     # TODO add value to variables
                 else:
                     self.constraint[nconst].append(constraint_signature)
-        return current_size
+        return to_refine
 
     def _process_emf(self, widget: EmfWidget, jpart: collections.OrderedDict,
                      jslice, rslice) -> None:
@@ -289,7 +289,7 @@ class Parameters:
         key = (id(widget), 'emf0')
         self.parameter[key] = list(widget.emf0)               # it must be mutable
         self.parameter_flag[id(widget)] = widget.emf0_flags
-        increment = self._process_flags(key, widget.emf0, widget.emf0_flags)
+        increment = len(self._process_flags(key, widget.emf0, widget.emf0_flags))
         if increment > 0:
             jslice.step(increment)
             jpart[key] = jslice.yield_slice()
@@ -303,9 +303,10 @@ class Parameters:
         self.parameter[key] = np.array(value)  # it must be mutable
         self.parameter_flag[key] = flag
         if any(flag):
-            increment = self._process_flags(key, value, flag)
+            increment = len(self._process_flags(key, value, flag))
             jslice.step(increment)
-            self.jacobian_part[key] = jslice.yield_slice()
+            if len(jslice):
+                self.jacobian_part[key] = jslice.yield_slice()
         return any(flag)
 
 
@@ -324,6 +325,9 @@ class Slices:
         retval = slice(self.start, self.stop)
         self.start = self.stop
         return retval
+
+    def __len__(self):
+        return self.stop - self.start
 
 
 def _size(slice1, slice2):

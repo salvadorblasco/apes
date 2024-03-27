@@ -38,6 +38,8 @@ class TestBridge(unittest.TestCase):
         _ = f(variables)
         fjac = self.bridge.generate_jacobian()
         jvals = fjac(variables)
+        jreal = consts.NERNST*hexaprotic.dlogc_dlogbeta[:,1,:6]/variables[None,:]
+        np.testing.assert_allclose(jvals, jreal, atol=1e-8)
 
 
 class TestParameters(unittest.TestCase):
