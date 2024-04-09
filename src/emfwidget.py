@@ -249,7 +249,8 @@ class EmfWidget(datawidget.DataWidget):
 
     @property
     def slope(self):
-        ...
+        # TODO change this to contents of table       
+        return tuple(1.0 for n in self.nelectrons)
 
     # deprecate - use slope
     @property

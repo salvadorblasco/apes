@@ -27,6 +27,43 @@ import excepts
 __version__ = '0.5'
 
 
+def hselect(array, hindices):
+    """Select columns that correspond to the electroactive species.
+
+    Given the concentrations array, selects the columns that correspond
+    to the electroactive species.
+
+    Parameters:
+        array (:class:`numpy.ndarray`): The :term:`free concentrations array`
+        hindices (list[int]): Indices of the electroactive specie(s).
+
+    Returns:
+        The part of C which is electroactive
+    """
+    return array[...,hindices]
+
+def nernst(electroactive_conc, emf0, slope, joint, temperature=298.15):
+    r"""Calculate the calculated potential.
+
+    Apply Nernst's equation to calculate potential according to 
+    .. math ::
+
+    E = E^0 + f\frac{nF}{RT}\ln[C] + J
+
+    Parameters:
+        electroactive_conc (:class:`numpy.ndarray`): a 1D array of floats
+            representing the free concentrations of the electroactive species.
+        emf (:class:`numpy.ndarray`): a 1D array of floats representing the
+            experimental values for the potential
+        emf0 (float): The :term:`standard potential`
+        slope (float): The slope for :term:`Nernst's equation`
+    Returns:
+        :class:`numpy.ndarray`: a 1D array of floats containing the residuals.
+    """
+    nernstian_slope = slope*consts.RoverF*temperature
+    return emf0 + nernstian_slope*np.log(electroactive_conc) + joint
+
+
 def emf_jac_beta(dlogc_dlogbeta, beta, slope=1.0):
     return slope*consts.NERNST*dlogc_dlogbeta/beta
 
@@ -507,7 +544,7 @@ def emf_jac1(stoichiometry, free_conc, fh, var=()):
     return np.squeeze(full_jacobian)
 
 
-def hselect(array, hindices, slices):
+def hselect2(array, hindices, slices):
     """Select columns that correspond to the electroactive species.
 
     Given the concentrations array, selects the columns that correspond
