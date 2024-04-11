@@ -219,6 +219,18 @@ class Parameters:
         self.jacobian_shape = (residual_slice.stop, jacobian_slice.stop)
         self.residual_shape = residual_slice.stop
 
+    def dump_to_widgets(self):
+        "Dump data used in refinement to the corresponding widgets."
+        self.beta.dump(self.model)
+
+        for titwidget in self.titrationwidgets:
+            titdata = self.titrations[id(titwidget)]
+            titdata.dump(titwidget)
+
+        for datwidget in self.datawidgets:
+            data = self.titrations[id(datwidget)]
+            titdata.dump(titwidget)
+
     def get_temp(self) -> float:
         "Return temperature."
         return self.model.temperature
@@ -330,6 +342,11 @@ class BetaData:
     def beta_refine(self):
         return 10**self.logbeta[self.to_refine]
 
+    def dump(self, widget: ModelWidget) -> None:
+        "Dump data into the widget to update the GUI."
+        if any(self.beta_flags):
+            widget.beta_raw = self.logbeta
+
 
 @dataclass
 class TitrationData():
@@ -360,6 +377,15 @@ class TitrationData():
             self.__calc_analc()
         return self.anal_conc
 
+    def dump(self, widget: TitrationBaseWidget) -> None:
+        "Dump data into the widget to update the GUI."
+        if self.refine:
+            return
+        if any(init_flags):
+            widget.initial_amount = self.init
+        if any(buret_flags):
+            widget.buret = self.buret
+
     def __calc_analc(self):
         self.anal_conc = libaux.build_analyticalc(self.init, self.buret,
                                                   self.starting_volume, self.titre)
@@ -377,6 +403,11 @@ class EmfData():
     temperature: float
     vslice: slice = field(init=False)
     emf0_torefine: tuple[int] = field(init=False)
+
+    def dump(self, widget: EmfWidget) -> None:
+        "Dump data into the widget to update the GUI."
+        if any(self.emf0_flags):
+            widget.emf0 = self.emf0
 
     def emf_calc(self) -> np.ndarray:
         "Return calculated emf values."

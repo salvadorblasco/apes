@@ -111,9 +111,13 @@ class TabWidget(QtWidgets.QTabWidget):
         bridge = bridge.Bridge(params)
 
         initvars = params.initial_values()
+        weights = bridge.weights()
         ffit = libfit.fitting_functions[method]
-        x, info = ffit(
+        
+        x, info = ffit(initvars, bridge.build_matrices, weights)
 
+        params.update_parameters(x)
+        params.dump_to_widgets()
 
     def import_txtspectrum(self, filename):
         'Import data from text file.'
