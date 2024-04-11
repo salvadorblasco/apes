@@ -188,7 +188,7 @@ class Parameters:
         self.data_order = []    # the id of the datawidgets in order of appearance
 
         # betas are always included first
-        self.beta = BetaData(logbeta=np.array(model.beta), beta_flags=model.beta_flags)
+        self.beta = BetaData(logbeta=np.array(model.beta_raw), beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
         jacobian_slice.stamp_slice('beta', self.jacobian_part)
 

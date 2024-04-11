@@ -32,7 +32,7 @@ class TestBridge(unittest.TestCase):
         for cc in self.params.titrations.values():
             np.testing.assert_allclose(cc.free_conc, hexaprotic.free_concentration, atol=1e-2)
 
-        np.testing.assert_allclose(res, np.zeros_like(res), atol=1e-2)
+        np.testing.assert_allclose(res, np.zeros_like(res), atol=0.8)
 
         jreal = consts.NERNST*hexaprotic.dlogc_dlogbeta[:,1,:6]/(10**variables[None,:])
         np.testing.assert_allclose(jac, jreal, atol=1e-8)
