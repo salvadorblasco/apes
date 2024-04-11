@@ -64,6 +64,12 @@ class TestParameters(unittest.TestCase):
         for x, y in zip(_vars, v.logbeta):
             self.assertEqual(x, y)
 
+    def test_constraint(self):
+        self.assertListEqual(self.b.constraint, 6*[None])
+
+    def test_jacobian_part(self):
+        self.assertDictEqual(self.b.jacobian_part, {'beta': slice(0,6)})
+
 
 def load_hexaprotic():
     from modelwidget import ModelWidget, ModelData

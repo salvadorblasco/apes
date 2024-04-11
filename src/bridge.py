@@ -69,8 +69,9 @@ class Slices():
 
     def stamp_slice(self, key: str, dict_: dict) -> None:
         if key in dict_:
-            raise KeyError(f"key {key} is already in dict"}
-        dict_[key] = self.yield_slice()
+            raise KeyError(f"key {key} is already in dict")
+        if len(self):
+            dict_[key] = self.yield_slice()
 
     def yield_slice(self) -> slice:
         "Provide slice to be used."
@@ -189,6 +190,7 @@ class Parameters:
         # betas are always included first
         self.beta = BetaData(logbeta=np.array(model.beta), beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
+        jacobian_slice.stamp_slice('beta', self.jacobian_part)
 
         # datawidgets are processed next
         for dw in datawidgets:                          # for each datawidget
