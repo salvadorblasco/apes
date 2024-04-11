@@ -3,6 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import bridge
 import libio
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
@@ -98,6 +99,16 @@ class TabWidget(QtWidgets.QTabWidget):
         for tab in self._itertabs():
             if isinstance(tab, TitrationBaseWidget):
                 yield tab.name
+
+    def fitting(self, method: int) -> None:
+        if method not in (consts.METHOD_NM, consts.METHOD_LM):
+            raise ValueError("Method not known")
+
+        titwidgets = [w for w in self._itertabs if isinstance(w, TitrationBaseWidget)]
+        datwidgets = [w for w in self._itertabs if isinstance(w, DataWidget)]
+        params = bridge.Parameters(self._model, titwidgets, datwidgets)
+        bridge = bridge.Bridge(params)
+
 
     def import_txtspectrum(self, filename):
         'Import data from text file.'
