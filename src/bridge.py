@@ -222,6 +222,10 @@ class Parameters:
         "Return temperature."
         return self.model.temperature
 
+    def initial_values(self):
+        for var in self.variables:
+            yield var.get_value()
+
     def stoichiometry(self, extended=False):
         "Get stoichiometry array."
         if extended:

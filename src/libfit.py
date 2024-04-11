@@ -7,22 +7,15 @@ import excepts
 import libmath
 
 
-def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **kwargs):
+def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
     r"""Non linear fitting by means of the Levenberg-Marquardt method.
 
     Parameters:
         x0 (:class:`numpy.ndarray`): initial guess.
-        y (:class:`numpy.ndarray`): the experimental magnitude to be fitted.
-            If must be a 1D-shaped array.
         weights (1D-array of floats): containing the values for weighting. It
             must be the same shape and type as *y*.
-        f (callable): A function that accepts the values of *x0* as well as
-            the free concentrations and return the calculated values for *y*.
-            The returned array must be the same shape and type as *y*.
-        free_conc (callable): A function that accepts *x0* and returns the
-            values of the free concentration.
-        jacobian (callable): A function that accepts *x0* and the free
-            concentration array and returns the jacobian matrix.
+        func (callable): A function that accepts the values of *x0* and
+            return both the residuals vector and the jacobian matrix.
         max_iterations (int, optional): maximum number of iterations allowed
         threshold (float, optional): criteria for convergence
         out_chisq (list, optional): If provided, the successive values for
@@ -61,9 +54,8 @@ def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping = kwargs.pop('damping', 0.001)
     fcapping = trivial_capping if capping is None else capping 
-    print(fcapping, capping)
 
-    n_points = len(y)
+    n_points = len(weights)
     n_vars = len(x0)
     chisq_hist = []
     sigma_hist = []
@@ -73,19 +65,13 @@ def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **
     assert W.shape == (n_points, n_points)
 
     x = np.copy(x0)
-    concs = free_conc(x)
-    assert len(concs) == n_points
-    y_calc = f(x, concs)
-    assert y_calc.shape == y.shape
 
     # compute χ₂(dx)
-    resid = y - y_calc
-    assert resid.shape == y.shape
+    resid, J = func(x)
+    assert resid.shape == weights.shape
     chisq = np.sum(resid**2)
     sigma = fit_sigma(resid, weights, n_points, n_vars)
     assert isinstance(chisq, float)
-
-    J = jacobian(x0, concs)
     assert J.ndim == 2 and J.shape == (n_points, n_vars)
     M = np.dot(np.dot(J.T, W), J)
     D = np.diag(np.diag(M))
@@ -101,14 +87,12 @@ def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **
 
         # new_x = x + dx
         new_x = fcapping(x, dx)
-        new_concs = free_conc(new_x)
-        y_calc = f(new_x, new_concs)
-        resid = y - y_calc
+        resid, J = func(new_x)
 
         if np.sum(resid**2) >= chisq:
             damping *= 10
         else:
-            _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
+            # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
             iterations += 1
             damping /= 10
             chisq = np.sum(resid**2)
@@ -117,7 +101,6 @@ def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **
             concs = new_concs
             if one_iter:
                 break
-            J = jacobian(x, concs)
             M = np.dot(np.dot(J.T, W), J)
             D = np.diag(np.diag(M))
             chisq_hist.append(chisq)
@@ -130,20 +113,18 @@ def levenberg_marquardt(x0, y, f, free_conc, jacobian, weights, capping=None, **
             if quiet_maxits:
                 break
 
-            ret = {'last_value': x, 'jacobian': J, 'weights': W,
+            ret = {'last_value': x, 'jacobian': J, 
                    'residuals': resid,
-                   'concentrations': concs,
                    'damping': damping, 'convergence': chisq_hist,
                    'iterations': iterations}
-            raise excepts.TooManyIterations(msg=("Maximum number of"
-                                                 "iterations reached"),
+            raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),
                                             last_value=ret)
 
-    ret_extra = {'jacobian': J, 'weights': W, 'residuals': resid,
+    ret_extra = {'jacobian': J, 'residuals': resid,
                  'damping': damping, 'convergence': chisq_hist,
                  'sigma': sigma_hist,
                  'iterations': iterations}
-    return x, concs, ret_extra
+    return x, ret_extra
 
 
 def simplex(x0, y, fnc, free_conc, weights, **kwargs):
@@ -425,3 +406,9 @@ def fit_sigma(residuals, weights, npoints, nparams):
 
 def preprocess(*datawidgets):
     ...
+
+
+fitting_functions = {
+    consts.METHOD_LM=levenberg_marquardt,
+    consts.METHOD_NM=simplex
+}

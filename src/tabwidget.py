@@ -4,6 +4,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import bridge
+import libfit
 import libio
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
@@ -108,6 +109,10 @@ class TabWidget(QtWidgets.QTabWidget):
         datwidgets = [w for w in self._itertabs if isinstance(w, DataWidget)]
         params = bridge.Parameters(self._model, titwidgets, datwidgets)
         bridge = bridge.Bridge(params)
+
+        initvars = params.initial_values()
+        ffit = libfit.fitting_functions[method]
+        x, info = ffit(
 
 
     def import_txtspectrum(self, filename):
