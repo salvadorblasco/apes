@@ -57,6 +57,26 @@ from nmrwidget import NmrWidget
 from specwidget import SpecWidget
 
 
+class Slices():
+    "Simple counter that returns a slice object."
+    def __init__(self, start=0):
+        self.start = start
+        self.stop = start
+
+    def step(self, step: int) -> None:
+        "Increment stop by given amount"
+        self.stop += step
+
+    def yield_slice(self) -> slice:
+        "Provide slice to be used."
+        retval = slice(self.start, self.stop)
+        self.start = self.stop
+        return retval
+
+    def __len__(self):
+        return self.stop - self.start
+
+
 class Bridge():
     """Bridge between the GUI and the fitting engine.
     """
@@ -68,7 +88,7 @@ class Bridge():
         self.jacobian = np.empty(parameters.jacobian_shape, dtype=float)
         self.residual = np.empty(parameters.residual_shape, dtype=float)
 
-    def build_matrices(self, values) -> tuple[NDArray[float,float], NDArray[float]]:
+    def build_matrices(self, values) -> tuple[NDArray[float], NDArray[float]]:
         self.parameters.update_parameters(values)
         betadata = self.parameters.beta
         beta = betadata.beta()
@@ -251,7 +271,7 @@ class Parameters:
 
     def _process_emf(self, widget, jslice, rslice):
         data = EmfData(
-            emf0=np.ndarray(widget.emf0),
+            emf0=np.array(widget.emf0),
             emf0_flags = widget.emf0_flags,
             emf = np.array(widget.emf),
             slope = np.array(widget.slope),
@@ -267,9 +287,9 @@ class Parameters:
         return data
 
     def _process_titration(self, twidget, jslice):
-        data = TitrationData(init=twidget.initial_amount,
+        data = TitrationData(init=np.array(twidget.initial_amount),
                              init_flags=twidget.init_flags,
-                             buret=twidget.buret,
+                             buret=np.array(twidget.buret),
                              buret_flags=twidget.buret_flags,
                              starting_volume=twidget.starting_volume,
                              titre=np.array(twidget.titre))
@@ -354,26 +374,6 @@ class EmfData():
     def residual(self) -> np.ndarray:
         "Return residual."
         return self.emf - self.emf_calc()
-
-
-class Slices:
-    "Simple counter that returns a slice object."
-    def __init__(self, start=0):
-        self.start = start
-        self.stop = start
-
-    def step(self, step: int) -> None:
-        "Increment stop by given amount"
-        self.stop += step
-
-    def yield_slice(self) -> slice:
-        "Provide slice to be used."
-        retval = slice(self.start, self.stop)
-        self.start = self.stop
-        return retval
-
-    def __len__(self):
-        return self.stop - self.start
 
 
 class Variable:
