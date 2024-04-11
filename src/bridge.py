@@ -150,7 +150,8 @@ class Bridge():
                                                                self.stoichiometry)
 
     def weights(self):
-        raise NotImplementedError
+        # TODO change this to real values
+        return np.ones_like(self.residual)
 
 
 class Parameters:
