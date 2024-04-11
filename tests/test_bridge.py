@@ -60,8 +60,8 @@ class TestParameters(unittest.TestCase):
     def test_variables(self):
         _vars = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
         self.b.update_parameters(_vars)
-        v = self.b.parameter['beta']
-        for x, y in zip(_vars, v):
+        v = self.b.beta
+        for x, y in zip(_vars, v.logbeta):
             self.assertEqual(x, y)
 
 
