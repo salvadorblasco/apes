@@ -119,6 +119,9 @@ class TabWidget(QtWidgets.QTabWidget):
         params.update_parameters(x)
         params.dump_to_widgets()
 
+    def go_button(self, method: int):
+        self.fitting(method)
+
     def import_txtspectrum(self, filename):
         'Import data from text file.'
         wavelength, data = libio.import_spectrum_text(filename)

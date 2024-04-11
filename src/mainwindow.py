@@ -115,27 +115,28 @@ class MainWindow(QtWidgets.QMainWindow):
     def go(self):
         'Start calculations.'
         # TODO for python 3.10 uses match case
-        if self._is_current_tab((SpeciationWidget, TitrationWidget)):
-            try:
-                self.ui.tab_main.currentWidget()._recalc_free_concentration()
-            except excepts.FailedCalculateConcentrations:
-                libqt.popwarning('Error', 'Failed to calculate concentrations')
-            except np.linalg.linalg.LinAlgError:
-                libqt.popwarning('Error', 'Singular matrix')
-            finally:
-                self.refresh()
-        elif self._is_current_tab(EmfWidget):
-            self._fit_emf()
-        elif self._is_current_tab(CalorWidget):
-            self._fit_calor()
-        elif self._is_current_tab(SpecWidget):
-            self._fit_spec()
-        elif self._is_current_tab(NmrWidget):
-            self._fit_nmr()
-        elif self._is_current_tab(IonicWidget):
-            self._fit_ionic()
-        else:
-            self.message("Nothing to do")
+        # if self._is_current_tab((SpeciationWidget, TitrationWidget)):
+        #     try:
+        #         self.ui.tab_main.currentWidget()._recalc_free_concentration()
+        #     except excepts.FailedCalculateConcentrations:
+        #         libqt.popwarning('Error', 'Failed to calculate concentrations')
+        #     except np.linalg.linalg.LinAlgError:
+        #         libqt.popwarning('Error', 'Singular matrix')
+        #     finally:
+        #         self.refresh()
+        # elif self._is_current_tab(EmfWidget):
+        #     self._fit_emf()
+        # elif self._is_current_tab(CalorWidget):
+        #     self._fit_calor()
+        # elif self._is_current_tab(SpecWidget):
+        #     self._fit_spec()
+        # elif self._is_current_tab(NmrWidget):
+        #     self._fit_nmr()
+        # elif self._is_current_tab(IonicWidget):
+        #     self._fit_ionic()
+        # else:
+        #     self.message("Nothing to do")
+        self.tab_main.go_button(method=self._get_fitalg())
 
     def iterate(self):
         "Perform only one iteration."
