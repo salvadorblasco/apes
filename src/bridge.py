@@ -57,11 +57,7 @@ from nmrwidget import NmrWidget
 from specwidget import SpecWidget
 
 
-<<<<<<< HEAD
 class Slices():
-=======
-class Slices:
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
     "Simple counter that returns a slice object."
     def __init__(self, start=0):
         self.start = start
@@ -87,11 +83,6 @@ class Slices:
         return self.stop - self.start
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
 class Bridge():
     """Bridge between the GUI and the fitting engine.
     """
@@ -120,11 +111,7 @@ class Bridge():
             for jpart, col_slice in self.parameters.iter_jblock():
                 if datatype is EmfWidget:
                     if jpart == "beta":
-<<<<<<< HEAD
                         eactiv = data.electroactive
-=======
-                        eactiv = data['electroactive']
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
                         full_dl = data.titration.dlcdlbeta
                         # TODO replace slope=1.0 with data['slope']
                         part_dl = np.squeeze(full_dl[:,eactiv,:][...,beta_refine])
@@ -201,14 +188,9 @@ class Parameters:
         self.data_order = []    # the id of the datawidgets in order of appearance
 
         # betas are always included first
-<<<<<<< HEAD
         self.beta = BetaData(logbeta=np.array(model.beta), beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
         jacobian_slice.stamp_slice('beta', self.jacobian_part)
-=======
-        self.beta = BetaData(logbeta=np.array(model.beta_log), beta_flags=model.beta_flags)
-        self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
 
         # datawidgets are processed next
         for dw in datawidgets:                          # for each datawidget
@@ -265,13 +247,6 @@ class Parameters:
         # return jpart, col_slice
         yield from self.jacobian_part.items()
 
-<<<<<<< HEAD
-=======
-
-    def iter_titrations(self):
-        return iter(self.titrations.values())
-
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
     def update_parameters(self, values):
         "Update values for all variables."
         for variable, value in zip(self.variables, values):
@@ -315,11 +290,7 @@ class Parameters:
         data.vslice = rslice.yield_slice()
         self._process_flags(data, 'emf0', "emf0_flags", "emf0_torefine", jslice)
         key = (id(widget), type(widget))
-<<<<<<< HEAD
         jslice.stamp_slice(key, self.jacobian_part)
-=======
-        self.jacobian_part[key] = jslice.yield_slice()
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
         return data
 
     def _process_titration(self, twidget, jslice):
@@ -332,19 +303,11 @@ class Parameters:
 
         self._process_flags(data, 'init', 'init_flags', 'rf_init', jslice)
         key = (id(twidget), 'init')
-<<<<<<< HEAD
         jslice.stamp_slice(key, self.jacobian_part)
 
         self._process_flags(data, 'buret', 'buret_flags', 'rf_buret', jslice)
         key = (id(twidget), 'buret')
         jslice.stamp_slice(key, self.jacobian_part)
-=======
-        self.jacobian_part[key] = jslice.yield_slice()
-
-        self._process_flags(data, 'buret', 'buret_flags', 'rf_buret', jslice)
-        key = (id(twidget), 'buret')
-        self.jacobian_part[key] = jslice.yield_slice()
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
 
         return data
 
@@ -377,17 +340,10 @@ class TitrationData():
     amatrix: NDArray[float] = field(init=False)
     dlcdlbeta: NDArray[float] = field(init=False)
     rf_init: tuple[int] = field(init=False)  # indices of elements to be refined
-<<<<<<< HEAD
     rf_buret: tuple[int] = field(init=False )# indices of elements to be refined
     refine: bool = field(init=False, default=False)
     init_slice: Slices = field(init=False)
     buret_slice: Slices = field(init=False)
-=======
-    rf_buret: tuple[int] = field(init=False) # indices of elements to be refined
-    refine: bool = field(init=False, default=False)
-    init_slice: Slices | None = field(init=False, default=None)
-    buret_slice: Slices | None = field(init=False, default=None)
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
 
     def __post_init__(self):
         self.refine = any(self.init_flags) or any(self.buret_flags)
@@ -436,16 +392,12 @@ class Variable:
         self.key = key
         self.position = position
 
-<<<<<<< HEAD
     def get_value(self) -> float:
         "Get the value of the variable."
         dataholder = getattr(self.data, self.key)
         return dataholder[self.position]
 
     def set_value(self, value: float) -> None:
-=======
-    def set_value(self, value):
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
         """Set value for all parameters in this Constraint.
 
         Args:
@@ -473,13 +425,10 @@ class Constraint:
         self.__data.append((data, parname, position))
         self.__values.append(value)
 
-<<<<<<< HEAD
     def get_value(self) -> float:
         "Get the value of the variable."
         return self.__values[0]
 
-=======
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
     def set_value(self, new_value: float) -> None:
         """Set value for all parameters in this Constraint.
 
@@ -496,8 +445,4 @@ class Constraint:
 
 
 def _size(*slices):
-<<<<<<< HEAD
     return tuple(len(s) for s in slices)
-=======
-    return tuple(s.stop-s.start for s in slices)
->>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
