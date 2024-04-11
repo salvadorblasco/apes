@@ -110,7 +110,7 @@ class Bridge():
             for jpart, col_slice in self.parameters.iter_jblock():
                 if datatype is EmfWidget:
                     if jpart == "beta":
-                        eactiv = data['electroactive']
+                        eactiv = data.electroactive
                         full_dl = data.titration.dlcdlbeta
                         # TODO replace slope=1.0 with data['slope']
                         part_dl = np.squeeze(full_dl[:,eactiv,:][...,beta_refine])
