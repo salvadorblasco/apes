@@ -67,7 +67,7 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
     x = np.copy(x0)
 
     # compute χ₂(dx)
-    resid, J = func(x)
+    J, resid = func(x)
     assert resid.shape == weights.shape
     chisq = np.sum(resid**2)
     sigma = fit_sigma(resid, weights, n_points, n_vars)
@@ -78,7 +78,9 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
 
     assert W.shape == (n_points, n_points)
 
+    breakpoint()
     while True:
+        print(iterations, x)
         try:
             dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
         except np.linalg.linalg.LinAlgError:
@@ -87,7 +89,7 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
 
         # new_x = x + dx
         new_x = fcapping(x, dx)
-        resid, J = func(new_x)
+        J, resid = func(new_x)
 
         if np.sum(resid**2) >= chisq:
             damping *= 10
@@ -98,7 +100,6 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
             chisq = np.sum(resid**2)
             sigma = fit_sigma(resid, weights, n_points, n_vars)
             x = new_x
-            concs = new_concs
             if one_iter:
                 break
             M = np.dot(np.dot(J.T, W), J)
@@ -409,6 +410,6 @@ def preprocess(*datawidgets):
 
 
 fitting_functions = {
-    consts.METHOD_LM=levenberg_marquardt,
-    consts.METHOD_NM=simplex
+    consts.METHOD_LM: levenberg_marquardt,
+    consts.METHOD_NM: simplex
 }

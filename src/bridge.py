@@ -51,10 +51,12 @@ import libaux
 import libeq
 import libemf
 
+from modelwidget import ModelWidget
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
 from nmrwidget import NmrWidget
 from specwidget import SpecWidget
+from otherwidgets import TitrationBaseWidget
 
 
 class Slices():
