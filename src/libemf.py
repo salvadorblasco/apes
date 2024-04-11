@@ -60,7 +60,11 @@ def nernst(electroactive_conc, emf0, slope, joint, temperature=298.15):
     Returns:
         :class:`numpy.ndarray`: a 1D array of floats containing the residuals.
     """
+<<<<<<< HEAD
     nernstian_slope = slope*consts.RoverF/temperature
+=======
+    nernstian_slope = slope*consts.RoverF*temperature
+>>>>>>> 760caa2d7e14c2e1c78626ea41c9a500017975b9
     return emf0 + nernstian_slope*np.log(electroactive_conc) + joint
 
 
