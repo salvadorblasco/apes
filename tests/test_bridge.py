@@ -32,6 +32,14 @@ class TestBridge(unittest.TestCase):
         for cc in c.values():
             np.testing.assert_allclose(cc, hexaprotic.free_concentration, atol=1e-2)
 
+    def test_fobj(self):
+        variables = 10**np.array([10.0, 18.0, 24.0, 28.0, 31.0, 33.0])
+        f = self.bridge.generate_freeconcs()
+        _ = f(variables)
+        ffobj = self.bridge.generate_fobj()
+        fobj = ffobj(variables)
+        # np.testing.assert_allclose(jvals, jreal, atol=1e-8)
+
     def test_jacobian(self):
         variables = 10**np.array([10.0, 18.0, 24.0, 28.0, 31.0, 33.0])
         f = self.bridge.generate_freeconcs()
