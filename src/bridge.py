@@ -67,6 +67,11 @@ class Slices():
         "Increment stop by given amount"
         self.stop += step
 
+    def stamp_slice(self, key: str, dict_: dict) -> None:
+        if key in dict_:
+            raise KeyError(f"key {key} is already in dict"}
+        dict_[key] = self.yield_slice()
+
     def yield_slice(self) -> slice:
         "Provide slice to be used."
         retval = slice(self.start, self.stop)
@@ -283,7 +288,7 @@ class Parameters:
         data.vslice = rslice.yield_slice()
         self._process_flags(data, 'emf0', "emf0_flags", "emf0_torefine", jslice)
         key = (id(widget), type(widget))
-        self.jacobian_part[key] = jslice.yield_slice()
+        jslice.stamp_slice(key, self.jacobian_part)
         return data
 
     def _process_titration(self, twidget, jslice):
@@ -296,11 +301,11 @@ class Parameters:
 
         self._process_flags(data, 'init', 'init_flags', 'rf_init', jslice)
         key = (id(twidget), 'init')
-        self.jacobian_part[key] = jslice.yield_slice()
+        jslice.stamp_slice(key, self.jacobian_part)
 
         self._process_flags(data, 'buret', 'buret_flags', 'rf_buret', jslice)
         key = (id(twidget), 'buret')
-        self.jacobian_part[key] = jslice.yield_slice()
+        jslice.stamp_slice(key, self.jacobian_part)
 
         return data
 
