@@ -137,7 +137,7 @@ class Bridge():
         return self.jacobian, self.residual
 
     def update_titrations(self, beta) -> None:
-        for titration in self.parameters.iter_titrations():
+        for titration in self.parameters.titrations.values():
             analc = titration.analc()
 
             if titration.free_conc is None:
