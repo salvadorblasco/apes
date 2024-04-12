@@ -49,10 +49,10 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
 
     report = kwargs.get('report', None)
     one_iter = kwargs.get('one_iter', False)
-    threshold = kwargs.pop('threshold', 1e-5)
+    threshold = kwargs.pop('threshold', 1e-3)
     max_iterations = kwargs.pop('max_iterations', 10)
     quiet_maxits = kwargs.get('quiet_maxits', False)
-    damping = kwargs.pop('damping', 0.001)
+    damping = kwargs.pop('damping', 0.0001)
     fcapping = trivial_capping if capping is None else capping 
 
     n_points = len(weights)
@@ -73,14 +73,14 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
     sigma = fit_sigma(resid, weights, n_points, n_vars)
     assert isinstance(chisq, float)
     assert J.ndim == 2 and J.shape == (n_points, n_vars)
-    M = np.dot(np.dot(J.T, W), J)
+    M = J.T @ W @ J
+    # M = np.dot(np.dot(J.T, W), J)
     D = np.diag(np.diag(M))
 
     assert W.shape == (n_points, n_points)
 
-    breakpoint()
+    # breakpoint()
     while True:
-        print(iterations, x)
         try:
             dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
         except np.linalg.linalg.LinAlgError:
@@ -90,25 +90,32 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
         # new_x = x + dx
         new_x = fcapping(x, dx)
         J, resid = func(new_x)
+        new_chisq = np.sum(resid**2)
+        test = (chisq-new_chisq)/chisq
 
-        if np.sum(resid**2) >= chisq:
+        if new_chisq >= chisq:
             damping *= 10
         else:
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
             iterations += 1
             damping /= 10
-            chisq = np.sum(resid**2)
             sigma = fit_sigma(resid, weights, n_points, n_vars)
             x = new_x
             if one_iter:
                 break
             M = np.dot(np.dot(J.T, W), J)
             D = np.diag(np.diag(M))
-            chisq_hist.append(chisq)
-            sigma_hist.append(sigma)
+            chisq = new_chisq
+            # chisq_hist.append(chisq)
+            # sigma_hist.append(sigma)
 
-        if np.all(np.abs(dx)/x < threshold):
-            break
+            if (test < threshold) and iterations > 2:
+                break
+
+        print(iterations, dx, damping, test, sigma)
+
+        # if np.all(np.abs(dx)/x < threshold):
+        #     break
 
         if iterations > max_iterations:
             if quiet_maxits:

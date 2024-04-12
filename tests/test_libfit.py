@@ -24,8 +24,9 @@ class TestLevenberg(unittest.TestCase):
         self.bridge = bridge.Bridge(self.params)
 
     def test_levenberg_marquardt(self):
-        initvars = np.fromiter(self.params.initial_values(), dtype=float)
-        print(initvars)
+        initvars = np.fromiter(self.params.initial_values(), dtype=float) 
+        # initvars[...] = initvars + np.random.rand(len(initvars))
+        initvars[0] = initvars[0] +0.1
         weights = self.bridge.weights()
         
         x, info = libfit.levenberg_marquardt(initvars, self.bridge.build_matrices, weights)
