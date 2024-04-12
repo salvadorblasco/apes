@@ -14,6 +14,7 @@ import functools
 import itertools
 
 import numpy as np
+from numpy.typing import NDArray
 
 import consts
 import libaux
@@ -42,7 +43,9 @@ def hselect(array, hindices):
     """
     return array[...,hindices]
 
-def nernst(electroactive_conc, emf0, slope, joint, temperature=298.15):
+def nernst(electroactive_conc: NDArray[float], emf0: NDArray[float],
+           slope: NDArray[float] | float = 1.0, joint: NDArray[float] | float=0.0,
+           temperature: float=298.15) -> NDArray[float]:
     r"""Calculate the calculated potential.
 
     Apply Nernst's equation to calculate potential according to 
@@ -53,31 +56,94 @@ def nernst(electroactive_conc, emf0, slope, joint, temperature=298.15):
     Parameters:
         electroactive_conc (:class:`numpy.ndarray`): a 1D array of floats
             representing the free concentrations of the electroactive species.
-        emf (:class:`numpy.ndarray`): a 1D array of floats representing the
-            experimental values for the potential
-        emf0 (float): The :term:`standard potential`
-        slope (float): The slope for :term:`Nernst's equation`
+        emf0 (:class:`numpy.ndarray`): The :term:`standard potential`
+        slope (:class:`numpy.ndarray`): The slope for :term:`Nernst's equation`
+        joint (:class:`numpy.ndarray`): The liquid joint contribution for :term:`Nernst's equation`
+        temperature (float): the absolute temperature
     Returns:
-        :class:`numpy.ndarray`: a 1D array of floats containing the residuals.
+        :class:`numpy.ndarray`: an array of floats containing the calculated values
     """
     nernstian_slope = slope*consts.RoverF*temperature
     return emf0 + nernstian_slope*np.log(electroactive_conc) + joint
 
 
-def emf_jac_beta(dlogc_dlogbeta, beta, slope=1.0):
-    return slope*consts.NERNST*dlogc_dlogbeta/beta
+def emf_jac_beta(dlogc_dlogbeta, slope=1.0, temperature: float=298.15):
+    r"""Calculate the jacobian part related to equilibrium constants.
+
+    The calculation is done according to equation
+    .. math ::
+
+    \frac{\partial E_n}{\partial\log\beta_b}=\frac{fRT}{nF\log e}\frac{\partial\log c_{nh}}{\partial\log\beta_b} 
+
+    Parameters:
+        dlogc_dlogbeta (:class:`numpy.ndarray`): the derivative values. They can be obtained
+            from :func:`libeq.jacobian.dlogcdlogbeta`.
+        slope (:class:`numpy.ndarray`): The slope for :term:`Nernst's equation`
+        temperature (float): the absolute temperature
+    Returns:
+        :class:`numpy.ndarray`: an array of floats containing the calculated values
+    """
+    nernstian_slope = slope*consts.RoverF*temperature
+    return nernstian_slope*dlogc_dlogbeta/consts.LOGK
 
 
-def emf_jac_init(dlogc_dt, slope=1.0):
-    return slope*consts.NERNST*dlogc_dt
+def emf_jac_init(dlogc_dt, slope=1.0, temperature=298.15):
+    r"""Calculate the jacobian part related to the initial amount.
+
+    The calculation is done according to equation
+    .. math ::
+
+    \frac{\partial E_n}{\partial t_i} = f\frac{RT}{nF}\frac{\partial\log c_{nh}}{\partial t_i}
+
+    Parameters:
+        dlogc_dt (:class:`numpy.ndarray`): the derivative values. They can be obtained
+            from :func:`libeq.jacobian.dlogcdt`.
+        slope (:class:`numpy.ndarray`): The slope for :term:`Nernst's equation`
+        temperature (float): the absolute temperature
+    Returns:
+        :class:`numpy.ndarray`: an array of floats containing the calculated values
+    """
+    nernstian_slope = slope*consts.RoverF*temperature
+    return nernstian_slope*dlogc_dt
 
 
-def emf_jac_buret(dlogc_db, slope=1.0):
-    return slope*consts.NERNST*dlogc_db
+def emf_jac_buret(dlogc_db, slope=1.0, temperature=298.15):
+    r"""Calculate the jacobian part related to the buret concentration.
+
+    The calculation is done according to equation
+    .. math ::
+
+    \frac{\partial E_n}{\partial b_i} = f\frac{RT}{nF}\frac{\partial\log c_{nh}}{\partial b_i}
+
+    Parameters:
+        dlogc_db (:class:`numpy.ndarray`): the derivative values. They can be obtained
+            from :func:`libeq.jacobian.dlogcdb`.
+        slope (:class:`numpy.ndarray`): The slope for :term:`Nernst's equation`
+        temperature (float): the absolute temperature
+    Returns:
+        :class:`numpy.ndarray`: an array of floats containing the calculated values
+    """
+    nernstian_slope = slope*consts.RoverF*temperature
+    return nernstian_slope*dlogc_db
 
 
-def emf_jac_e0(size):
+def emf_jac_e0(size: int) -> NDArray[float]:
+    r"""Calculate the jacobian part related to the standard potential.
+
+    It returns ones based on the size according to equation
+    .. math ::
+
+    \frac{\partial E_n}{\partial E^0} = 1
+
+    Parameters:
+        size (int): the number of ones to return
+    Returns:
+        :class:`numpy.ndarray`: an array of floats containing the calculated values
+    """
     return np.ones(size)
+
+
+# Everything below this line can probably be deleted 
 
 
 def emffit(beta, beta_flags, stoichiometry, titration_data, electrodes,
@@ -404,7 +470,7 @@ def emfsim(beta, stoichiometry, titration, electrodes, **kwargs):
     E0 = np.array(electrodes['E0'])[np.newaxis, :]
     fRTnF = np.array(electrodes['fRTnF'])[np.newaxis, :]
     for T in libaux.build_multiT_titr3(titration):
-        C = libeq.consol(beta, stoichiometry, T)
+        C = libeq.consol.consol(beta, stoichiometry, T)
         H = C[:, electrodes['hindex']]
         emf = E0 + fRTnF*np.log(H)
         yield emf
@@ -429,34 +495,34 @@ def emf_res(electroactive_conc, emf, emf0, nernst):
     return emf - (emf0 + nernst * np.log(electroactive_conc))
 
 
-def emf_jac2(stoichiometry, free_conc, fh, titration, electrode):
-    """Return the full jacobian.
-
-    Order of parameters:
-
-        * Equilibrium constants
-        * starting ammounts
-        * buret concentrations
-        * standard potentials
-
-    Parameters:
-        stoichiometry (:class:`numpy.ndarray`): the :term:`stoichiometry array`
-        free_conc (:class:`numpy.ndarray`): the free concentration array
-    """
-    # Bconst, Bref, Brestr = libaux.count_flags(Bkeys)
-    # Tconst, Tref, Trestr = libaux.count_flags(Tkeys)
-    # Econst, Eref, Erestr = libaux.count_flags(E0keys)
-
-    N = sum(c.shape[0] for c in free_conc)
-    # Nvar = Bref + len(Brestr) + Tref + len(Trestr) + Eref + len(Erestr)
-    counted_flags = libaux.count_flags(Bkeys, Tkeys, E0keys)
-    nrefs = libaux.total_refine_params(count_flags)
-
-    J1 = emf_jac1(stoichiometry, free_conc, fh, var)  # J1 = ∂E/∂β 
-    # J2 = ?? ∂E/∂t and ∂E/∂b 
-    # J3 = ?? ∂E/∂E0
-    # TODO complete calculation of J
-    return np.vstack((J1, J2, J3))
+# def emf_jac2(stoichiometry, free_conc, fh, titration, electrode):
+#     """Return the full jacobian.
+# 
+#     Order of parameters:
+# 
+#         * Equilibrium constants
+#         * starting ammounts
+#         * buret concentrations
+#         * standard potentials
+# 
+#     Parameters:
+#         stoichiometry (:class:`numpy.ndarray`): the :term:`stoichiometry array`
+#         free_conc (:class:`numpy.ndarray`): the free concentration array
+#     """
+#     # Bconst, Bref, Brestr = libaux.count_flags(Bkeys)
+#     # Tconst, Tref, Trestr = libaux.count_flags(Tkeys)
+#     # Econst, Eref, Erestr = libaux.count_flags(E0keys)
+# 
+#     N = sum(c.shape[0] for c in free_conc)
+#     # Nvar = Bref + len(Brestr) + Tref + len(Trestr) + Eref + len(Erestr)
+#     counted_flags = libaux.count_flags(Bkeys, Tkeys, E0keys)
+#     nrefs = libaux.total_refine_params(count_flags)
+# 
+#     J1 = emf_jac1(stoichiometry, free_conc, fh, var)  # J1 = ∂E/∂β 
+#     # J2 = ?? ∂E/∂t and ∂E/∂b 
+#     # J3 = ?? ∂E/∂E0
+#     # TODO complete calculation of J
+#     return np.vstack((J1, J2, J3))
 
 
 def dcdt(concentration, stoichiometry, starting_volume, titre):

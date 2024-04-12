@@ -10,7 +10,7 @@ Common parameters and constants used applicationwide.
 #                              'const_error', 'enthalpy', 'enthalpy_error',
 #                              'enthalpy_flags'))
 
-LOGK = 2.3025851      # ln(10)
+LOGK = 2.3025851      # ln(10) = 1/log(e)
 R = 8.314472          # gas constant(J ∕ (K⋅mol))
 fRTnF = 25.6926       # mV
 NERNST = 25.6926      # mV
