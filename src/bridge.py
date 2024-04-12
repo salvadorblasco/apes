@@ -98,6 +98,7 @@ class Bridge():
 
     def build_matrices(self, values) -> tuple[NDArray[float], NDArray[float]]:
         self.parameters.update_parameters(values)
+        temp = self.parameters.get_temp()
         betadata = self.parameters.beta
         beta = betadata.beta()
         beta_refine = betadata.to_refine
@@ -117,7 +118,7 @@ class Bridge():
                         full_dl = data.titration.dlcdlbeta
                         # TODO replace slope=1.0 with data['slope']
                         part_dl = np.squeeze(full_dl[:,eactiv,:][...,beta_refine])
-                        jac_partial = libemf.emf_jac_beta(part_dl, betaref, slope=1.0)
+                        jac_partial = libemf.emf_jac_beta(part_dl, slope=1.0, temperature=temp)
                     elif jpart == (dataid, 'emf0'):
                         jac_partial = libemf.emf_jac_e0(_size(row_slice, col_slice))
                     elif jpart == (dataid, 'init'):
