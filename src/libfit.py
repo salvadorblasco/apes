@@ -82,7 +82,8 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
     # breakpoint()
     while True:
         try:
-            dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
+            # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
+            dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
         except np.linalg.linalg.LinAlgError:
             damping *= 10
             continue
@@ -103,7 +104,7 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
             x = new_x
             if one_iter:
                 break
-            M = np.dot(np.dot(J.T, W), J)
+            M = J.T @ W @ J
             D = np.diag(np.diag(M))
             chisq = new_chisq
             # chisq_hist.append(chisq)
@@ -397,23 +398,8 @@ def _hsl(lst):
     return f_idx[0], f_idx[1], f_idx[-1]
 
 
-def trivial_capping(x, dx):
-    "Capping function where there is no capping"
-    return x + dx
-
-
-def max_ratio_capping(x, dx, ratio):
-    "Capping to a fraction of change"
-    aux = np.abs(dx)/x
-    return np.where(aux>ratio, np.sign(dx)*(1+ratio)*x, x+dx)
-
-
 def fit_sigma(residuals, weights, npoints, nparams):
     return np.sum(weights*residuals**2)/(npoints-nparams)
-
-
-def preprocess(*datawidgets):
-    ...
 
 
 fitting_functions = {

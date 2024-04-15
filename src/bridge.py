@@ -384,9 +384,9 @@ class TitrationData():
         "Dump data into the widget to update the GUI."
         if self.refine:
             return
-        if any(init_flags):
+        if any(self.init_flags):
             widget.initial_amount = self.init
-        if any(buret_flags):
+        if any(self.buret_flags):
             widget.buret = self.buret
 
     def __calc_analc(self):
@@ -430,6 +430,13 @@ class Variable:
         self.data = data
         self.key = key
         self.position = position
+        self.max_increment = math.inf
+
+    def increment_value(self, increment):
+        if abs(increment) > self.max_increment:
+            increment = math.copysign(self.max_increment, increment)
+        new_value = self.get_value() + increment
+        self.set_value(new_value)
 
     def get_value(self) -> float:
         "Get the value of the variable."
@@ -451,6 +458,13 @@ class Constraint:
     def __init__(self):
         self.__values = []
         self.__data = []
+        self.max_increment = math.inf
+
+    def increment_value(self, increment):
+        if abs(increment) > self.max_increment:
+            increment = math.copysign(self.max_increment, increment)
+        new_value = self.get_value() + increment
+        self.set_value(new_value)
 
     def append(self, data, parname: str, position: int) -> None:
         """Append variable to constraint.
@@ -485,3 +499,22 @@ class Constraint:
 
 def _size(*slices):
     return tuple(len(s) for s in slices)
+
+
+def trivial_capping(x, dx):
+    "Capping function where there is no capping"
+    return x + dx
+
+
+def max_ratio_capping(x, dx, ratio):
+    "Capping to a fraction of change"
+    if (aux := np.abs(dx)/x) < ratio:
+        return x+dx
+    else:
+        return x*(1+aux)
+
+def abs_capping(x, dx, maximum):
+    if abs(dx) < maximum:
+        return x + dx
+    else:
+        return x + maximum 
