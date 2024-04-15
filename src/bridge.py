@@ -267,6 +267,11 @@ class Parameters:
         # return jpart, col_slice
         yield from self.jacobian_part.items()
 
+    def increment_variables(self, increments):
+        "Increment variable values."
+        for variable, value in zip(self.variables, values):
+            variable.increment_value(value)
+
     def update_parameters(self, values):
         "Update values for all variables."
         for variable, value in zip(self.variables, values):
@@ -431,11 +436,17 @@ class Variable:
         self.key = key
         self.position = position
         self.max_increment = math.inf
+        self.stored_value: float | None = None
+
+    def accept_value(self):
+        self.stored_value = None
 
     def increment_value(self, increment):
+        if self.stored_value is None:
+            self.stored_value = self.get_value() 
         if abs(increment) > self.max_increment:
             increment = math.copysign(self.max_increment, increment)
-        new_value = self.get_value() + increment
+        new_value = self.stored_value + increment
         self.set_value(new_value)
 
     def get_value(self) -> float:
@@ -459,11 +470,17 @@ class Constraint:
         self.__values = []
         self.__data = []
         self.max_increment = math.inf
+        self.stored_value: float | None = None
+
+    def accept_value(self):
+        self.stored_value = None
 
     def increment_value(self, increment):
+        if self.stored_value is None:
+            self.stored_value = self.get_value() 
         if abs(increment) > self.max_increment:
             increment = math.copysign(self.max_increment, increment)
-        new_value = self.get_value() + increment
+        new_value = self.stored_value + increment
         self.set_value(new_value)
 
     def append(self, data, parname: str, position: int) -> None:
