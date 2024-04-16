@@ -87,9 +87,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ -= '../data/external.xml'
         # _debug_fname_ = '../data/pylh.xml'
         # _debug_fname_ = '../data/universal_buffer.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
+        _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        # libio.loadXML(self, _debug_fname_)
+        libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -136,7 +136,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #     self._fit_ionic()
         # else:
         #     self.message("Nothing to do")
-        self.tab_main.go_button(method=self._get_fitalg())
+        self.ui.tab_main.go_button(canvas=self.canvas, option=self.option)
 
     def iterate(self):
         "Perform only one iteration."
@@ -258,6 +258,7 @@ class MainWindow(QtWidgets.QMainWindow):
         "Open options dialog."
         self._options_widget.exec()
 
+    # TODO delete
     def menuPlotColor(self, qaction):
         """Select the color scheme that will be applied to the current plot.
 
@@ -271,6 +272,7 @@ class MainWindow(QtWidgets.QMainWindow):
         assert qaction in action_color
         self.canvas.setColor(action_color[qaction])
 
+    # TODO delete
     def menuPlotStyle(self, qaction):
         """Select the style that will be applied to the current plot.
 
@@ -446,6 +448,30 @@ class MainWindow(QtWidgets.QMainWindow):
             directory=self.project.default_dir,  # self.__default_dir,
             filter=filters)
 
+    def option(self, query: str):
+        match query:
+            case 'plot style':
+                action_style = {self.ui.actionStyle1: canvas.MyCanvas.STYLE1,
+                                self.ui.actionStyle2: canvas.MyCanvas.STYLE2,
+                                self.ui.actionStyle3: canvas.MyCanvas.STYLE3,
+                                self.ui.actionStyle4: canvas.MyCanvas.STYLE4}
+                return action_style[self.qag_style.checkedAction()]
+            case 'plot color':
+                action_color = {self.ui.actionColorBW: canvas.MyCanvas.COLORBW,
+                                self.ui.actionColorRed:canvas.MyCanvas.COLORR,
+                                self.ui.actionColorBlue: canvas.MyCanvas.COLORB,
+                                self.ui.actionColorRainbow: canvas.MyCanvas.COLORRB}
+                return action_color[self.qag_color.checkedAction()]
+            case 'unlabel_lower_than':
+                return  self._options_widget.unlabel_lower_than
+            case 'ignore_lower_than':
+                return self._options_widget.ignore_lower_than
+            case 'color_by_group':
+                return self.ui.actionColorGroup.isChecked()
+            case 'fitting algorithm':
+                return self._get_fitalg()
+        raise ValueError
+
     def plotEmf(self):
         '''Plot emf data.
 
@@ -463,6 +489,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.canvas.drawEmfFit(data_stream)
 
+    # TODO DELETE
     def refresh(self):
         # widget = self.ui.tab_main.currentWidget()
         if self._is_current_tab((SpeciationWidget, TitrationWidget)):
@@ -505,6 +532,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # TODO clear window and put the new widget
         self.__notifymode()
 
+    # TODO DELETE
     def widgets(self):
         yield from self.__itertabs()
 

@@ -4,6 +4,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import bridge
+import consts
 import libfit
 import libio
 from calorwidget import CalorWidget
@@ -101,26 +102,31 @@ class TabWidget(QtWidgets.QTabWidget):
             if isinstance(tab, TitrationBaseWidget):
                 yield tab.name
 
-    def fitting(self, method: int) -> None:
+    def fitting(self, option) -> None:
+        method = option('fitting algorithm')
         if method not in (consts.METHOD_NM, consts.METHOD_LM):
             raise ValueError("Method not known")
 
-        titwidgets = [w for w in self._itertabs if isinstance(w, TitrationBaseWidget)]
-        datwidgets = [w for w in self._itertabs if isinstance(w, DataWidget)]
+        titwidgets = [w for w in self._itertabs() if isinstance(w, TitrationBaseWidget)]
+        datwidgets = [w for w in self._itertabs() if isinstance(w, DataWidget)]
         params = bridge.Parameters(self._model, titwidgets, datwidgets)
-        bridge = bridge.Bridge(params)
+        bridgeobj = bridge.Bridge(params)
 
-        initvars = params.initial_values()
-        weights = bridge.weights()
         ffit = libfit.fitting_functions[method]
         
-        x, info = ffit(initvars, bridge.build_matrices, weights)
+        info = ffit(bridgeobj)
 
-        params.update_parameters(x)
+        params.accept_values()
         params.dump_to_widgets()
 
-    def go_button(self, method: int):
-        self.fitting(method)
+    def simulate(self, canvas, option) -> None:
+        widget = self.currentWidget()
+        widget._recalc_free_concentration()
+        self._refresh_canvas_simulate(canvas, option)
+
+    def go_button(self, canvas, option) -> None:
+        # self.fitting(option)
+        self.simulate(canvas, option)
 
     def import_txtspectrum(self, filename):
         'Import data from text file.'
@@ -154,6 +160,18 @@ class TabWidget(QtWidgets.QTabWidget):
         'Iterate over widgets in the tab widget.'
         for tabn in range(self.count()):
             yield self.widget(tabn)
+
+    def _refresh_canvas_simulate(self, canvas, option):
+        widget = super().currentWidget()
+        if widget.free_concentration() is None:
+            return
+        canvas.setStyle(option('plot style'))
+        canvas.setColor(option('plot color'))
+        plotoptions = {k: option(k) for k in ('unlabel_lower_than', 'ignore_lower_than',
+                                              'color_by_group')}
+        # externaldata = self.__filtertabs(ExternalDataWidget)
+        externaldata = None
+        canvas.plot_speciation(widget, externaldata, **plotoptions)
 
     def _update_titration_list(self):
         for widget in self._itertabs():
