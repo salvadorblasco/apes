@@ -51,10 +51,10 @@ def levenberg_marquardt(bridge, **kwargs):
 
     report = kwargs.get('report', None)
     one_iter = kwargs.get('one_iter', False)
-    threshold = kwargs.pop('threshold', 1e-3)
-    max_iterations = kwargs.pop('max_iterations', 20)
+    threshold = kwargs.pop('threshold', 1e-4)
+    max_iterations = kwargs.pop('max_iterations', 100)
     quiet_maxits = kwargs.get('quiet_maxits', False)
-    damping = kwargs.pop('damping', 0.0001)
+    damping = kwargs.pop('damping', 100.0)
     # fcapping = trivial_capping if capping is None else capping 
 
     n_points, n_vars = bridge.size()
@@ -80,7 +80,7 @@ def levenberg_marquardt(bridge, **kwargs):
     # D = np.diag(np.diag(M))
 
     # assert W.shape == (n_points, n_points)
-    chisq = math.inf
+    chisq = 1e99
     sigma = math.inf
 
     # breakpoint()

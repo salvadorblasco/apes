@@ -27,14 +27,16 @@ class TestBridge(unittest.TestCase):
 
     def test_matrices(self):
         variables = np.array([10.0, 18.0, 24.0, 28.0, 31.0, 33.0])
-        jac, res = self.bridge.build_matrices(variables)
+        self.bridge.step_values(np.zeros_like(variables))
+        self.bridge.accept_values()
+        jac, res = self.bridge.build_matrices()
 
         for cc in self.params.titrations.values():
             np.testing.assert_allclose(cc.free_conc, hexaprotic.free_concentration, atol=1e-2)
 
         np.testing.assert_allclose(res, np.zeros_like(res), atol=0.8)
 
-        jreal = consts.NERNST*hexaprotic.dlogc_dlogbeta[:,1,:6]/(10**variables[None,:])
+        jreal = consts.NERNST*hexaprotic.dlogc_dlogbeta[:,1,:6] # /(10**variables[None,:])
         np.testing.assert_allclose(jac, jreal, atol=1e-8)
 
 
