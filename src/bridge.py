@@ -42,6 +42,8 @@ Basic rundown.
 
 import collections
 from dataclasses import dataclass, field
+import math
+import typing
 
 import numpy as np
 from numpy.typing import NDArray
@@ -167,20 +169,14 @@ class Parameters:
         self.data = {}
 
         # related to the variables
-        # self.parameter = collections.OrderedDict()  # the values needed to calculate everything
-        # self.parameter_flag = {}                    # the relation parameter/variable
-        self.variables = []  # parameters that are to be refined and passed to the fitting routine
+        self.variables: list[FreeVariable] = []       # parameters that are to be refined and
+                                                      # passed to the fitting routine
 
         # related to the jacobian
         self.jacobian_part = collections.OrderedDict()  # this variable is used to reconstruct the
             # jacobian columnwise. The key of this dictionary indicates the identity of the block.
             # It is either a str (like "beta") or a tuple indicatinf the id of the block and the
             # type of data (id, "init"). The value of the dict is the slice of the matrix.
-
-        # related to the residual
-        # self.residual_function = {}
-        # self.magnitude = collections.OrderedDict()  # the experimental values to fit upon
-        # self.magnitude_size = {}
 
         # other variables
         self.constraint = 6*[None]
@@ -336,25 +332,6 @@ class Parameters:
 
         return data
 
-@dataclass
-class BetaData:
-    "Placeholder for equilibrium constants."
-    logbeta: np.ndarray     # the value of log10(β)
-    beta_flags: tuple[int]
-    to_refine: tuple[int] = field(init=False)
-
-    def beta(self) -> np.ndarray:
-        "Return beta values."
-        return 10**self.logbeta
-
-    def beta_refine(self):
-        return 10**self.logbeta[self.to_refine]
-
-    def dump(self, widget: ModelWidget) -> None:
-        "Dump data into the widget to update the GUI."
-        if any(self.beta_flags):
-            widget.beta_raw = self.logbeta
-
 
 @dataclass
 class TitrationData():
@@ -427,15 +404,52 @@ class EmfData():
         return self.emf - self.emf_calc()
 
 
+@dataclass
+class BetaData:
+    "Placeholder for equilibrium constants."
+    logbeta: np.ndarray     # the value of log10(β)
+    beta_flags: tuple[int]
+    to_refine: tuple[int] = field(init=False)
+
+    def beta(self) -> np.ndarray:
+        "Return beta values."
+        return 10**self.logbeta
+
+    def beta_refine(self):
+        return 10**self.logbeta[self.to_refine]
+
+    def dump(self, widget: ModelWidget) -> None:
+        "Dump data into the widget to update the GUI."
+        if any(self.beta_flags):
+            widget.beta_raw = self.logbeta
+
+
+class FreeVariable(typing.Protocol):
+    max_increment: float 
+    stored_value: float | None
+
+    def accept_value(self):
+        ...
+
+    def increment_value(self, increment):
+        ...
+
+    def get_value(self) -> float:
+        ...
+
+    def set_value(self, value: float) -> None:
+        ...
+
+
 class Variable:
     "Handling of variables."
     def __init__(self, data, key, position):
         if not hasattr(data, key):
             raise ValueError(f"data {type(data)} does not contain property {key}")
-        self.data = data
+        self.data: float = data
         self.key = key
-        self.position = position
-        self.max_increment = math.inf
+        self.position: int = position
+        self.max_increment: float = math.inf
         self.stored_value: float | None = None
 
     def accept_value(self):
