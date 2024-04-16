@@ -1,5 +1,7 @@
 """General functions for nonlinear fitting."""
 
+import math
+
 import numpy as np
 
 import consts
@@ -7,7 +9,7 @@ import excepts
 import libmath
 
 
-def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
+def levenberg_marquardt(bridge, **kwargs):
     r"""Non linear fitting by means of the Levenberg-Marquardt method.
 
     Parameters:
@@ -43,65 +45,80 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
     Raises:
         ValueError: If invalid parameters are passed.
     """
-    def _report(*kws):
-        if report is not None:
-            report(*kws)
+    # def _report(*kws):
+    #     if report is not None:
+    #         report(*kws)
 
     report = kwargs.get('report', None)
     one_iter = kwargs.get('one_iter', False)
     threshold = kwargs.pop('threshold', 1e-3)
-    max_iterations = kwargs.pop('max_iterations', 10)
+    max_iterations = kwargs.pop('max_iterations', 20)
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping = kwargs.pop('damping', 0.0001)
-    fcapping = trivial_capping if capping is None else capping 
+    # fcapping = trivial_capping if capping is None else capping 
 
-    n_points = len(weights)
-    n_vars = len(x0)
+    n_points, n_vars = bridge.size()
     chisq_hist = []
     sigma_hist = []
 
     iterations = 1
+    weights = bridge.weights()
     W = np.diag(weights)
-    assert W.shape == (n_points, n_points)
+    # assert W.shape == (n_points, n_points)
 
-    x = np.copy(x0)
+    # x = np.copy(x0)
 
-    # compute χ₂(dx)
-    J, resid = func(x)
-    assert resid.shape == weights.shape
-    chisq = np.sum(resid**2)
-    sigma = fit_sigma(resid, weights, n_points, n_vars)
-    assert isinstance(chisq, float)
-    assert J.ndim == 2 and J.shape == (n_points, n_vars)
-    M = J.T @ W @ J
-    # M = np.dot(np.dot(J.T, W), J)
-    D = np.diag(np.diag(M))
+    # # compute χ₂(dx)
+    # J, resid = func(x)
+    # assert resid.shape == weights.shape
+    # chisq = np.sum(resid**2)
+    # sigma = fit_sigma(resid, weights, n_points, n_vars)
+    # assert isinstance(chisq, float)
+    # assert J.ndim == 2 and J.shape == (n_points, n_vars)
+    # M = J.T @ W @ J
+    # # M = np.dot(np.dot(J.T, W), J)
+    # D = np.diag(np.diag(M))
 
-    assert W.shape == (n_points, n_points)
+    # assert W.shape == (n_points, n_points)
+    chisq = math.inf
+    sigma = math.inf
 
     # breakpoint()
-    while True:
+    for iteration in range(max_iterations):
         try:
-            # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
-            dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
+            if iteration:
+                # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
+                dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
+            else:
+                dx = np.zeros(n_vars)
         except np.linalg.linalg.LinAlgError:
             damping *= 10
             continue
 
         # new_x = x + dx
-        new_x = fcapping(x, dx)
-        J, resid = func(new_x)
+        #new_x = fcapping(x, dx)
+        #J, resid = func(new_x)
+        bridge.step_values(dx)
+        J, resid = bridge.build_matrices()
+
         new_chisq = np.sum(resid**2)
         test = (chisq-new_chisq)/chisq
 
+        # print(iteration, dx)
+        # print(f'\t {damping:10.4e}  {test:10.4e} {sigma:10.4e}')
+
         if new_chisq >= chisq:
             damping *= 10
+            # print('\tnot decreasing')
         else:
+            print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}")
+            # print('\tdecreasing')
+            bridge.accept_values()
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
-            iterations += 1
-            damping /= 10
+            # iterations += 1
+            damping /= 5
             sigma = fit_sigma(resid, weights, n_points, n_vars)
-            x = new_x
+            # x = new_x
             if one_iter:
                 break
             M = J.T @ W @ J
@@ -110,30 +127,24 @@ def levenberg_marquardt(x0, func, weights, capping=None, **kwargs):
             # chisq_hist.append(chisq)
             # sigma_hist.append(sigma)
 
-            if (test < threshold) and iterations > 2:
+            if (test < threshold) and iteration > 2:
                 break
 
-        print(iterations, dx, damping, test, sigma)
-
+    else:
         # if np.all(np.abs(dx)/x < threshold):
         #     break
-
-        if iterations > max_iterations:
-            if quiet_maxits:
-                break
-
-            ret = {'last_value': x, 'jacobian': J, 
-                   'residuals': resid,
-                   'damping': damping, 'convergence': chisq_hist,
-                   'iterations': iterations}
-            raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),
-                                            last_value=ret)
+        ret = {'jacobian': J, 
+               'residuals': resid,
+               'damping': damping, 'convergence': chisq_hist,
+               'iterations': iterations}
+        raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),
+                                        last_value=ret)
 
     ret_extra = {'jacobian': J, 'residuals': resid,
                  'damping': damping, 'convergence': chisq_hist,
                  'sigma': sigma_hist,
                  'iterations': iterations}
-    return x, ret_extra
+    return ret_extra
 
 
 def simplex(x0, y, fnc, free_conc, weights, **kwargs):

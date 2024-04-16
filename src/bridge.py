@@ -98,8 +98,16 @@ class Bridge():
         self.jacobian = np.empty(parameters.jacobian_shape, dtype=float)
         self.residual = np.empty(parameters.residual_shape, dtype=float)
 
-    def build_matrices(self, values) -> tuple[NDArray[float], NDArray[float]]:
-        self.parameters.update_parameters(values)
+    def accept_values(self):
+        self.parameters.accept_values()
+
+    def size(self) -> tuple[int]:
+        return self.parameters.jacobian_shape
+
+    def step_values(self, increments):
+        self.parameters.increment_variables(increments)
+
+    def build_matrices(self) -> tuple[NDArray[float], NDArray[float]]:
         temp = self.parameters.get_temp()
         betadata = self.parameters.beta
         beta = betadata.beta()
@@ -227,8 +235,8 @@ class Parameters:
             titdata.dump(titwidget)
 
         for datwidget in self.datawidgets:
-            data = self.titrations[id(datwidget)]
-            titdata.dump(titwidget)
+            data = self.data[id(datwidget)]
+            data.dump(datwidget)
 
     def get_temp(self) -> float:
         "Return temperature."
@@ -263,9 +271,13 @@ class Parameters:
         # return jpart, col_slice
         yield from self.jacobian_part.items()
 
+    def accept_values(self):
+        for variable in self.variables:
+            variable.accept_value()
+
     def increment_variables(self, increments):
         "Increment variable values."
-        for variable, value in zip(self.variables, values):
+        for variable, value in zip(self.variables, increments):
             variable.increment_value(value)
 
     def update_parameters(self, values):
