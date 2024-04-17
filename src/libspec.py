@@ -120,11 +120,10 @@ def spec_function(free_concentrations, optical_activity, optical_path, baseline=
 
     .. math:: A_{i\lambda} = l \sum_{j=1}^{E+S} \varepsilon_{\lambda, j} c_{ij} + B
     """   
-    return optical_path[:,None] * \
-           np.dot(free_concentrations, optical_activity.T) + \
-           baseline
+    return optical_path * free_concentrations @ optical_activity.T) + baseline
 
 
+# TODO delete
 def specLM1(A, e):
     """This routine performs the fitting of the constants by means of the
     Levenberg-Marquardt algorithm when only the contants are to be refined.
@@ -227,6 +226,7 @@ def specLM1(A, e):
     return libaux.ravel(logB0, x, Bflags), C, ret_extra
 
 
+# TODO delete
 def jacobian(A, e, C):
     """Returns the jacobian matrix. For constant fitting from spectroscopic
     data it is an (N×Nl,Nl×Nb)-array.

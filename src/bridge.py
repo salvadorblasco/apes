@@ -437,16 +437,33 @@ class BetaData:
 
 
 class SpectralData:
-    def __init__(self, optically_active: tuple[bool], *spectra):
-        self.optically_active = optically_active
-        xdata = np.concatenate([spectrum.wavelength for spectrum in spectra])
-        ydata = np.concatenate([self._getestimation(spectrum) for spectrum in spectra], axis=0)
-        self.cubicspline = scipy.interpolate.CubicSpline(xdata, ydata, axis=1)
-        spanning = 5.0  # nanometres
-        self.data = self.interpolate(np.arange(np.min(xdata), np.max(xdata), spanning))
+    def __init__(self):
+        self.optically_active = None
+        self.xdata = np.empty(0)
+        self.ydata = np.empty(0)
+        self.spanning = 5.0  # nanometres
+
+    def add_spectrum(self, optically_active: tuple[bool], spectrum: "SpectrumData") -> None:
+        self._assert_active_consistency(optically_active)
+        new_xdata = spectrum.wavelength for spectrum in spectra])
+        new_ydata = self._getestimation(spectrum) for spectrum in spectra], axis=0)
+        self.xdata = np.append(self.xdata, new_xdata)
+        self.ydata = np.append(self.ydata, new_ydata)
+
+    def setup(self):
+        self.cubicspline = scipy.interpolate.CubicSpline(self.xdata, self.ydata, axis=1)
+        working_wavelength = np.arange(np.min(self.xdata), np.max(self.xdata), self.spanning)
+        self.data = self.interpolate(working_wavelength)
 
     def interpolate(self, wavelength):
         return self.cubicspline(wavelength)
+
+    def _assert_active_consistency(self, optically_active: tuple[bool]) -> None:
+        if self.optically_active is None:
+            self.optically_active = optically_active
+        else:
+            if not all(i==j for i, j in zip(self.optically_active, optically_active)):
+                raise ValueError("optically active values are not consistent")
 
     def _getestimation(self, spectrum):
         activ_free_conc = spectrum.titration.free_conc[:,self.optically_active]
@@ -460,6 +477,16 @@ class SpectrumData:
     optical_path: float
     titration: TitrationData = field(init=False)
     epsilon: SpectralData = field(init=False)
+
+    def dump(self, widget: SpecWidget) -> None:
+        "Dump data into the widget to update the GUI."
+        raise NotImplementedError
+
+    def residual(self) -> np.ndarray:
+        "Return residual."
+        free_conc = self.titration.free_conc
+        optical_activity = self.epsilon.interpolate(self.wavelength)
+        return self.absorbance - libspec.spec_function(free_conc, optical_activity, self.optical_path)
 
 
 class FreeVariable(typing.Protocol):
