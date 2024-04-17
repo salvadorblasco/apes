@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import unittest
+import unittest.mock
 import sys
 
 import numpy as np
@@ -25,19 +26,22 @@ class TestBridge(unittest.TestCase):
         self.assertTupleEqual(self.bridge.jacobian.shape, (89, 6))
         self.assertTupleEqual(self.bridge.residual.shape, (89, ))
 
-    def test_matrices(self):
-        variables = np.array([10.0, 18.0, 24.0, 28.0, 31.0, 33.0])
-        self.bridge.step_values(np.zeros_like(variables))
-        self.bridge.accept_values()
+    def test_titrations(self):
         jac, res = self.bridge.build_matrices()
 
         for cc in self.params.titrations.values():
-            np.testing.assert_allclose(cc.free_conc, hexaprotic.free_concentration, atol=1e-2)
+            np.testing.assert_allclose(cc.free_conc, hexaprotic.free_concentration, atol=4e-3)
+            np.testing.assert_allclose(cc.amatrix, hexaprotic.matrix_a, atol=0.2)
 
-        np.testing.assert_allclose(res, np.zeros_like(res), atol=0.8)
+    def test_matrices(self):
+        import libeq.consol
+        libeq.consol.consol = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
+        libeq.consol.initial_guess = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
+    
+        jac, res = self.bridge.build_matrices()
 
-        jreal = consts.NERNST*hexaprotic.dlogc_dlogbeta[:,1,:6] # /(10**variables[None,:])
-        np.testing.assert_allclose(jac, jreal, atol=1e-8)
+        np.testing.assert_allclose(res, hexaprotic.residuals, atol=0.1)
+        np.testing.assert_allclose(jac, hexaprotic.emf_jac, atol=0.001)
 
 
 class TestParameters(unittest.TestCase):

@@ -437,7 +437,7 @@ class BetaData:
 
 
 class SpectralData:
-    def __init__(self, optically_active: tuple[bool], *spectra: SpectrumData):
+    def __init__(self, optically_active: tuple[bool], *spectra):
         self.optically_active = optically_active
         xdata = np.concatenate([spectrum.wavelength for spectrum in spectra])
         ydata = np.concatenate([self._getestimation(spectrum) for spectrum in spectra], axis=0)

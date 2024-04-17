@@ -111,7 +111,7 @@ def levenberg_marquardt(bridge, **kwargs):
             damping *= 10
             # print('\tnot decreasing')
         else:
-            print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}")
+            # print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}")
             # print('\tdecreasing')
             bridge.accept_values()
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
