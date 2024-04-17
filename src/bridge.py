@@ -436,6 +436,32 @@ class BetaData:
             widget.beta_raw = self.logbeta
 
 
+class SpectralData:
+    def __init__(self, optically_active: tuple[bool], *spectra: SpectrumData):
+        self.optically_active = optically_active
+        xdata = np.concatenate([spectrum.wavelength for spectrum in spectra])
+        ydata = np.concatenate([self._getestimation(spectrum) for spectrum in spectra], axis=0)
+        self.cubicspline = scipy.interpolate.CubicSpline(xdata, ydata, axis=1)
+        spanning = 5.0  # nanometres
+        self.data = self.interpolate(np.arange(np.min(xdata), np.max(xdata), spanning))
+
+    def interpolate(self, wavelength):
+        return self.cubicspline(wavelength)
+
+    def _getestimation(self, spectrum):
+        activ_free_conc = spectrum.titration.free_conc[:,self.optically_active]
+        return spectrum.optical_path * spectrum.absorbance @ np.pinv(activ_free_conc.T)
+
+
+@dataclass
+class SpectrumData:
+    absorbance: NDArray[float]  # axis0->wavelength, axis1->titration point
+    wavelength: NDArray[float]  # 1D array
+    optical_path: float
+    titration: TitrationData = field(init=False)
+    epsilon: SpectralData = field(init=False)
+
+
 class FreeVariable(typing.Protocol):
     max_increment: float 
     stored_value: float | None
