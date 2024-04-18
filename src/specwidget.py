@@ -29,7 +29,7 @@ class SpecWidget(datawidget.DataWidget):
         #  self.table_data.setObjectName("tab_data")
         #  # TODO use model to reshape table
 
-        self._populate_checkboxes()
+        # self._populate_checkboxes()
         self.labels_changed()
         model.labelsChanged.connect(self.updateLabel)
         model.componentAdded.connect(self.componentAdded)
@@ -156,8 +156,12 @@ class SpecWidget(datawidget.DataWidget):
         self.ui.table_data.setColumnCount(value)
 
     @property
-    def row_optical_path(self) ->  int:
-        return self._model.number_components
+    def optical_path(self) ->  float:
+        return self.ui.dsb_path.value()
+
+    @property
+    def optically_active(self) ->  tuple[bool]:
+        raise NotImplementedError
 
     @property
     def row_range_species(self):
@@ -196,10 +200,12 @@ class SpecWidget(datawidget.DataWidget):
 
     @QtCore.pyqtSlot()
     def labels_changed(self):
-        extended_labels = list(libaux.extended_labels(self._model.labels, self._model.stoich))
-        with libqt.table_locked(self.ui.table_components) as t:
-            self.__change_columns(len(extended_labels))
-            t.setHorizontalHeaderLabels(extended_labels)
+        self.ui.lw_active.clear()
+        for label in self._model.extended_labels:
+            qchk = QtWidgets.QListWidgetItem(label)
+            qchk.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+            qchk.setCheckState(QtCore.Qt.Checked)
+            self.ui.lw_active.addItem(qchk)
 
     @QtCore.pyqtSlot(int, str)
     def componentAdded(self, which, label):
@@ -224,12 +230,12 @@ class SpecWidget(datawidget.DataWidget):
     def _menuvh_makep(self):
         pass
 
-    def _populate_checkboxes(self):
-        table = self.ui.table_components
-        for col in range(table.columnCount()):
-            qchk = QtWidgets.QCheckBox('active')
-            qchk.setChecked(True)
-            table.setCellWidget(0, col, qchk)
+    # def _populate_checkboxes(self):
+    #     layout = self.ui.vl_optically_active
+    #     for index, label in enumerate(self._model.extended_labels):
+    #         qchk = QtWidgets.QCheckBox(label)
+    #         qchk.setChecked(True)
+    #         layout.addWidget(qchk)
 
     def _tdpmign(self):
         "Slot for popup menu option 'ignore points'"

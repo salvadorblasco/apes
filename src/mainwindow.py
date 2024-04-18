@@ -87,9 +87,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ -= '../data/external.xml'
         # _debug_fname_ = '../data/pylh.xml'
         # _debug_fname_ = '../data/universal_buffer.xml'
-        _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
+        #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        libio.loadXML(self, _debug_fname_)
+        #libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -97,7 +97,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # m.addEquilibrium(position=-1, stoich=(1, 3), value=20.0, error=0.0)
         # m.addEquilibrium(position=-1, stoich=(1, 4), value=20.0, error=0.0)
         # self.ui.tab_main.add_titrationbase()
-        # self.ui.tab_main.add_spectrumuv()
+        self.ui.tab_main.add_spectrumuv()
         # m.removeComponent()
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()

@@ -189,6 +189,7 @@ class Parameters:
         # other variables
         self.constraint = 6*[None]
         titration_match = {}
+        self.spectraldata = None
 
         # ~~~~ start collecting information ~~~~
         jacobian_slice = Slices()
@@ -196,7 +197,9 @@ class Parameters:
         self.data_order = []    # the id of the datawidgets in order of appearance
 
         # betas are always included first
-        self.beta = BetaData(logbeta=np.array(model.beta_raw), beta_flags=model.beta_flags)
+        # BEWARE! the widget provides the values of the constants as LOG10
+        # from this point on all calculations are done in the LN of the constants
+        self.beta = BetaData(logbeta=consts.LOGK*np.array(model.beta_raw), beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
         jacobian_slice.stamp_slice('beta', self.jacobian_part)
 
@@ -212,7 +215,12 @@ class Parameters:
                 case NmrWidget():
                     raise NotImplementedError
                 case SpecWidget():
-                    raise NotImplementedError
+                    if self.spectraldata is None:
+                        self.spectraldata = SpectralData()
+                    data = self._process_spectrum(dw, jacobian_slice, residual_slice)
+                case _:
+                    raise ValueError(f"Widget type {type(dw)} not recognised")
+
             self.data[id(dw)] = data
             titration_match[id(dw)] = dw._titrationid
 
@@ -326,6 +334,12 @@ class Parameters:
         jslice.stamp_slice(key, self.jacobian_part)
         return data
 
+    def _process_spectrum(self, dw, jacobian_slice, residual_slice):
+        data = SpectrumData(absorbance=np.array(dw.spectrum),
+                            wavelength=np.fromiter(dw.wavelengths, dtype=float),
+                            optical_path=dw.optical_path)
+        return data
+
     def _process_titration(self, twidget, jslice):
         data = TitrationData(init=np.array(twidget.initial_amount),
                              init_flags=twidget.init_flags,
@@ -419,21 +433,21 @@ class EmfData():
 @dataclass
 class BetaData:
     "Placeholder for equilibrium constants."
-    logbeta: np.ndarray     # the value of log10(β)
+    logbeta: np.ndarray     # the value of log(β)
     beta_flags: tuple[int]
     to_refine: tuple[int] = field(init=False)
 
     def beta(self) -> np.ndarray:
         "Return beta values."
-        return 10**self.logbeta
+        return np.exp(self.logbeta)
 
     def beta_refine(self):
-        return 10**self.logbeta[self.to_refine]
+        return np.exp(self.logbeta[self.to_refine])
 
     def dump(self, widget: ModelWidget) -> None:
         "Dump data into the widget to update the GUI."
         if any(self.beta_flags):
-            widget.beta_raw = self.logbeta
+            widget.beta_raw = self.logbeta/consts.LOGK      # dump value as LOG10
 
 
 class SpectralData:
@@ -445,8 +459,8 @@ class SpectralData:
 
     def add_spectrum(self, optically_active: tuple[bool], spectrum: "SpectrumData") -> None:
         self._assert_active_consistency(optically_active)
-        new_xdata = spectrum.wavelength for spectrum in spectra])
-        new_ydata = self._getestimation(spectrum) for spectrum in spectra], axis=0)
+        new_xdata = spectrum.wavelength
+        new_ydata = self._getestimation(spectrum)
         self.xdata = np.append(self.xdata, new_xdata)
         self.ydata = np.append(self.ydata, new_ydata)
 

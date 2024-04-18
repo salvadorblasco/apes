@@ -83,7 +83,7 @@ def emf_jac_beta(dlogc_dlogbeta: NDArray[float], slope=1.0, temperature: float=2
         :class:`numpy.ndarray`: an array of floats containing the calculated values
     """
     nernstian_slope = slope*consts.RoverF*temperature
-    return nernstian_slope*dlogc_dlogbeta*consts.LOGK
+    return nernstian_slope*dlogc_dlogbeta
 
 
 def emf_jac_init(dlogc_dt, slope=1.0, temperature=298.15):
