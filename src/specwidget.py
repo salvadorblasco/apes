@@ -161,7 +161,8 @@ class SpecWidget(datawidget.DataWidget):
 
     @property
     def optically_active(self) ->  tuple[bool]:
-        raise NotImplementedError
+        return tuple(self.ui.lw_active.item(nitem).checkState() == QtCore.Qt.Checked
+                     for nitem in range(self.ui.lw_active.count()))
 
     @property
     def row_range_species(self):
