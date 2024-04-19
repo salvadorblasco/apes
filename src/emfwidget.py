@@ -139,7 +139,7 @@ class EmfWidget(datawidget.DataWidget):
         # TODO check input
         # TODO reshape table if needed
         libqt.fill_row_comboindex(self.ui.table_params, self.__num2it(activ),
-                                  self.labels, row=4)
+                                  self._model.labels, row=4)
 
     # @property
     # def amount_flags(self):

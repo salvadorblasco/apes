@@ -22,6 +22,7 @@ class TabWidget(QtWidgets.QTabWidget):
         super().__init__(parent)
         super().setMovable(True)
         self._model = None
+        self._specmodel = None
         self.__tabdicts = {}
         self.__tabcounter = {}
 
@@ -79,6 +80,15 @@ class TabWidget(QtWidgets.QTabWidget):
         self.__stamp(widget, "Titration")
         self._update_titration_list()
         widget.implicitVolumeChanged.connect(self.__implicit_titre_changed)
+        return widget
+
+    def add_uvmodel(self):
+        if self._uvmodel is None:
+            widget = SpecModelModelWidget()
+            self.addTab(widget, "UV Components")
+            self._uvmodel = widget
+        else:
+            widget = self._uvmodel
         return widget
 
     def clear(self):

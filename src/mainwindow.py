@@ -39,6 +39,7 @@ from otherwidgets import OutputWidget, ExternalDataWidget, IonicWidget, Titratio
 from simulationwidgets import SpeciationWidget, TitrationWidget
 from project import Project
 from tabwidget import TabWidget
+from tabmodels import TabModelWidget
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -53,23 +54,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = mainui.Ui_MainWindow()
         self.ui.setupUi(self)
 
-        new_tab_main = TabWidget(self)
-        self.ui.vl_1.replaceWidget(self.ui.tab_main, new_tab_main)
-        self.ui.tab_main.deleteLater()
-        self.ui.tab_main = new_tab_main
+        self.modelwidget = ModelWidget()
+        self.modelwindow = self.ui.mdiArea.addSubWindow(self.modelwidget)
+
+        self.fitting_group = []
+
+        # new_tab_main = TabModelWidget(self)
+        # index = self.ui.splitter.indexOf(self.ui.widget_models)
+        # trash = self.ui.splitter.replaceWidget(index, new_tab_main)
+        # trash.deleteLater()
+        # self.ui.tab_main = new_tab_main
 
         self._setup_vars()          # initialize variables
-        self._more_widgets()        # create extra widgets
         self._make_connections()    # pair signals/slots
 
-        lbl = QtWidgets.QLabel()
-        lbl.setPixmap(QtGui.QPixmap('../icons/idle.png').scaledToHeight(20))
-        self.ui.statusbar.insertWidget(0, lbl)
+        # lbl = QtWidgets.QLabel()
+        # lbl.setPixmap(QtGui.QPixmap('../icons/idle.png').scaledToHeight(20))
+        # self.ui.statusbar.insertWidget(0, lbl)
 
         # FOR TESTING ONLY
         # _debug_fname_ =  '../data/distri_pytc8_extd.xml'
         # _debug_fname_ =  '../data/cuimpy33333_.xml'
-        # self.newSpeciation()
+        # self.new_speciation()
         # self.ui.tab_main.clear()
         # _debug_fname_ = '../data/hcit1.xml'
         # _debug_fname_ = '../data/cuimpy33333_.xml'
@@ -97,7 +103,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # m.addEquilibrium(position=-1, stoich=(1, 3), value=20.0, error=0.0)
         # m.addEquilibrium(position=-1, stoich=(1, 4), value=20.0, error=0.0)
         # self.ui.tab_main.add_titrationbase()
-        self.ui.tab_main.add_spectrumuv()
+        # self.ui.tab_main.add_spectrumuv()
         # m.removeComponent()
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()
@@ -110,6 +116,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.importSuperquadApp(self, '../data/hpytren1.sup')
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
+        # self.new_speciation()
         # END TESTING PART
 
     def go(self):
@@ -324,6 +331,9 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`EmfWidget`: The newly created widget.
         '''
+        if not self.fitting_group:         # if empty list
+            self.new_fitting_group()
+
         # dsw = EmfWidget(self.modelwidget)
         # # dsw.labelsChanged.connect(self._label_changed)
         # self.modelwidget.componentAdded.connect(dsw.add_component)
@@ -331,7 +341,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self._newtab('Emf data', dsw, self.ui.actionNewEmfDS)
         # self.modelwidget.labelsChanged.connect(dsw.updateLabel)
         # return dsw
-        return self.ui.tab_main.add_emf()
+        return self.fitting_group[0].add_emf()
 
     def newIonic(self):
         '''Create new ionis strength calculator and return instance.
@@ -375,24 +385,16 @@ class MainWindow(QtWidgets.QMainWindow):
         return widget
 
     # TODO deprecate - use self.ui.tab_main.add_speciation()
-    def newSpeciation(self):
-        # """Create new :class:`SpeciationWidget` and return instance.
+    def new_speciation(self) -> SpeciationWidget:
+        """Create new :class:`SpeciationWidget` and return instance.
 
-        # Returns:
-        #     :class:`SpeciationWidget`: the newly created widget.
-        # """
-        # sdw = SpeciationWidget(self.modelwidget)
-        # self._newtab('Speciation', sdw, self.ui.actionNewSpeciesDist)
-
-        # sdw.plotUpdate.connect(self.__plot_update_titr)
-
-        # # connect w.labelsChanged con model.updateLabel
-        # # sdw.labelsChanged.connect(self.modelwidget.updateLabel)
-        # self.modelwidget.componentAdded.connect(sdw.add_component)
-        # self.modelwidget.labelsChanged.connect(sdw.updateLabel)
-
-        # return sdw
-        return self.ui.tab_main.add_speciation()
+        Returns:
+            :class:`SpeciationWidget`: the newly created widget.
+        """
+        widget = SpeciationWidget(self.modelwidget)
+        windowd = self.ui.mdiArea.addSubWindow(widget)
+        windowd.show()
+        return widget
 
     # deprecate
     def newSpectr(self):
@@ -434,6 +436,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.modelwidget.componentAdded.connect(widget.add_component)
         self.modelwidget.labelsChanged.connect(widget.updateLabel)
         return widget
+
+    def new_fitting_group(self):
+        tabmain = TabWidget(self.modelwidget)
+        self.fitting_group.append(tabmain)
+        window = self.ui.mdiArea.addSubWindow(tabmain)
+        window.show()
 
     def new_titration_base(self):
         self.ui.tab_main.add_titrationbase()
@@ -488,122 +496,6 @@ class MainWindow(QtWidgets.QMainWindow):
                        widget.C, widget.residuals)
 
         self.canvas.drawEmfFit(data_stream)
-
-    # TODO DELETE
-    def refresh(self):
-        # widget = self.ui.tab_main.currentWidget()
-        if self._is_current_tab((SpeciationWidget, TitrationWidget)):
-            widget = self.ui.tab_main.currentWidget()
-            if widget.free_concentration() is None:
-                return
-            self.menuPlotStyle(self.qag_style.checkedAction())
-            self.menuPlotColor(self.qag_color.checkedAction())
-            plotoptions = {
-                'unlabel_lower_than': self._options_widget.unlabel_lower_than,
-                'ignore_lower_than': self._options_widget.ignore_lower_than,
-                'color_by_group': self.ui.actionColorGroup.isChecked()}
-            externaldata = self.__filtertabs(ExternalDataWidget)
-            self.canvas.plot_speciation(widget, externaldata, **plotoptions)
-
-        elif self._is_current_tab(EmfWidget):
-            self.message('Resolving equilibria')
-            self._compute_concentration_combined()
-            self.message('Plotting')
-            self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)))
-            self.message('Done')
-        elif self._is_current_tab(CalorWidget):
-            self.canvas.plotCalorFit()
-        elif self._is_current_tab(SpecWidget):
-            self.canvas.plotSpectr()
-        elif self._is_current_tab(NmrWidget):
-            raise NotImplementedError
-        elif self._is_current_tab(otherwidgets.ManualFitWidget):
-            widget = self.ui.tab_main.currentWidget()
-            widget.recalc()
-        else:
-            # self.message("Nothing to do")
-            pass
-
-    def set_mode(self, mode: int):
-        if  0 > mode > 5:
-            raise ValueError()
-
-        self._fmode = mode
-        # TODO clear window and put the new widget
-        self.__notifymode()
-
-    # TODO DELETE
-    def widgets(self):
-        yield from self.__itertabs()
-
-    @property
-    def modelwidget(self):
-        'ModelWidget in TabWidget.'
-        widgets = tuple(libqt.filter_tabwidget(self.ui.tab_main, ModelWidget))
-        if len(widgets) == 0:
-            return None
-        if len(widgets) == 1:
-            return widgets[0]
-
-        raise RuntimeError('There must be only one ModelWidget.')
-
-    @property
-    def temperature(self):
-        "The temperature."
-        return self.project.temperature  # self._temperature
-
-    # TODO deprecate this. Use Project instead
-    @temperature.setter
-    def temperature(self, temp):
-        if temp <= 0.0:
-            raise ValueError('absolute temperature cannot be negative')
-        # self._temperature = temp
-        self.project.temperature = temp
-
-    # TODO deprecate this. Use Project instead
-    @property
-    def title(self):
-        'The title of the project.'
-        # return self._title
-        return self.project.title
-
-    # TODO deprecate this. Use Project instead
-    @title.setter
-    def title(self, title):
-        # self._title = title
-        self.project.title = title
-
-    # TODO deprecate and move to tabwidget.py
-    def _compute_concentration_combined(self):
-        # TODO probably move part of this to consol
-        # TODO code duplicated in otherwidgets.ManualFitWidget.recalc
-        widgets = [t for t in self.__itertabs() if hasattr(t, 'analyticalc')]
-
-        try:
-            aux = [np.array(t.analyticalc()) for t in widgets]  # only_analc()]
-        except ValueError as e:
-            #print(e)
-            #print(dir(e))
-            errdialog = QtWidgets.QMessageBox.critical(self, "Error", str(e))
-            return
-
-        beta = np.array(self.modelwidget.beta)
-        stoichiometry = np.array(self.modelwidget.stoich)
-        analytic = np.concatenate(aux)
-        lims = list(itertools.accumulate([0] + [s.shape[0] for s in aux]))
-
-        if any(w.free_concentration is None for w in widgets):
-            concentration_packed = libeq.consol.initial_guess(beta,
-                                                              stoichiometry,
-                                                              analytic)
-        else:
-            inivals = np.vstack(tuple(w.free_concentration for w in widgets))
-            concentration_packed = libeq.consol.consol(beta, stoichiometry,
-                                                       analytic, inivals)
-        concentration = np.vsplit(concentration_packed, lims[1:-1])
-        for widget, conc in zip(widgets, concentration):
-            assert conc.shape[0] == widget.npoints
-            widget.free_concentration = conc
 
     def _copytdat(self):
         # 1. find out number of points
@@ -935,14 +827,14 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionResetModel.triggered.connect(self._reset_model)
         self._model_connections()
 
-        ui.actionNewEmfDS.triggered.connect(self.ui.tab_main.add_emf)
-        ui.actionNewSpecDS.triggered.connect(self.ui.tab_main.add_spectrumuv)
+        ui.actionNewEmfDS.triggered.connect(self.newEmf)
+        # ui.actionNewSpecDS.triggered.connect(self.ui.tab_main.add_spectrumuv)
         ui.actionNewNMRDS.triggered.connect(self.newNmr)
         ui.actionNewCalorimetryDS.triggered.connect(self.newCalor)
         ui.actionNewTitrSim.triggered.connect(self.newTitration)
-        ui.actionNewSpeciesDist.triggered.connect(self.newSpeciation)
+        ui.actionNewSpeciesDist.triggered.connect(self.new_speciation)
         ui.actionNewExternalData.triggered.connect(self.new_external_data)
-        ui.actionDeleteDS.triggered.connect(self.ui.tab_main.delete_current_tab)
+        # ui.actionDeleteDS.triggered.connect(self.ui.tab_main.delete_current_tab)
         ui.actionNewTitration.triggered.connect(self.new_titration_base)
         ui.actionUse.triggered.connect(self.menu_toggle_use)
         ui.actionImportPASAT.triggered.connect(self._import_pasat)
@@ -970,12 +862,12 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionHelp.triggered.connect(self.menuShowHelp)
         ui.actionAbout_APES.triggered.connect(self.menu_about)
 
-        ui.tab_main.currentChanged.connect(self.__tab_changed)
+        # ui.tab_main.currentChanged.connect(self.__tab_changed)
 
         ui.pb_go.clicked.connect(self.go)
-        ui.pb_refresh.clicked.connect(self.refresh)
+        # ui.pb_refresh.clicked.connect(self.refresh)
         # ui.pb_refresh.clicked.connect(self._menu_refresh)
-        ui.pb_iteration.clicked.connect(self.iterate)
+        # ui.pb_iteration.clicked.connect(self.iterate)
 
     def _model_connections(self, renew=False):
         unique = QtCore.Qt.AutoConnection | QtCore.Qt.UniqueConnection
@@ -1012,31 +904,6 @@ class MainWindow(QtWidgets.QMainWindow):
             raise NotImplementedError
         else:
             self.message("Nothing to do")
-
-    def _more_widgets(self):
-        "Create extra widgets."
-
-        self.main_frame = QtWidgets.QWidget()
-        self.canvas = canvas.MyCanvas(self.ui.widget_plot, width=8, height=6, dpi=100)
-        # self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        layout = QtWidgets.QVBoxLayout(self.ui.widget_plot)
-        layout.addWidget(self.canvas)
-        #layout.addWidget(self.mpl_toolbar)
-
-        #self._newtab('Model', ModelWidget())
-        self.ui.tab_main.add_model()
-
-    # TODO deprecate
-    def _newtab(self, txt, dsw, action=None):
-        "Common tasks for when a new tab is opened."
-        n_tabs = self._tabcounter(type(SpeciationWidget))
-        if n_tabs == 0:
-            append = ''
-        else:
-            append = str(n_tabs+1)
-        i = self.ui.tab_main.addTab(dsw, txt + append)
-        self.ui.tab_main.setCurrentIndex(i)
 
     def _reset_model(self):
         dialog = dialogs.ModelInputDialog(self)

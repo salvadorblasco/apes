@@ -27,22 +27,77 @@
   </model>
  </models>
 
- <!-- Titration base -->
- <titration name="titration name">
-   <volumeerror>0.003</volumeerror>
-   <init unit="mmol">0.025 0.0124 0.124</init>
-   <initkey>0 0 0</initkey> <!-- Optional refinement keys -->
-   <buret unit="mmol/mL">0.0 0.0 -0.1</buret>
-   <buretkey>0 0 0</buretkey>
-   <startingvolume unit="mL">30.00</startingvolume>
-   <!-- option 1: implicit values -->
-   <finalvolume unit="mL">32.00</finalvolume>
-   <totalpoints>100</totalpoints>
-   <!--  option 2: explicit titre values -->
-   <titre>0.00 0.02 0.04 (...)</titre>
-   <!--  option 3: explicit analytical concentration -->
-   <analytical unit="mmol/mL">0.025 0.0124 0.124</analytical>
- </titration>
+ <fittinggroup>
+  <!-- Titration base -->
+  <titration name="titration name">
+    <volumeerror>0.003</volumeerror>
+    <init unit="mmol">0.025 0.0124 0.124</init>
+    <initkey>0 0 0</initkey> <!-- Optional refinement keys -->
+    <buret unit="mmol/mL">0.0 0.0 -0.1</buret>
+    <buretkey>0 0 0</buretkey>
+    <startingvolume unit="mL">30.00</startingvolume>
+    <!-- option 1: implicit values -->
+    <finalvolume unit="mL">32.00</finalvolume>
+    <totalpoints>100</totalpoints>
+    <!--  option 2: explicit titre values -->
+    <titre>0.00 0.02 0.04 (...)</titre>
+    <!--  option 3: explicit analytical concentration -->
+    <analytical unit="mmol/mL">0.025 0.0124 0.124</analytical>
+  </titration>
+ 
+  <!-- Block that contains data for potentiometric titrations -->
+  <potentiometricdata title="optional" temperature="25" use="1" titration="titration 1">
+    <!-- emf0 is given optionally with error -->
+    <emf0 unit="mV">359.32 178.43</emf0>
+    <erroremf0 unit="mV">0.03 0.03</erroremf0>
+    <!-- index of the active species for this electrode -->
+    <active>1 2</active>
+    <emf0flags>0 0</emf0flags> <!-- Optional 0 = constant, 1 = refine, no constraints admitted -->
+    <n>1 1</n>     <!-- number of electrons involved -->
+    <f>1.0 1.0</f>   <!-- Optional. correction constant. Assume 1.0 by default -->
+    <fRTnF>25.25 25.25</fRTnF>   <!-- Optional. Nernst's -->
+    <emfread>356.12 355.02 351.44 (...)</emfread>
+    <key>0 0 0 (...)</key>
+    <!-- the flattened free concentrations array -->
+    <c>0.01 0.023 0.0134 (...)</c>
+  </potentiometricdata>
+ 
+  <!-- Block that contains data for nmr titrations -->
+  <nmrdata title="optional" use='1' titration="titration 1">
+    <points>
+     <!-- Many <nucleus> blocks are allowed format delta T/F for True/False -->
+     <!-- Missing data is marked with "X" and no key. -->
+     <nucleus type="13C" use="yes">96.4 T 99.1 T 105.3 T 125.9 T (...)</nucleus>
+    </points>
+  </nmrdata>
+ 
+  <!-- Block that contains data for spectrometric titrations -->
+  <specdata title="optional" use='1' titration="titration 1">
+    <!-- the flattened free concentrations array -->
+    <c>0.01 0.023 0.0134 (...)</c>
+    <!-- Many <spectra> blocks are allowed -->
+    <spectra type="Absorbance" use="yes">
+     <transparency>1 0 1</transparency>
+     <wavelengths>190.0 192.0 194.0 (...)</wavelengths>
+     <!-- <data> will be loaded in a 2D array -->
+     <data>0.1925 0.1812 0.1713 (...)</data>
+     <key>1 1 1 1 (...)</key>
+    </spectra>
+  </specdata>
+ 
+  <!-- Block that contains data for calorimetry titrations -->
+  <calordata title="optional" use='1' titration="titration 1">
+    <enthalpy>-11.20 0.28</enthalpy>           <!-- Enthalpy of this equilibrium. Required only if calorimetry data are present -->
+    <enthalpy_error>0.06 0.01</enthalpy_error> <!-- Enthalpy error.  -->
+    <enthalpy_key>1 0</enthalpy_key>           <!-- Required only if calorimetry data are present. refinement key (int) -->
+    <enthropy>-0.22 0.19</enthropy>            <!-- Enthropy of this equilibrium. -->
+    <enthropy_error>0.06 0.09</enthropy_error> <!-- Error of enthropy. -->
+    <heat>36.12 35.02 35.99 (...)</heat>
+    <key>0 0 0 (...)</key>
+    <!-- the flattened free concentrations array -->
+    <c>0.01 0.023 0.0134 (...)</c>
+  </calordata>
+ <fittinggroup>
 
  <!-- Block used for species distribution -->
  <distri name="noname">
@@ -57,7 +112,7 @@
    </set>
   </externaldata>
  </distri>
-
+ 
  <!-- Block used for titration simulation -->
  <simu name="noname">
   <initial unit="mmol">0.01 0.08</initial>
@@ -71,58 +126,4 @@
    </set>
   </externaldata>
  </simu>
-
- <!-- Block that contains data for potentiometric titrations -->
- <potentiometricdata title="optional" temperature="25" use="1" titration="titration 1">
-   <!-- emf0 is given optionally with error -->
-   <emf0 unit="mV">359.32 178.43</emf0>
-   <erroremf0 unit="mV">0.03 0.03</erroremf0>
-   <!-- index of the active species for this electrode -->
-   <active>1 2</active>
-   <emf0flags>0 0</emf0flags> <!-- Optional 0 = constant, 1 = refine, no constraints admitted -->
-   <n>1 1</n>     <!-- number of electrons involved -->
-   <f>1.0 1.0</f>   <!-- Optional. correction constant. Assume 1.0 by default -->
-   <fRTnF>25.25 25.25</fRTnF>   <!-- Optional. Nernst's -->
-   <emfread>356.12 355.02 351.44 (...)</emfread>
-   <key>0 0 0 (...)</key>
-   <!-- the flattened free concentrations array -->
-   <c>0.01 0.023 0.0134 (...)</c>
- </potentiometricdata>
-
- <!-- Block that contains data for nmr titrations -->
- <nmrdata title="optional" use='1' titration="titration 1">
-   <points>
-    <!-- Many <nucleus> blocks are allowed format delta T/F for True/False -->
-    <!-- Missing data is marked with "X" and no key. -->
-    <nucleus type="13C" use="yes">96.4 T 99.1 T 105.3 T 125.9 T (...)</nucleus>
-   </points>
- </nmrdata>
-
- <!-- Block that contains data for spectrometric titrations -->
- <specdata title="optional" use='1' titration="titration 1">
-   <!-- the flattened free concentrations array -->
-   <c>0.01 0.023 0.0134 (...)</c>
-   <!-- Many <spectra> blocks are allowed -->
-   <spectra type="Absorbance" use="yes">
-    <transparency>1 0 1</transparency>
-    <wavelengths>190.0 192.0 194.0 (...)</wavelengths>
-    <!-- <data> will be loaded in a 2D array -->
-    <data>0.1925 0.1812 0.1713 (...)</data>
-    <key>1 1 1 1 (...)</key>
-   </spectra>
- </specdata>
-
- <!-- Block that contains data for calorimetry titrations -->
- <calordata title="optional" use='1' titration="titration 1">
-   <enthalpy>-11.20 0.28</enthalpy>           <!-- Enthalpy of this equilibrium. Required only if calorimetry data are present -->
-   <enthalpy_error>0.06 0.01</enthalpy_error> <!-- Enthalpy error.  -->
-   <enthalpy_key>1 0</enthalpy_key>           <!-- Required only if calorimetry data are present. refinement key (int) -->
-   <enthropy>-0.22 0.19</enthropy>            <!-- Enthropy of this equilibrium. -->
-   <enthropy_error>0.06 0.09</enthropy_error> <!-- Error of enthropy. -->
-   <heat>36.12 35.02 35.99 (...)</heat>
-   <key>0 0 0 (...)</key>
-   <!-- the flattened free concentrations array -->
-   <c>0.01 0.023 0.0134 (...)</c>
- </calordata>
-
 </apes>

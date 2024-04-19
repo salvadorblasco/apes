@@ -10,23 +10,23 @@ experimental points per titration point, number of parameters to refine).
 
                        { JACOBIAN }                                                 { RESIDUALS }
  ← betas → ← specific parameters  → ← dangerous parameters →
-+--- β ---+-- ε --+-- Δ --+-- ΔH --+-- E₀ --+-- t --+-- b --+                         +--------+
-|         |       |       |        |        |       |       |       ↑         ↑       |        |
-|  ∂E/∂β  |    0  |    0  |    0   |   1    | ∂E/∂t | ∂E/∂b | potentiometry   |       | calc E |
-|         |       |       |        |        |       |       |       ↓         |       |        |
-+---------+-------+-------+--------+--------+-------+-------+                         +--------+
-|         |       |       |        |        |       |       |       ↑       number    |        |
-|  ∂A/∂β  | ∂A/∂ε |    0  |    0   |   0    | ∂A/∂t | ∂A/∂b | spectrometry   of       | calc A |
-|         |       |       |        |        |       |       |       ↓     magnitudes  |        |
-+---------+-------+-------+--------+--------+-------+-------+               times     +--------+
-|         |       |       |        |        |       |       |       ↑       number    |        |
-|  ∂Q/∂β  |   0   |    0  | ∂Q/∂ΔH |   0    | ∂Q/∂t | ∂Q/∂b |  calorimetry   of       | calc Q |
-|         |       |       |        |        |       |       |       ↓    observations |        |
-+---------+-------+-------+--------+--------+-------+-------+                         +--------+
-|         |       |       |        |        |       |       |       ↑         |       |        |
-|  ∂δ/∂β  |   0   | ∂δ/∂Δ |    0   |   0    | ∂δ/∂t | ∂δ/∂b |      NMR        |       | calc δ |
-|         |       |       |        |        |       |       |       ↓         ↓       |        |
-+---------+-------+-------+--------+--------+-------+-------+                         +--------+
++--- β ---+-- Δ --+-- ΔH --+-- ε --+-- E₀ --+-- t --+-- b --+                         +--------+
+|         |       |        |       |        |       |       |       ↑         ↑       |        |
+|  ∂E/∂β  |    0  |    0   |    0  |   1    | ∂E/∂t | ∂E/∂b | potentiometry   |       | calc E |
+|         |       |        |       |        |       |       |       ↓         |       |        |
++---------+-------+--------+-------+--------+-------+-------+                         +--------+
+|         |       |        |       |        |       |       |       ↑       number    |        |
+|  ∂A/∂β  |    0  |    0   | ∂A/∂ε |   0    | ∂A/∂t | ∂A/∂b | spectrometry   of       | calc A |
+|         |       |        |       |        |       |       |       ↓     magnitudes  |        |
++---------+-------+--------+-------+--------+-------+-------+               times     +--------+
+|         |       |        |       |        |       |       |       ↑       number    |        |
+|  ∂Q/∂β  |    0  | ∂Q/∂ΔH |   0   |   0    | ∂Q/∂t | ∂Q/∂b |  calorimetry   of       | calc Q |
+|         |       |        |       |        |       |       |       ↓    observations |        |
++---------+-------+--------+-------+--------+-------+-------+                         +--------+
+|         |       |        |       |        |       |       |       ↑         |       |        |
+|  ∂δ/∂β  | ∂δ/∂Δ |    0   |   0   |   0    | ∂δ/∂t | ∂δ/∂b |      NMR        |       | calc δ |
+|         |       |        |       |        |       |       |       ↓         ↓       |        |
++---------+-------+--------+-------+--------+-------+-------+                         +--------+
  <----------  number of variables to refine --------------->
 
 Basic rundown.
@@ -338,6 +338,7 @@ class Parameters:
         data = SpectrumData(absorbance=np.array(dw.spectrum),
                             wavelength=np.fromiter(dw.wavelengths, dtype=float),
                             optical_path=dw.optical_path)
+        self.spectraldata.add_spectrum(dw.optically_active, data)
         return data
 
     def _process_titration(self, twidget, jslice):
