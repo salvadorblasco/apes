@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <apes version="1.0">
- <title>The title of the project</title>
-
  <metadata>
+  <title>The title of the project</title>
+
   <!-- Some metadata that can be useful -->
   <created>07/02/2016 15:25</created>
   <lastmodified>07/02/2016 15:25</lastmodified>
@@ -19,13 +19,26 @@
   <!-- Each <model> block must contain as many <line>s as needed and the number of
        <line>s can be different for each model but the <p> tag size must match with
        the <labels> number. -->
-  <model title="optional" energy_units='kcal/mol'>
+  <model title="optional">
    <beta>9.25 10.19</beta>               <!-- equilibrium constant in log10 units -->
    <error>0.06 0.01</error>              <!-- OPTIONAL. Error for constant in log10 units -->
    <p>1  1 0 -1</p>                      <!-- stoichiometric coefficients -->
    <key>1 1</key>                        <!-- refinement key (int) -->
   </model>
  </models>
+
+ <calormodel>
+    <enthalpy>-11.20 0.28</enthalpy>           <!-- Enthalpy of this equilibrium. Required only if calorimetry data are present -->
+    <enthalpy_error>0.06 0.01</enthalpy_error> <!-- Enthalpy error.  -->
+    <enthalpy_key>1 0</enthalpy_key>           <!-- Required only if calorimetry data are present. refinement key (int) -->
+    <enthropy>-0.22 0.19</enthropy>            <!-- Enthropy of this equilibrium. -->
+    <enthropy_error>0.06 0.09</enthropy_error> <!-- Error of enthropy. -->
+ </calormodel>
+ 
+ <specmodel type="Absorbance">
+  <optically_active>1 0 1</optically_active>
+  <extinction wavelength0="190" wavelength1="850">0.0122 0.4414 (...)</extinction>
+ </specmodel>
 
  <fittinggroup>
   <!-- Titration base -->
@@ -43,6 +56,8 @@
     <titre>0.00 0.02 0.04 (...)</titre>
     <!--  option 3: explicit analytical concentration -->
     <analytical unit="mmol/mL">0.025 0.0124 0.124</analytical>
+    <!-- the flattened free concentrations array -->
+    <c>0.01 0.023 0.0134 (...)</c>
   </titration>
  
   <!-- Block that contains data for potentiometric titrations -->
@@ -54,12 +69,11 @@
     <active>1 2</active>
     <emf0flags>0 0</emf0flags> <!-- Optional 0 = constant, 1 = refine, no constraints admitted -->
     <n>1 1</n>     <!-- number of electrons involved -->
-    <f>1.0 1.0</f>   <!-- Optional. correction constant. Assume 1.0 by default -->
+    <slope>1.0 1.0</slope>   <!-- Optional. correction constant. Assume 1.0 by default -->
+    <slopeflags>0 0</slopeflags>
     <fRTnF>25.25 25.25</fRTnF>   <!-- Optional. Nernst's -->
     <emfread>356.12 355.02 351.44 (...)</emfread>
     <key>0 0 0 (...)</key>
-    <!-- the flattened free concentrations array -->
-    <c>0.01 0.023 0.0134 (...)</c>
   </potentiometricdata>
  
   <!-- Block that contains data for nmr titrations -->
@@ -71,31 +85,18 @@
     </points>
   </nmrdata>
  
-  <!-- Block that contains data for spectrometric titrations -->
-  <specdata title="optional" use='1' titration="titration 1">
-    <!-- the flattened free concentrations array -->
-    <c>0.01 0.023 0.0134 (...)</c>
-    <!-- Many <spectra> blocks are allowed -->
-    <spectra type="Absorbance" use="yes">
-     <transparency>1 0 1</transparency>
-     <wavelengths>190.0 192.0 194.0 (...)</wavelengths>
-     <!-- <data> will be loaded in a 2D array -->
-     <data>0.1925 0.1812 0.1713 (...)</data>
-     <key>1 1 1 1 (...)</key>
-    </spectra>
+      <!-- Block that contains data for spectrometric titrations -->
+  <specdata title="optional" type="Absorbance" use='yes' optical_path="1" opunits="cm" titration="titration 1">
+   <wavelengths>190.0 192.0 194.0 (...)</wavelengths>
+   <!-- <data> will be loaded in a 2D array -->
+   <data>0.1925 0.1812 0.1713 (...)</data>
+   <key>1 1 1 1 (...)</key>
   </specdata>
  
   <!-- Block that contains data for calorimetry titrations -->
   <calordata title="optional" use='1' titration="titration 1">
-    <enthalpy>-11.20 0.28</enthalpy>           <!-- Enthalpy of this equilibrium. Required only if calorimetry data are present -->
-    <enthalpy_error>0.06 0.01</enthalpy_error> <!-- Enthalpy error.  -->
-    <enthalpy_key>1 0</enthalpy_key>           <!-- Required only if calorimetry data are present. refinement key (int) -->
-    <enthropy>-0.22 0.19</enthropy>            <!-- Enthropy of this equilibrium. -->
-    <enthropy_error>0.06 0.09</enthropy_error> <!-- Error of enthropy. -->
     <heat>36.12 35.02 35.99 (...)</heat>
     <key>0 0 0 (...)</key>
-    <!-- the flattened free concentrations array -->
-    <c>0.01 0.023 0.0134 (...)</c>
   </calordata>
  <fittinggroup>
 
@@ -104,13 +105,7 @@
   <initial unit="mol/L">0.001 2</initial>
   <final unit="mol/L">0.001 11</final>
   <pX>False True</pX>
-  <externaldata>
-   <!-- Many <set> blocks are allowed -->
-   <set title="y2-axis title">
-    <x unit="mL">0.1 0.2 0.3 (...) 1.4</x>
-    <y unit="chemical shift" label="δ / ppm">123.3 159.3 160.5 (...)</y>
-   </set>
-  </externaldata>
+  <external>list of ids of external data</external>
  </distri>
  
  <!-- Block used for titration simulation -->
@@ -118,12 +113,13 @@
   <initial unit="mmol">0.01 0.08</initial>
   <buret unit="mol/L">0 -0.1</buret>
   <V unit="mL">30.0 32.0</V>
-  <externaldata>
-   <!-- Many <set> blocks are allowed -->
-   <set>
-    <x unit="mL">0.1 0.2 0.3 (...) 1.4</x>
-    <y unit="chemical shift" label="δ / ppm">123.3 159.3 160.5 (...)</y>
-   </set>
-  </externaldata>
+  <external>list of ids of external data</external>
  </simu>
+
+ <externaldata id="6realcff087" title="title">
+  <x unit="mL">0.1 0.2 0.3 (...) 1.4</x>
+  <ex unit="mL">0.01 0.01 0.01 (...) 0.01</ex> <!-- optional -->
+  <y unit="13C chemical shift" label="C1">123.3 159.3 160.5 (...)</y>
+  <ey unit="13C chemical shift">0.01 0.01 0.01 (...) 0.01</ey> <!-- optional -->
+ </externaldata>
 </apes>
