@@ -67,6 +67,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._setup_vars()          # initialize variables
         self._make_connections()    # pair signals/slots
+        self.fitting_group.append(self.new_fitting_group())
+        self.fitting_group[0].add_titrationbase()
+        self.fitting_group[0].add_emf()
+        self.ui.mdiArea.tileSubWindows()
 
         # lbl = QtWidgets.QLabel()
         # lbl.setPixmap(QtGui.QPixmap('../icons/idle.png').scaledToHeight(20))
@@ -439,9 +443,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def new_fitting_group(self):
         tabmain = TabWidget(self.modelwidget)
+        tabmain.model = self.modelwidget
         self.fitting_group.append(tabmain)
         window = self.ui.mdiArea.addSubWindow(tabmain)
+        window.setWindowTitle("Fitting group 1")
         window.show()
+        return tabmain
 
     def new_titration_base(self):
         self.ui.tab_main.add_titrationbase()

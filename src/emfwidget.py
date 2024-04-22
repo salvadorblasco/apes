@@ -36,6 +36,7 @@ class EmfWidget(datawidget.DataWidget):
 
         self.__dangerous_allowed = False
         self.emf0_flags = (0,)      # default parameters
+        self.slope_flags = (0,)      # default parameters
         self.nelectrons = (1,)
         self.active_species = (1,)
         # self.amount_flags = (0, 0)
@@ -212,15 +213,14 @@ class EmfWidget(datawidget.DataWidget):
     @property
     def emf0_error(self):
         'Error(s) of emf0'
-        stream = libqt.iter_row_text(self.ui.table_params, row=1)
+        stream = libqt.iter_row_text(self.ui.table_params, row=2)
         return tuple(float(i) for i in stream)
 
     @emf0_error.setter
     def emf0_error(self, erremf0):
         # TODO check input
         # TODO reshape table if needed
-        libqt.fill_row(self.ui.table_params, row=1,
-                       data=self.__num2it(erremf0))
+        libqt.fill_row(self.ui.table_params, row=2, data=self.__num2it(erremf0))
 
     @property
     def emf0(self):
@@ -238,19 +238,25 @@ class EmfWidget(datawidget.DataWidget):
     @property
     def emf0_flags(self):
         'Refinement flags for emf0 values'
-        return tuple(libqt.iter_row_comboindex(self.ui.table_params, row=2))
+        return tuple(libqt.iter_row_comboindex(self.ui.table_params, row=1))
 
     @emf0_flags.setter
     def emf0_flags(self, flags):
-        # TODO check input
-        # TODO reshape table if needed
-        libqt.fill_row_comboindex(self.ui.table_params, flags,
-                                  consts.REFINE_LABELS, row=2)
+        libqt.fill_row_comboindex(self.ui.table_params, flags, consts.REFINE_LABELS, row=1)
 
     @property
     def slope(self):
-        # TODO change this to contents of table       
-        return tuple(1.0 for n in self.nelectrons)
+        stream = libqt.iter_row_text(self.ui.table_params, row=5)
+        return tuple(float(i) for i in stream)
+
+    @property
+    def slope_flags(self):
+        'Refinement flags for slope values'
+        return tuple(libqt.iter_row_comboindex(self.ui.table_params, row=6))
+
+    @slope_flags.setter
+    def slope_flags(self, flags):
+        libqt.fill_row_comboindex(self.ui.table_params, flags, consts.REFINE_LABELS, row=6)
 
     # deprecate - use slope
     @property
@@ -271,16 +277,16 @@ class EmfWidget(datawidget.DataWidget):
         jacobian = self.jacobian
         return np.sum(2*weights*residuals*jacobian, axis=0)
 
-    @property
-    def jacobian(self):
-        free_conc = self._freeconcentration
-        stoichiometry = np.array(self._model.stoich)
-        # TODO this will not work for more than one electrode
-        active_species = self.active_species[0]
-        # print("<<<" , stoichiometry, free_conc, active_species)
-        nbetas = self._model.number_equilibria
-        jac = libemf.emf_jac1(stoichiometry, free_conc, active_species, slice(nbetas))
-        return jac
+    # @property
+    # def jacobian(self):
+    #     free_conc = self._freeconcentration
+    #     stoichiometry = np.array(self._model.stoich)
+    #     # TODO this will not work for more than one electrode
+    #     active_species = self.active_species[0]
+    #     # print("<<<" , stoichiometry, free_conc, active_species)
+    #     nbetas = self._model.number_equilibria
+    #     jac = libemf.emf_jac1(stoichiometry, free_conc, active_species, slice(nbetas))
+    #     return jac
 
     @property
     def mask(self):

@@ -21,7 +21,7 @@ class TabWidget(QtWidgets.QTabWidget):
     def __init__(self, parent):
         super().__init__(parent)
         super().setMovable(True)
-        self._model = None
+        self.model = None
         self._specmodel = None
         self.__tabdicts = {}
         self.__tabcounter = {}
@@ -32,12 +32,12 @@ class TabWidget(QtWidgets.QTabWidget):
         return widget
 
     def add_calor(self):
-        widget = CalorWidget(self._model)
+        widget = CalorWidget(self.model)
         self.__stamp(widget, "Calor")
         return widget
 
     def add_emf(self):
-        widget = EmfWidget(self._model)
+        widget = EmfWidget(self.model)
         self.__stamp(widget, "EMF")
         return widget
 
@@ -47,36 +47,36 @@ class TabWidget(QtWidgets.QTabWidget):
         return widget
 
     def add_nmr(self):
-        widget = NmrWidget(self._model)
+        widget = NmrWidget(self.model)
         self.__stamp(widget, "NMR")
         return widget
 
-    def add_model(self):
-        if self._model is None:
+    def addmodel(self):
+        if self.model is None:
             widget = ModelWidget()
             self.addTab(widget, "Model")
-            self._model = widget
+            self.model = widget
         else:
-            widget = self._model
+            widget = self.model
         return widget
 
     def add_speciation(self):
-        widget = SpeciationWidget(self._model)
+        widget = SpeciationWidget(self.model)
         self.__stamp(widget, "Speciation")
         return widget
 
     def add_spectrumuv(self):
-        widget = SpecWidget(self._model)
+        widget = SpecWidget(self.model)
         self.__stamp(widget, "UV-vis")
         return widget
 
     def add_titration(self):
-        widget = TitrationWidget(self._model)
+        widget = TitrationWidget(self.model)
         self.__stamp(widget, "Titration Simulation")
         return widget
 
     def add_titrationbase(self):
-        widget = TitrationBaseWidget(self._model)
+        widget = TitrationBaseWidget(self.model)
         self.__stamp(widget, "Titration")
         self._update_titration_list()
         widget.implicitVolumeChanged.connect(self.__implicit_titre_changed)
@@ -93,7 +93,7 @@ class TabWidget(QtWidgets.QTabWidget):
 
     def clear(self):
         "Clear all the tabs and delete everything."
-        self._model = None
+        self.model = None
         self.__tabdicts = {}
         super().clear()
 
@@ -119,7 +119,7 @@ class TabWidget(QtWidgets.QTabWidget):
 
         titwidgets = [w for w in self._itertabs() if isinstance(w, TitrationBaseWidget)]
         datwidgets = [w for w in self._itertabs() if isinstance(w, DataWidget)]
-        params = bridge.Parameters(self._model, titwidgets, datwidgets)
+        params = bridge.Parameters(self.model, titwidgets, datwidgets)
         bridgeobj = bridge.Bridge(params)
 
         ffit = libfit.fitting_functions[method]

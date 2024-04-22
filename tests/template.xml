@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <apes version="1.0">
+ <!-- Some metadata that can be useful. Optional on creation. -->
  <metadata>
   <title>The title of the project</title>
-
-  <!-- Some metadata that can be useful -->
   <created>07/02/2016 15:25</created>
   <lastmodified>07/02/2016 15:25</lastmodified>
   <author>unknown</author>
