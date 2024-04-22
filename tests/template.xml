@@ -18,7 +18,7 @@
   <!-- Each <model> block must contain as many <line>s as needed and the number of
        <line>s can be different for each model but the <p> tag size must match with
        the <labels> number. -->
-  <model title="optional">
+  <model title="optional" id="0">
    <beta>9.25 10.19</beta>               <!-- equilibrium constant in log10 units -->
    <error>0.06 0.01</error>              <!-- OPTIONAL. Error for constant in log10 units -->
    <p>1  1 0 -1</p>                      <!-- stoichiometric coefficients -->
@@ -26,7 +26,7 @@
   </model>
  </models>
 
- <calormodel>
+ <calormodel energy_units="kcal">
     <enthalpy>-11.20 0.28</enthalpy>           <!-- Enthalpy of this equilibrium. Required only if calorimetry data are present -->
     <enthalpy_error>0.06 0.01</enthalpy_error> <!-- Enthalpy error.  -->
     <enthalpy_key>1 0</enthalpy_key>           <!-- Required only if calorimetry data are present. refinement key (int) -->

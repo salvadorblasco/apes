@@ -39,21 +39,18 @@ def loadXML(app, f):
     assert root.attrib['version'] == '1.0'
     # process 1.0 version of the xml file
 
-    app.project.title = root.find('title').text
     xdata = root.find('metadata')
     if xdata is not None:
-        # mdata = app.docproperties
-        # for key in ('author', 'title', 'comments', 'created'):
-        #     _ = xdata.find(key)
-        #     if _ is not None:
-        #         mdata[key] = _.text
-        # _ = xdata.find('lastmodified')
-        # if _ is not None:
-        #     mdata['last modified'] = _.text
-        app.project.author = xdata.find('author').text
-        app.project.comments = xdata.find('comments').text
-        app.project.last_modified = xdata.find('lastmodified').text
-        app.project.created = xdata.find('created').text
+        if (_title := xdata.find('title')) is not None:
+            app.project.title = _title.text
+        if (_author := xdata.find('author')) is not None:
+            app.project.author = _author.text
+        if (_comments := xdata.find('comments')) is not None:
+            app.project.comments = _comments.text
+        if (_lastm := xdata.find('lastmodified')) is not None:
+            app.project.last_modified = _lastmodified.text
+        if (_created := xdata.find('created')) is not None:
+            app.project.created = _created.text
 
     labels = root.find('labels').text.split()
 
@@ -73,16 +70,11 @@ def loadXML(app, f):
 
     # kwargs = {'labels': labels, 'temperature': temperature}
     kwargs = {'models': {'labels': labels}}
-    tmain = app.ui.tab_main
 
-    tags = ('models', 'distri', 'simu', 'potentiometricdata', 'nmrdata',
-            'specdata', 'calordata', 'externaldata', 'titration')
-    loaders = (loadModelsXML, loadSpeciationXML, loadTitrationXML, loadEmfXML,
-               loadNmrXML, loadSpectrXML, loadCalorXML, loadExternalXML,
-               loadTitrationBaseXML)
-    callables = (tmain.add_model, tmain.add_speciation, tmain.add_titration,
-                 tmain.add_emf, tmain.add_nmr, tmain.add_spectrumuv,
-                 tmain.add_calor, tmain.add_external_data, tmain.add_titrationbase)
+    tags = ('models', 'distri', 'simu', 'fittinggroup', 'externaldata')
+    loaders = (loadModelsXML, loadSpeciationXML, loadTitrationXML, loadFittingXML, loadExternalXML)
+    callables = (app.new_model, app.new_speciation, app.new_titration, app.new_fitting_group,
+                 app.new_external_data)
 
     for tag, call, loader in zip(tags, callables, loaders):
         for section in root.iter(tag):
@@ -91,6 +83,10 @@ def loadXML(app, f):
                 loader(widget, section, **kwargs[tag])
             else:
                 loader(widget, section)
+
+
+def loadFittingXML(widget, xmle):
+    raise NotImplementedError
 
 
 def loadExternalXML(widget, xmle):

@@ -57,19 +57,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.modelwidget = ModelWidget()
         self.modelwindow = self.ui.mdiArea.addSubWindow(self.modelwidget)
 
+        self.common_params = None
         self.fitting_group = []
 
-        # new_tab_main = TabModelWidget(self)
-        # index = self.ui.splitter.indexOf(self.ui.widget_models)
-        # trash = self.ui.splitter.replaceWidget(index, new_tab_main)
-        # trash.deleteLater()
-        # self.ui.tab_main = new_tab_main
 
         self._setup_vars()          # initialize variables
         self._make_connections()    # pair signals/slots
-        self.fitting_group.append(self.new_fitting_group())
-        self.fitting_group[0].add_titrationbase()
-        self.fitting_group[0].add_emf()
+
+        self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
         # lbl = QtWidgets.QLabel()
@@ -90,7 +85,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/znedta.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/kk.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
-        # _debug_fname_ = '../data/phosphate.xml'
+        _debug_fname_ = '../data/phosphate.xml'
         # _debug_fname_ = '../data/hdtc.xml'
         # _debug_fname_ = '../data/hpytren4q.xml'
         # _debug_fname_ = '../data/distri_cudtc.xml'
@@ -99,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        #libio.loadXML(self, _debug_fname_)
+        libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -125,29 +120,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def go(self):
         'Start calculations.'
-        # TODO for python 3.10 uses match case
-        # if self._is_current_tab((SpeciationWidget, TitrationWidget)):
-        #     try:
-        #         self.ui.tab_main.currentWidget()._recalc_free_concentration()
-        #     except excepts.FailedCalculateConcentrations:
-        #         libqt.popwarning('Error', 'Failed to calculate concentrations')
-        #     except np.linalg.linalg.LinAlgError:
-        #         libqt.popwarning('Error', 'Singular matrix')
-        #     finally:
-        #         self.refresh()
-        # elif self._is_current_tab(EmfWidget):
-        #     self._fit_emf()
-        # elif self._is_current_tab(CalorWidget):
-        #     self._fit_calor()
-        # elif self._is_current_tab(SpecWidget):
-        #     self._fit_spec()
-        # elif self._is_current_tab(NmrWidget):
-        #     self._fit_nmr()
-        # elif self._is_current_tab(IonicWidget):
-        #     self._fit_ionic()
-        # else:
-        #     self.message("Nothing to do")
-        self.ui.tab_main.go_button(canvas=self.canvas, option=self.option)
+        current_widget = self.ui.mdiArea.activeSubWindow().widget()
+        match current_widget:
+            case SpeciationWidget():
+                current_widget.calc_free_concentration()
+                self.canvas.plot_speciation(current_widget)
+            case TitrationWidget():
+                raise NotImplementedError
+            case TabWidget():
+                raise NotImplementedError
+            case _:
+                raise ValueError
 
     def iterate(self):
         "Perform only one iteration."
@@ -328,6 +311,18 @@ class MainWindow(QtWidgets.QMainWindow):
         # return dsw
         return self.ui.tab_main.add_calor()
 
+    def new_canvas(self):
+        """Create new :class:`SpeciationWidget` and return instance.
+
+        Returns:
+            :class:`SpeciationWidget`: the newly created widget.
+        """
+        widget = canvas.MyCanvas(self)
+        window = self.ui.mdiArea.addSubWindow(widget)
+        window.setWindowTitle("Canvas")
+        window.show()
+        return widget
+
     # deprecate
     def newEmf(self):
         '''Create new potentiometry data set and return instance.
@@ -366,8 +361,7 @@ class MainWindow(QtWidgets.QMainWindow):
         widget = self.ui.tab_main.add_external_data()
         return widget
 
-    # TODO deprecate and use tabmain.add_model instead
-    def newModel(self):
+    def new_model(self):
         '''Create new ModelWidget and return a reference to it.
 
         This function will create a new instance of :class:`ModelWidget` only
@@ -378,17 +372,13 @@ class MainWindow(QtWidgets.QMainWindow):
             :class:`ModelWidget`: The newly created widget or the currently
                 existing.
         '''
-        # if self.modelwidget is not None:
-        #     widget = self.modelwidget
-        #     widget.clear()
-        # else:
-        #     widget = ModelWidget()
-        #     self._newtab('Model', widget)
-        widget = self.ui.tab_main.add_model()
-        #self.modelwidget = widget
+        if self.modelwidget is None:
+            widget = ModelWidget()
+            modelwindow = self.ui.mdiArea.addSubWindow(widget)
+        else:
+            widget = self.modelwidget
         return widget
 
-    # TODO deprecate - use self.ui.tab_main.add_speciation()
     def new_speciation(self) -> SpeciationWidget:
         """Create new :class:`SpeciationWidget` and return instance.
 
@@ -426,7 +416,7 @@ class MainWindow(QtWidgets.QMainWindow):
         '''
         raise NotImplementedError
 
-    def newTitration(self):
+    def new_titration(self):
         '''Create new :class:`TitrationWidget`.
 
         Returns:
@@ -487,22 +477,22 @@ class MainWindow(QtWidgets.QMainWindow):
                 return self._get_fitalg()
         raise ValueError
 
-    def plotEmf(self):
-        '''Plot emf data.
+    # def plotEmf(self):
+    #     '''Plot emf data.
 
-        This routine streams emf data and fit data to canvas
-        '''
-        def data_stream():
-            'Stream emf data.'
-            # number of potentiometry datasets
-            yield self._tabcounter(EmfWidget)
-            # plot masked flag
-            yield True
-            for widget in libqt.filter_tabwidget(self.ui.tab_main, EmfWidget):
-                yield (widget.use, widget.titre, widget.emf, widget.emf_fit,
-                       widget.C, widget.residuals)
+    #     This routine streams emf data and fit data to canvas
+    #     '''
+    #     def data_stream():
+    #         'Stream emf data.'
+    #         # number of potentiometry datasets
+    #         yield self._tabcounter(EmfWidget)
+    #         # plot masked flag
+    #         yield True
+    #         for widget in libqt.filter_tabwidget(self.ui.tab_main, EmfWidget):
+    #             yield (widget.use, widget.titre, widget.emf, widget.emf_fit,
+    #                    widget.C, widget.residuals)
 
-        self.canvas.drawEmfFit(data_stream)
+    #     self.canvas.drawEmfFit(data_stream)
 
     def _copytdat(self):
         # 1. find out number of points
@@ -523,77 +513,77 @@ class MainWindow(QtWidgets.QMainWindow):
         # TODO update menu
         ...
 
-    def _fit_calor(self):
-        "Fit calorimetry data"
-        # TODO complete
-        raise NotImplementedError()
+    # def _fit_calor(self):
+    #     "Fit calorimetry data"
+    #     # TODO complete
+    #     raise NotImplementedError()
 
-    def _fit_emf(self):
-        "Start fitting for potentiometric data."
-        self.__checkoutput()                             # create output widget if it does not exist
-        self.ui.tab_main.setCurrentWidget(self.outputw)  # set output at forefront
-        kwargs = self.__prefit()
+    # def _fit_emf(self):
+    #     "Start fitting for potentiometric data."
+    #     self.__checkoutput()                             # create output widget if it does not exist
+    #     self.ui.tab_main.setCurrentWidget(self.outputw)  # set output at forefront
+    #     kwargs = self.__prefit()
 
-        log_beta = np.array(self.modelwidget.beta_log)
-        beta_flags = self.modelwidget.beta_flags
-        stoichiometry = np.array(self.modelwidget.stoich)
-        titration = []
-        electrodes = []
-        for emfw in self.__filtertabs(EmfWidget):
-            electrodes.append(emfw.electrodes)
-            titration.append(emfw.titration())
-        args = log_beta, beta_flags, stoichiometry, titration, electrodes
-        self.outputw.fitting_header(titration=titration, verbosity=2)  # TODO change 2 for the option set
+    #     log_beta = np.array(self.modelwidget.beta_log)
+    #     beta_flags = self.modelwidget.beta_flags
+    #     stoichiometry = np.array(self.modelwidget.stoich)
+    #     titration = []
+    #     electrodes = []
+    #     for emfw in self.__filtertabs(EmfWidget):
+    #         electrodes.append(emfw.electrodes)
+    #         titration.append(emfw.titration())
+    #     args = log_beta, beta_flags, stoichiometry, titration, electrodes
+    #     self.outputw.fitting_header(titration=titration, verbosity=2)  # TODO change 2 for the option set
 
-        try:
-            log_beta_out, conc, alt = libemf.emffit(*args, **kwargs)
-        except excepts.FailedCalculateConcentrations:
-            self.message("Failed to calculate the concentrations")
-            self.outputw.appendP("Failed to calculate the concentrations")
-        except excepts.TooManyIterations as e:
-            self.message("Iteration limit reached.")
-            msg = ("Maximum number of iterations reached",
-                   "Parameters updated to value in last iteration.")
-            for m in msg:
-                self.outputw.appendP(m)
-            self.modelwidget.beta_raw = e.last_value['last_value']
-            # self.modelwidget.beta_update(e.last_value['last_value'])
-            for c, tab in zip(e.last_value['concentrations'],
-                              self.__filtertabs(EmfWidget)):
-                tab.free_concentration = c
-            # self.canvas.set_chisq(e.last_value['convergence'])
-            fitdata = e.last_value
-            self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)), fitdata)
-        except excepts.NothingToRefine:
-            self.message("No parameters to refine. Refinement not done.")
-            dialog = QtWidgets.QMessageBox.information(self,
-                                                       'Nothing to refine', 
-                                                       'There are no free variables to refine.')
-        except ValueError as e:
-            dialog = QtWidgets.QMessageBox.critical(self, 'Error in Value', str(e))
-            self.outputw.appendP("Data is not correct")
-            self.outputw.appendP(str(e))
-        except Exception as excep:
-            self.outputw.appendP("Fitting failed")
-            self.message("Fitting failed")
-            raise excep
-        else:
-            self.message("Fitting finished")
+    #     try:
+    #         log_beta_out, conc, alt = libemf.emffit(*args, **kwargs)
+    #     except excepts.FailedCalculateConcentrations:
+    #         self.message("Failed to calculate the concentrations")
+    #         self.outputw.appendP("Failed to calculate the concentrations")
+    #     except excepts.TooManyIterations as e:
+    #         self.message("Iteration limit reached.")
+    #         msg = ("Maximum number of iterations reached",
+    #                "Parameters updated to value in last iteration.")
+    #         for m in msg:
+    #             self.outputw.appendP(m)
+    #         self.modelwidget.beta_raw = e.last_value['last_value']
+    #         # self.modelwidget.beta_update(e.last_value['last_value'])
+    #         for c, tab in zip(e.last_value['concentrations'],
+    #                           self.__filtertabs(EmfWidget)):
+    #             tab.free_concentration = c
+    #         # self.canvas.set_chisq(e.last_value['convergence'])
+    #         fitdata = e.last_value
+    #         self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)), fitdata)
+    #     except excepts.NothingToRefine:
+    #         self.message("No parameters to refine. Refinement not done.")
+    #         dialog = QtWidgets.QMessageBox.information(self,
+    #                                                    'Nothing to refine', 
+    #                                                    'There are no free variables to refine.')
+    #     except ValueError as e:
+    #         dialog = QtWidgets.QMessageBox.critical(self, 'Error in Value', str(e))
+    #         self.outputw.appendP("Data is not correct")
+    #         self.outputw.appendP(str(e))
+    #     except Exception as excep:
+    #         self.outputw.appendP("Fitting failed")
+    #         self.message("Fitting failed")
+    #         raise excep
+    #     else:
+    #         self.message("Fitting finished")
 
-            self.outputw.save_last_result(beta=log_beta_out,
-                                          beta_error=alt['error_beta'])
+    #         self.outputw.save_last_result(beta=log_beta_out,
+    #                                       beta_error=alt['error_beta'])
 
-            # self.modelwidget.beta_raw = log_beta_out
-            # self.modelwidget.beta_error = alt['error_beta']
-            for c, tab in zip(conc, self.__filtertabs(EmfWidget)):
-                tab.free_concentration = c
+    #         # self.modelwidget.beta_raw = log_beta_out
+    #         # self.modelwidget.beta_error = alt['error_beta']
+    #         for c, tab in zip(conc, self.__filtertabs(EmfWidget)):
+    #             tab.free_concentration = c
 
-            fitdata = alt
-            self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)), fitdata)
+    #         fitdata = alt
+    #         self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)), fitdata)
 
-            self.outputw.report_final(log_beta_out, errors=alt['error_beta'],
-                                      **alt, verbosity=2)
-            self.update()
+    #         self.outputw.report_final(log_beta_out, errors=alt['error_beta'],
+    #                                   **alt, verbosity=2)
+    #         self.update()
 
     def _fit_ionic(self):
         widget = self.ui.tab_main.currentWidget()
@@ -838,7 +828,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # ui.actionNewSpecDS.triggered.connect(self.ui.tab_main.add_spectrumuv)
         ui.actionNewNMRDS.triggered.connect(self.newNmr)
         ui.actionNewCalorimetryDS.triggered.connect(self.newCalor)
-        ui.actionNewTitrSim.triggered.connect(self.newTitration)
+        ui.actionNewTitrSim.triggered.connect(self.new_titration)
         ui.actionNewSpeciesDist.triggered.connect(self.new_speciation)
         ui.actionNewExternalData.triggered.connect(self.new_external_data)
         # ui.actionDeleteDS.triggered.connect(self.ui.tab_main.delete_current_tab)
