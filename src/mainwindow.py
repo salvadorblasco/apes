@@ -108,7 +108,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()
         # self.ui.tab_main.import_txtspectrum('./spec1.txt')
-        # self.go()
+        self.ui.mdiArea.activateNextSubWindow()
+        self.ui.mdiArea.activateNextSubWindow()
+        self.ui.mdiArea.activateNextSubWindow()
+        self.go()
         # self._manual_fitting()
         # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
@@ -129,7 +132,7 @@ class MainWindow(QtWidgets.QMainWindow):
             case TitrationWidget():
                 raise NotImplementedError
             case TabWidget():
-                raise NotImplementedError
+                current_widget.fitting(self.option)
             case _:
                 raise ValueError
 

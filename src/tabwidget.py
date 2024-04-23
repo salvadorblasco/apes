@@ -22,6 +22,7 @@ class TabWidget(QtWidgets.QTabWidget):
         super().__init__(parent)
         super().setMovable(True)
         self.model = None
+        self.output = None
         self._specmodel = None
         # self.__tabdicts = {}
         # self.__tabcounter = {}
@@ -119,6 +120,10 @@ class TabWidget(QtWidgets.QTabWidget):
         raise KeyError(f"object {name} does not exist")
 
     def fitting(self, option) -> None:
+        if self.output is None:
+            self.output = OutputWidget()
+            self.addTab(self.output, "Output")
+
         method = option('fitting algorithm')
         if method not in (consts.METHOD_NM, consts.METHOD_LM):
             raise ValueError("Method not known")
@@ -134,15 +139,6 @@ class TabWidget(QtWidgets.QTabWidget):
 
         params.accept_values()
         params.dump_to_widgets()
-
-    # def simulate(self, canvas, option) -> None:
-    #     widget = self.currentWidget()
-    #     widget._recalc_free_concentration()
-    #     self._refresh_canvas_simulate(canvas, option)
-
-    def go_button(self, canvas, option) -> None:
-        # self.fitting(option)
-        self.simulate(canvas, option)
 
     def import_txtspectrum(self, filename):
         'Import data from text file.'

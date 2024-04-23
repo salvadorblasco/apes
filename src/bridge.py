@@ -222,7 +222,7 @@ class Parameters:
                     raise ValueError(f"Widget type {type(dw)} not recognised")
 
             self.data[id(dw)] = data
-            titration_match[id(dw)] = dw._titrationid
+            titration_match[id(dw)] = id(dw.titration)
 
         self.titrations = {id(tw): self._process_titration(tw, jacobian_slice)
                            for tw in titrationwidgets}
@@ -410,7 +410,7 @@ class EmfData():
     emf0_flags: tuple[int]
     emf: NDArray[float]
     slope: NDArray[float]
-    titration: TitrationData = field(init=False)
+    titration: TitrationData = field(init=False, repr=False)
     electroactive: tuple[int]
     temperature: float
     vslice: slice = field(init=False)

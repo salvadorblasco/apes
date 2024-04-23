@@ -21,6 +21,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setObjectName("verticalLayout")
         self.mdiArea = QtWidgets.QMdiArea(self.centralwidget)
         self.mdiArea.setObjectName("mdiArea")
