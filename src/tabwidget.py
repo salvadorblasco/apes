@@ -124,6 +124,8 @@ class TabWidget(QtWidgets.QTabWidget):
             self.output = OutputWidget()
             self.addTab(self.output, "Output")
 
+        self.output.write("starting fitting at TIME")
+
         method = option('fitting algorithm')
         if method not in (consts.METHOD_NM, consts.METHOD_LM):
             raise ValueError("Method not known")
@@ -135,7 +137,7 @@ class TabWidget(QtWidgets.QTabWidget):
 
         ffit = libfit.fitting_functions[method]
         
-        info = ffit(bridgeobj)
+        info = ffit(bridgeobj, report=self.output.buffer)
 
         params.accept_values()
         params.dump_to_widgets()

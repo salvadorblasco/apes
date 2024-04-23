@@ -49,7 +49,7 @@ def levenberg_marquardt(bridge, **kwargs):
     #     if report is not None:
     #         report(*kws)
 
-    report = kwargs.get('report', None)
+    report = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
     threshold = kwargs.pop('threshold', 1e-4)
     max_iterations = kwargs.pop('max_iterations', 100)
@@ -111,7 +111,7 @@ def levenberg_marquardt(bridge, **kwargs):
             damping *= 10
             # print('\tnot decreasing')
         else:
-            # print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}")
+            report.write(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}")
             # print('\tdecreasing')
             bridge.accept_values()
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
@@ -412,6 +412,10 @@ def _hsl(lst):
 def fit_sigma(residuals, weights, npoints, nparams):
     return np.sum(weights*residuals**2)/(npoints-nparams)
 
+
+class DummyReport:
+    def write(self, data):
+        pass
 
 fitting_functions = {
     consts.METHOD_LM: levenberg_marquardt,

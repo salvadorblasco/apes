@@ -4,6 +4,7 @@ Home to miscellaneous widgets not included in other category.
 """
 
 import enum
+import io
 import itertools
 import math
 import re
@@ -241,43 +242,37 @@ class OutputWidget(QtWidgets.QWidget):
         super().__init__()
         self.ui = ui_output.Ui_OutputWidget()
         self.ui.setupUi(self)
+        self.buffer = io.StringIO()
         self.__last_result = None
-        signature = "Salvador Blasco &lt;salvador.blasco@gmail.com&gt;"
-        html_style = """\
-        p, li {
-            white-space: pre-wrap;
-            margin: 10px 0px 10px 0px; }
-        th, td {
-            border: 1px solid black;
-        }
-        """
         self.clear()
-        self.ui.textBrowser.append("""<hr /><p align="center">
-                 <b>APES</b>, the All-Purpose Equilibrium Solver</p>
-                  <p align="center">(c) 2016-2022 %s</p>
-              <hr>""" % signature)
+        self.buffer.write(f"""*APES*, the All-Purpose Equilibrium Solver\n
+                  (c) 2016-2024 {s%s</p>\n
+        Salvador Blasco <salvador.blasco@gmail.com>"""
 
         self.ui.pb_clear.clicked.connect(self.clear)
         self.report = None
 
-    def appendH(self, level, txt):
-        self.ui.textBrowser.append("<h%s>" % level + txt + "</h%d>" % level)
+    # def appendH(self, level, txt):
+    #     self.ui.textBrowser.append("<h%s>" % level + txt + "</h%d>" % level)
 
-    def appendP(self, txt):
-        """Append a new paragraph containing a particular text.
+    # def appendP(self, txt):
+    #     """Append a new paragraph containing a particular text.
 
-        Parameters:
-            txt (str): The HTML text that will be appended. It will be enclosed
-                in <p></p>."""
-        self.ui.textBrowser.append("<p>" + txt + "</p>")
+    #     Parameters:
+    #         txt (str): The HTML text that will be appended. It will be enclosed
+    #             in <p></p>."""
+    #     self.ui.textBrowser.append("<p>" + txt + "</p>")
 
     def clear(self):
         "Clears the text"
         self.ui.textBrowser.clear()
 
-    def addRuler(self):
-        "appends <hr> tag"
-        self.ui.textBrowser.append("<hr>")
+    def refresh(self):
+        self.ui.textEdit.setMarkdown(self.buffer.getvalue())
+
+    # def addRuler(self):
+    #     "appends <hr> tag"
+    #     self.ui.textBrowser.append("<hr>")
 
     def fitting_header(self, **kwargs):
         self.ui.textBrowser.append(report.html_start(**kwargs))
@@ -302,6 +297,9 @@ class OutputWidget(QtWidgets.QWidget):
         # else:
         #     self.report = report.html_nm_iteration
         self.report = report.report_function[function]
+
+    def write(self, text):
+        self.buffer.write(text)
 
 
 class ExternalDataWidget(QtWidgets.QWidget):
