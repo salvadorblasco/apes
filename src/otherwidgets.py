@@ -704,7 +704,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
     @buret_flags.setter
     def buret_flags(self, flags):
         flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
-        with libqt.table_locked(self.ui.table_titration):
+        with libqt.signals_blocked(self.ui.table_titration):
             for row, widget in enumerate(flagwidgets):
                 self.ui.table_titration.setCellWidget(row, self._cols.buret_flags, widget)
 
@@ -716,7 +716,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
     @init_flags.setter
     def init_flags(self, flags):
         flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
-        with libqt.table_locked(self.ui.table_titration):
+        with libqt.signals_blocked(self.ui.table_titration):
             for row, widget in enumerate(flagwidgets):
                 self.ui.table_titration.setCellWidget(row, self._cols.init_flags, widget)
 
@@ -730,14 +730,14 @@ class TitrationBaseWidget(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(int, str)
     def updateLabel(self, position, new_label):
-        with libqt.table_locked(self.ui.table_titration) as t:
+        with libqt.signals_blocked(self.ui.table_titration) as t:
             item = t.takeItem(position, self._cols.label)
             item.setText(new_label)
             t.setItem(position, self._cols.label, item)
 
     @QtCore.pyqtSlot(int, str)
     def componentAdded(self, which, label):
-        with libqt.table_locked(self.ui.table_titration) as t:
+        with libqt.signals_blocked(self.ui.table_titration) as t:
             t.insertRow(which)
             tw = QtWidgets.QTableWidgetItem(label)
             tw.setFlags(QtCore.Qt.ItemIsSelectable)
@@ -748,7 +748,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(int)
     def componentDeleted(self, which):
-        with libqt.table_locked(self.ui.table_titration) as t:
+        with libqt.signals_blocked(self.ui.table_titration) as t:
             t.removeRow(which)
 
     def __default_init(self, row):

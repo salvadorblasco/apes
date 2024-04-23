@@ -23,8 +23,8 @@ class TabWidget(QtWidgets.QTabWidget):
         super().setMovable(True)
         self.model = None
         self._specmodel = None
-        self.__tabdicts = {}
-        self.__tabcounter = {}
+        # self.__tabdicts = {}
+        # self.__tabcounter = {}
 
     # def add_external_data(self):
     #     widget = ExternalDataWidget()
@@ -37,7 +37,7 @@ class TabWidget(QtWidgets.QTabWidget):
         return widget
 
     def add_emf(self):
-        widget = EmfWidget(self.model)
+        widget = EmfWidget(model=self.model, parent=self)
         self.__stamp(widget, "EMF")
         return widget
 
@@ -94,7 +94,7 @@ class TabWidget(QtWidgets.QTabWidget):
     def clear(self):
         "Clear all the tabs and delete everything."
         self.model = None
-        self.__tabdicts = {}
+        # self.__tabdicts = {}
         super().clear()
 
     def delete_current_tab(self):
@@ -111,6 +111,12 @@ class TabWidget(QtWidgets.QTabWidget):
         for tab in self._itertabs():
             if isinstance(tab, TitrationBaseWidget):
                 yield tab.name
+
+    def find_titration_byname(self, name):
+        for tab in self._itertabs():
+            if isinstance(tab, TitrationBaseWidget) and tab.name == name:
+                return tab
+        raise KeyError(f"object {name} does not exist")
 
     def fitting(self, option) -> None:
         method = option('fitting algorithm')
@@ -188,26 +194,28 @@ class TabWidget(QtWidgets.QTabWidget):
         idx = self.currentIndex()
         self.removeTab(idx)
 
-    def __getitem__(self, key):
-        return self.__tabdicts[key]
+    # def __getitem__(self, key):
+    #     for tab in self._itertabs():
+    #         if tab.tabText() == key:
+    #             return tab.self.__tabdicts[key]
 
     def __stamp(self, widget, group):
-        counter = self.__tabcounter.get(group, 0) + 1
-        name = group + " " + str(counter)
+        # counter = group +
+        name = group + str(self.count())
         widget.name = name
         if hasattr(widget, 'populate_cb_titration'):
             tnames = tuple(self.get_titration_names())
             widget.titrationChanged.connect(self.__titration_changed)
             widget.populate_cb_titration(tnames)
-        self.__tabdicts[name] = widget
+        # self.__tabdicts[name] = widget
         self.addTab(widget, name)
-        self.__tabcounter[group] = counter
+        # self.__tabcounter[group] = counter
 
     @QtCore.pyqtSlot(object, str)
     def __titration_changed(self, widget, txt):
         # print("slot activated: ", widget, txt)
-        titration = self.__tabdicts[txt]
-        if titration.is_titre_implicit():
+        # titration = self.__tabdicts[txt]
+        if widget.titration.is_titre_implicit():
             titre = titration.titre
             widget.npoints = titration.n_points
             widget.titre = titre

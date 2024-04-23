@@ -24,9 +24,10 @@ class EmfWidget(datawidget.DataWidget):
     (2) table_params and (3) table_data.
     """
 
-    def __init__(self, model):
+    def __init__(self, model, parent):
         """Initiate widget."""
         super().__init__(model)
+        self.parent = parent
         self.ui = ui_emfds.Ui_EmfDSWidget()
         self.ui.setupUi(self)
 
@@ -160,16 +161,16 @@ class EmfWidget(datawidget.DataWidget):
                 'hindex': self.active_species,
                 'fRTnF': np.array(self.fRTnF)}
 
-    def titration(self):
-        uf = np.fromiter(self.mask, dtype=np.bool)
-        return {'V': np.array(np.fromiter(self.titre, dtype=np.float)),
-                'emf': np.ma.array(self.emf, mask=uf),
-                'V0': self.starting_volume,
-                'T0': self.initial_amount,
-                'buret': self.buret,
-                'weights': self.weight(),
-                'Tflags': self.amount_flags,
-                'error_V': self.volume_error}
+    # def titration(self):
+    #     uf = np.fromiter(self.mask, dtype=np.bool)
+    #     return {'V': np.array(np.fromiter(self.titre, dtype=np.float)),
+    #             'emf': np.ma.array(self.emf, mask=uf),
+    #             'V0': self.starting_volume,
+    #             'T0': self.initial_amount,
+    #             'buret': self.buret,
+    #             'weights': self.weight(),
+    #             'Tflags': self.amount_flags,
+    #             'error_V': self.volume_error}
 
     @property
     def emf(self):
@@ -308,11 +309,11 @@ class EmfWidget(datawidget.DataWidget):
     def nelectrodes(self, n: int):
         if n < 1:
             raise ValueError(f"At least one electrode is needed. {n} given.")
-        with libqt.table_locked(self.ui.table_params) as t:
+        with libqt.signals_blocked(self.ui.table_params) as t:
             t.setColumnCount(n)
             labels = [f"electrode{i}" for i in range(n)]
             t.setHorizontalHeaderLabels(labels)
-        with libqt.table_locked(self.ui.table_data) as t:
+        with libqt.signals_blocked(self.ui.table_data) as t:
             t.setColumnCount(1+n)
             labels = ["titre"] + [f"emf{i}" for i in range(n)]
             t.setHorizontalHeaderLabels(labels)

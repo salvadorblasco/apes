@@ -69,7 +69,7 @@ class ModelWidget(QtWidgets.QWidget):
         if no row or cell is selected. The new row will be filled with defatult
         parameters.
         '''
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             table = self.ui.table_model
             if position is None:
                 position = table.currentRow()
@@ -111,7 +111,7 @@ class ModelWidget(QtWidgets.QWidget):
             position = self.number_components
         self.labels.insert(position, label)
 
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             self.ui.table_model.insertColumn(position)
             libqt.fill_column(table, position,table.rowCount()*(0, ))
             self.__set_horizontal_headers()
@@ -200,7 +200,7 @@ class ModelWidget(QtWidgets.QWidget):
             delete = True
 
         if delete:
-            with libqt.table_locked(self.ui.table_model):
+            with libqt.signals_blocked(self.ui.table_model):
                 self.ui.table_model.removeRow(position)
         self.__renumber()
 
@@ -249,7 +249,7 @@ class ModelWidget(QtWidgets.QWidget):
                 return
         # if c > self.number_components:
         #     raise ValueError('Cannot delete this column')
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             self.ui.table_model.removeColumn(position)
         # TODO delete from all models
         self.componentDeleted.emit(position)
@@ -265,7 +265,7 @@ class ModelWidget(QtWidgets.QWidget):
         columns = model.n_species + 3
         rows = model.n_equil
         table = self.ui.table_model
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             table.setRowCount(rows)
             table.setColumnCount(columns)
             libqt.replace_nones(table)
@@ -284,7 +284,7 @@ class ModelWidget(QtWidgets.QWidget):
 
     def beta_update(self, new_beta):
         raise DeprecationWarning
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             cells = libqt.iter_column(self.ui.table_model, self.column_beta)
             nicells = (c for i, c in zip(self.__isrowignored(), cells) if i)
             for cell, beta in zip(nicells, new_beta):
@@ -319,7 +319,7 @@ class ModelWidget(QtWidgets.QWidget):
 
     @beta_raw.setter
     def beta_raw(self, beta):
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             libqt.fill_column(self.ui.table_model,
                               self.column_beta,
                               beta,
@@ -333,7 +333,7 @@ class ModelWidget(QtWidgets.QWidget):
 
     @beta_error.setter
     def beta_error(self, betaerr):
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             libqt.fill_column(self.ui.table_model, self.column_betaerror,
                               betaerr,
                               formatting='{:.4f}')
@@ -348,7 +348,7 @@ class ModelWidget(QtWidgets.QWidget):
     @beta_flags.setter
     def beta_flags(self, flags):
         assert all(tuple(map(lambda x: -2 < x < 8, flags)))
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             libqt.fill_column_comboindex(self.ui.table_model,
                                          (i+1 for i in flags),
                                          consts.REFINE_BLABELS,
@@ -433,7 +433,7 @@ class ModelWidget(QtWidgets.QWidget):
 
     @stoich.setter
     def stoich(self, value):
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             libqt.array2tab(self.ui.table_model, value,
                             col0=self.column_stoich)
 
@@ -464,7 +464,7 @@ class ModelWidget(QtWidgets.QWidget):
         except ValueError:
             new_txt = '????'
 
-        with libqt.table_locked(self.ui.table_model):
+        with libqt.signals_blocked(self.ui.table_model):
             widget.setText(new_txt)
 
     def save_current_model(self):

@@ -61,7 +61,7 @@
   </titration>
  
   <!-- Block that contains data for potentiometric titrations -->
-  <potentiometricdata title="optional" use="1" titration="titration 1">
+  <potentiometricdata name="optional" use="1" titration="titration 1">
     <!-- emf0 is given optionally with error -->
     <emf0 unit="mV">359.32 178.43</emf0>
     <erroremf0 unit="mV">0.03 0.03</erroremf0>
@@ -76,7 +76,7 @@
   </potentiometricdata>
  
   <!-- Block that contains data for nmr titrations -->
-  <nmrdata title="optional" use='1' titration="titration 1">
+  <nmrdata name="optional" use='1' titration="titration 1">
     <points>
      <!-- Many <nucleus> blocks are allowed format delta T/F for True/False -->
      <!-- Missing data is marked with "X" and no key. -->
@@ -85,7 +85,7 @@
   </nmrdata>
  
       <!-- Block that contains data for spectrometric titrations -->
-  <specdata title="optional" type="Absorbance" use='yes' optical_path="1" opunits="cm" titration="titration 1">
+  <specdata name="optional" type="Absorbance" use='yes' optical_path="1" opunits="cm" titration="titration 1">
    <wavelengths>190.0 192.0 194.0 (...)</wavelengths>
    <!-- <data> will be loaded in a 2D array -->
    <data>0.1925 0.1812 0.1713 (...)</data>
@@ -93,7 +93,7 @@
   </specdata>
  
   <!-- Block that contains data for calorimetry titrations -->
-  <calordata title="optional" use='1' titration="titration 1">
+  <calordata name="optional" use='1' titration="titration 1">
     <heat>36.12 35.02 35.99 (...)</heat>
     <key>0 0 0 (...)</key>
   </calordata>

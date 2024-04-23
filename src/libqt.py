@@ -446,19 +446,19 @@ def selected_rows(table):
 
 
 @contextmanager
-def table_locked(table):
+def signals_blocked(widget):
     """Suspend connections while changes are being made in table.
 
     The signals are blocked while editing table. Use as
-    with libqt.table_locked(table_data) as table:
+    with libqt.signals_blocked(widget) as widget:
         # code that we do not want to trigger signals
 
     Parameters:
-        table (:class:`QtWidgets.QTableWidget`): the table to be changed.
+        widget (:class:`QtWidgets.QWidget`): the widget
     """
-    table.blockSignals(True)
-    yield table
-    table.blockSignals(False)
+    widget.blockSignals(True)
+    yield widget
+    widget.blockSignals(False)
 
 
 # +---------------------------------------------------------------------------+

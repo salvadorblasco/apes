@@ -93,18 +93,31 @@ def loadFittingXML(widget, xmle):
 
     for titration in xmle.findall('titration'):
         twidget = widget.add_titration()
+        index = widget.indexOf(twidget)
+        widget.setTabText(index, titration.attrib['name'])
         loadTitrationBaseXML(twidget, titration)
+
+    titration_names = tuple(widget.get_titration_names())
 
     for spectrum in xmle.findall('specdata'):
         twidget = widget.add_spectrumuv()
+        index = widget.indexOf(twidget)
+        widget.setTabText(index, spectrum.attrib['name'])
+        twidget.populate_cb_titration(titration_names)
         loadSpectrXML(twidget, spectrum)
 
     for potentio in xmle.findall('potentiometricdata'):
         twidget = widget.add_emf()
+        index = widget.indexOf(twidget)
+        widget.setTabText(index, potentio.attrib['name'])
+        twidget.populate_cb_titration(titration_names)
         loadEmfXML(twidget, potentio)
 
     for nmrdat in xmle.findall('nmrdata'):
         twidget = widget.add_nmr()
+        index = widget.indexOf(twidget)
+        widget.setTabText(index, nmrdata.attrib['name'])
+        twidget.populate_cb_titration(titration_names)
         loadNmrXML(twidget, nmrdat)
 
 
@@ -261,43 +274,27 @@ def loadEmfXML(widget, xmle):
             xml substructure.
     """
     _checkXML(xmle, 'potentiometricdata')
-    widget.emf0 = _read_seq(xmle, 'emf0')
-    widget.nelectrons = _read_seq(xmle, 'n', dtype=int)
-    widget.emf0_error = _read_seq(xmle, 'erroremf0')
-    widget.active_species = _read_seq(xmle, 'active', dtype=int)
-    widget.flags_emf0 = _read_seq(xmle, 'emf0flags', dtype=int)
-    # widget.nelectrons = _read_seq(xmle, 'n', dtype=int)
-    # loadCurveXML(widget, xmle)
 
-    nelectrod = widget.nelectrodes
-    flat_emf = tuple(_read_seq(xmle, 'emfread'))
+    with libqt.signals_blocked(widget):
+        widget.emf0 = _read_seq(xmle, 'emf0')
+        widget.nelectrons = _read_seq(xmle, 'n', dtype=int)
+        widget.emf0_error = _read_seq(xmle, 'erroremf0')
+        widget.active_species = _read_seq(xmle, 'active', dtype=int)
+        widget.flags_emf0 = _read_seq(xmle, 'emf0flags', dtype=int)
 
-    try:
-        titre = tuple(_read_seq(xmle, 'titre'))
-        exppoints = len(titre)
-    except AttributeError:
-        exppoints = len(flat_emf) // nelectrod
+        nelectrod = widget.nelectrodes
+        flat_emf = tuple(_read_seq(xmle, 'emfread'))
 
-    emf = np.array(flat_emf).reshape((exppoints, nelectrod))
-    widget.nelectrodes = nelectrod
-    widget.npoints = exppoints
-    # table.setColumnCount(nelectrod+1)
-    # table.setRowCount(exppoints)
-    with libqt.table_locked(widget.ui.table_data) as table:
-        libqt.array2tab(table, emf, col0=1)
-    # flat_emf = tuple(_read_seq(xmle, 'emfread'))
-    # data_feed = itertools.chain((titre,
-    # *[flat_emf[(exppoints*i):(exppoints*(i+1))]for i in range(nelectrod)]))
-    # data_feed = itertools.chain((titre, *zip(*[iter(flat_emf)]*exppoints)))
-    # widget.reshape_data_table(exppoints, 1+nelectrod)
-    # widget.feed_data_table(data_feed)
+        widget.titration = xmle.attrib['titration']
 
-    # t = xmle.find('key')
-    # if t is not None:
-    #     mask = tuple(not bool(int(i)) for i in t.text.split())
-    # else:
-    #     mask = False
-    # widget.mask = mask
+        exppoints = widget.titration.n_points
+
+        emf = np.array(flat_emf).reshape((exppoints, nelectrod))
+        widget.nelectrodes = nelectrod
+        widget.npoints = exppoints
+
+        libqt.fill_column(widget.ui.table_data, 0, widget.titration.titre)
+        libqt.array2tab(widget.ui.table_data, emf, col0=1)
 
 
 def loadNmrXML(widget, xmle):
@@ -388,6 +385,9 @@ def loadTitrationBaseXML(widget, xmle) -> None:
     Parameters:
         xmle (:class:`xml.etree.ElementTree`): object with the XML info.
     """
+    name = xmle.attrib['name']
+    widget.name = name
+
     verr = float(xmle.find('volumeerror').text)
     widget.volume_error = verr
 
