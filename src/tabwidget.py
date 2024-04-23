@@ -124,7 +124,8 @@ class TabWidget(QtWidgets.QTabWidget):
             self.output = OutputWidget()
             self.addTab(self.output, "Output")
 
-        self.output.write("starting fitting at TIME")
+        self.setCurrentWidget(self.output)
+        self.output.write("starting fitting at TIME  ")
 
         method = option('fitting algorithm')
         if method not in (consts.METHOD_NM, consts.METHOD_LM):
@@ -139,6 +140,7 @@ class TabWidget(QtWidgets.QTabWidget):
         
         info = ffit(bridgeobj, report=self.output.buffer)
 
+        self.output.refresh()
         params.accept_values()
         params.dump_to_widgets()
 

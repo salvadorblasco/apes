@@ -17,6 +17,10 @@ import consts
 default_verbosity = 1
 
 
+def iteration(values, increment):
+    return "\n".join(f"{val} {inc}" for val, inc in zip(values, increment))
+
+
 def html_start(**kwargs):
     """Output the initial state prior to fitting start.
 

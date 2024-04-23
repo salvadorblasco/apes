@@ -7,6 +7,7 @@ import numpy as np
 import consts
 import excepts
 import libmath
+import report
 
 
 def levenberg_marquardt(bridge, **kwargs):
@@ -49,7 +50,7 @@ def levenberg_marquardt(bridge, **kwargs):
     #     if report is not None:
     #         report(*kws)
 
-    report = kwargs.get('report', DummyReport())
+    report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
     threshold = kwargs.pop('threshold', 1e-4)
     max_iterations = kwargs.pop('max_iterations', 100)
@@ -111,7 +112,8 @@ def levenberg_marquardt(bridge, **kwargs):
             damping *= 10
             # print('\tnot decreasing')
         else:
-            report.write(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}")
+            # report_buffer.write(report.iteration(new_x, dx))
+            # f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}  " "\n")
             # print('\tdecreasing')
             bridge.accept_values()
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)

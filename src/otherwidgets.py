@@ -245,9 +245,9 @@ class OutputWidget(QtWidgets.QWidget):
         self.buffer = io.StringIO()
         self.__last_result = None
         self.clear()
-        self.buffer.write(f"""*APES*, the All-Purpose Equilibrium Solver\n
-                  (c) 2016-2024 {s%s</p>\n
-        Salvador Blasco <salvador.blasco@gmail.com>"""
+        self.buffer.write("""*APES*, the All-Purpose Equilibrium Solver\n
+                  (c) 2016-2024\n 
+        Salvador Blasco <salvador.blasco@gmail.com>\n""")
 
         self.ui.pb_clear.clicked.connect(self.clear)
         self.report = None
@@ -265,7 +265,7 @@ class OutputWidget(QtWidgets.QWidget):
 
     def clear(self):
         "Clears the text"
-        self.ui.textBrowser.clear()
+        self.ui.textEdit.clear()
 
     def refresh(self):
         self.ui.textEdit.setMarkdown(self.buffer.getvalue())
@@ -282,11 +282,11 @@ class OutputWidget(QtWidgets.QWidget):
 
     def report_final(self, *args, **kwargs):
         txt = report.html_finalconvg(*args, **kwargs)
-        self.ui.textBrowser.append(txt)
+        self.ui.textEdit.append(txt)
 
     def report_iteration(self, *args, **kwargs):
         txt = self.report(*args, **kwargs)
-        self.ui.textBrowser.append(txt)
+        self.ui.textEdit.append(txt)
 
     def save_last_result(self, **result):
         self.__last_result = result
