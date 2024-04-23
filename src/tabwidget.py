@@ -26,10 +26,10 @@ class TabWidget(QtWidgets.QTabWidget):
         self.__tabdicts = {}
         self.__tabcounter = {}
 
-    def add_external_data(self):
-        widget = ExternalDataWidget()
-        self.__stamp(widget, "External")
-        return widget
+    # def add_external_data(self):
+    #     widget = ExternalDataWidget()
+    #     self.__stamp(widget, "External")
+    #     return widget
 
     def add_calor(self):
         widget = CalorWidget(self.model)
@@ -41,55 +41,55 @@ class TabWidget(QtWidgets.QTabWidget):
         self.__stamp(widget, "EMF")
         return widget
 
-    def add_ionic(self):
-        widget = IonicWidget()
-        self.__stamp(widget, "Ionic Strength")
-        return widget
+    # def add_ionic(self):
+    #     widget = IonicWidget()
+    #     self.__stamp(widget, "Ionic Strength")
+    #     return widget
 
     def add_nmr(self):
         widget = NmrWidget(self.model)
         self.__stamp(widget, "NMR")
         return widget
 
-    def addmodel(self):
-        if self.model is None:
-            widget = ModelWidget()
-            self.addTab(widget, "Model")
-            self.model = widget
-        else:
-            widget = self.model
-        return widget
+    # def addmodel(self):
+    #     if self.model is None:
+    #         widget = ModelWidget()
+    #         self.addTab(widget, "Model")
+    #         self.model = widget
+    #     else:
+    #         widget = self.model
+    #     return widget
 
-    def add_speciation(self):
-        widget = SpeciationWidget(self.model)
-        self.__stamp(widget, "Speciation")
-        return widget
+    # def add_speciation(self):
+    #     widget = SpeciationWidget(self.model)
+    #     self.__stamp(widget, "Speciation")
+    #     return widget
 
     def add_spectrumuv(self):
         widget = SpecWidget(self.model)
         self.__stamp(widget, "UV-vis")
         return widget
 
-    def add_titration(self):
-        widget = TitrationWidget(self.model)
-        self.__stamp(widget, "Titration Simulation")
-        return widget
+    # def add_titration(self):
+    #     widget = TitrationWidget(self.model)
+    #     self.__stamp(widget, "Titration Simulation")
+    #     return widget
 
-    def add_titrationbase(self):
+    def add_titration(self):
         widget = TitrationBaseWidget(self.model)
         self.__stamp(widget, "Titration")
         self._update_titration_list()
         widget.implicitVolumeChanged.connect(self.__implicit_titre_changed)
         return widget
 
-    def add_uvmodel(self):
-        if self._uvmodel is None:
-            widget = SpecModelModelWidget()
-            self.addTab(widget, "UV Components")
-            self._uvmodel = widget
-        else:
-            widget = self._uvmodel
-        return widget
+    # def add_uvmodel(self):
+    #     if self._uvmodel is None:
+    #         widget = SpecModelModelWidget()
+    #         self.addTab(widget, "UV Components")
+    #         self._uvmodel = widget
+    #     else:
+    #         widget = self._uvmodel
+    #     return widget
 
     def clear(self):
         "Clear all the tabs and delete everything."
@@ -129,10 +129,10 @@ class TabWidget(QtWidgets.QTabWidget):
         params.accept_values()
         params.dump_to_widgets()
 
-    def simulate(self, canvas, option) -> None:
-        widget = self.currentWidget()
-        widget._recalc_free_concentration()
-        self._refresh_canvas_simulate(canvas, option)
+    # def simulate(self, canvas, option) -> None:
+    #     widget = self.currentWidget()
+    #     widget._recalc_free_concentration()
+    #     self._refresh_canvas_simulate(canvas, option)
 
     def go_button(self, canvas, option) -> None:
         # self.fitting(option)
@@ -150,12 +150,7 @@ class TabWidget(QtWidgets.QTabWidget):
         spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
 
     def widgets_to_save(self):
-        types = (ModelWidget, SpeciationWidget,
-                 TitrationWidget,
-                 EmfWidget, NmrWidget,
-                 SpecWidget, CalorWidget,
-                 ExternalDataWidget,
-                 TitrationBaseWidget)
+        types = (EmfWidget, NmrWidget, SpecWidget, CalorWidget, TitrationBaseWidget)
         for widget in self._itertabs():
             if isinstance(widget, types):
                 yield widget

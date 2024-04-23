@@ -39,7 +39,7 @@
   <extinction wavelength0="190" wavelength1="850">0.0122 0.4414 (...)</extinction>
  </specmodel>
 
- <fittinggroup>
+ <fittinggroup name="group name">
   <!-- Titration base -->
   <titration name="titration name">
     <volumeerror>0.003</volumeerror>
@@ -57,10 +57,11 @@
     <analytical unit="mmol/mL">0.025 0.0124 0.124</analytical>
     <!-- the flattened free concentrations array -->
     <c>0.01 0.023 0.0134 (...)</c>
+    <key>0 0 0 (...)</key>
   </titration>
  
   <!-- Block that contains data for potentiometric titrations -->
-  <potentiometricdata title="optional" temperature="25" use="1" titration="titration 1">
+  <potentiometricdata title="optional" use="1" titration="titration 1">
     <!-- emf0 is given optionally with error -->
     <emf0 unit="mV">359.32 178.43</emf0>
     <erroremf0 unit="mV">0.03 0.03</erroremf0>
@@ -72,7 +73,6 @@
     <slopeflags>0 0</slopeflags>
     <fRTnF>25.25 25.25</fRTnF>   <!-- Optional. Nernst's -->
     <emfread>356.12 355.02 351.44 (...)</emfread>
-    <key>0 0 0 (...)</key>
   </potentiometricdata>
  
   <!-- Block that contains data for nmr titrations -->

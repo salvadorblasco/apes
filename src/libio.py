@@ -11,21 +11,27 @@ import libqt
 import modelwidget
 import calorwidget
 import emfwidget
+import mainwindow
 import nmrwidget
 import otherwidgets
 import specwidget
 import simulationwidgets
+import tabwidget
 from excepts import DataFileException
 
 
-__version__ = '0.1'
+__version__ = '0.2'
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  SAVE ROUTINES
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def loadXML(app, f):
+def loadXML(app: "mainwindow.MainWindow", f: str) -> None:
     """Load an XML file into application.
 
     Parameters:
-        twidget (:class:`TabWidget`): 
+        app (:class:`MainWindow`): a main window instance
         f (file or str): The file to read data from.
 
     .. warning:: This routine assumes that MainWindow in empty.
@@ -36,11 +42,9 @@ def loadXML(app, f):
     if root.tag != 'apes':
         raise ValueError("XML file does not contain APES data")
 
-    assert root.attrib['version'] == '1.0'
-    # process 1.0 version of the xml file
+    assert root.attrib['version'] == '1.0'  # process 1.0 version of the xml file
 
-    xdata = root.find('metadata')
-    if xdata is not None:
+    if (xdata := root.find('metadata')) is not None:
         if (_title := xdata.find('title')) is not None:
             app.project.title = _title.text
         if (_author := xdata.find('author')) is not None:
@@ -48,7 +52,7 @@ def loadXML(app, f):
         if (_comments := xdata.find('comments')) is not None:
             app.project.comments = _comments.text
         if (_lastm := xdata.find('lastmodified')) is not None:
-            app.project.last_modified = _lastmodified.text
+            app.project.last_modified = _lastm.text
         if (_created := xdata.find('created')) is not None:
             app.project.created = _created.text
 
@@ -65,10 +69,9 @@ def loadXML(app, f):
             pass
         else:
             raise KeyError('unit not recognized')
-    # app.temperature = temperature
+
     app.project.temperature = temperature
 
-    # kwargs = {'labels': labels, 'temperature': temperature}
     kwargs = {'models': {'labels': labels}}
 
     tags = ('models', 'distri', 'simu', 'fittinggroup', 'externaldata')
@@ -86,7 +89,23 @@ def loadXML(app, f):
 
 
 def loadFittingXML(widget, xmle):
-    raise NotImplementedError
+    assert isinstance(widget, tabwidget.TabWidget)
+
+    for titration in xmle.findall('titration'):
+        twidget = widget.add_titration()
+        loadTitrationBaseXML(twidget, titration)
+
+    for spectrum in xmle.findall('specdata'):
+        twidget = widget.add_spectrumuv()
+        loadSpectrXML(twidget, spectrum)
+
+    for potentio in xmle.findall('potentiometricdata'):
+        twidget = widget.add_emf()
+        loadEmfXML(twidget, potentio)
+
+    for nmrdat in xmle.findall('nmrdata'):
+        twidget = widget.add_nmr()
+        loadNmrXML(twidget, nmrdat)
 
 
 def loadExternalXML(widget, xmle):
@@ -250,7 +269,6 @@ def loadEmfXML(widget, xmle):
     # widget.nelectrons = _read_seq(xmle, 'n', dtype=int)
     # loadCurveXML(widget, xmle)
 
-
     nelectrod = widget.nelectrodes
     flat_emf = tuple(_read_seq(xmle, 'emfread'))
 
@@ -274,16 +292,16 @@ def loadEmfXML(widget, xmle):
     # widget.reshape_data_table(exppoints, 1+nelectrod)
     # widget.feed_data_table(data_feed)
 
-    t = xmle.find('key')
-    if t is not None:
-        mask = tuple(not bool(int(i)) for i in t.text.split())
-    else:
-        mask = False
-    widget.mask = mask
+    # t = xmle.find('key')
+    # if t is not None:
+    #     mask = tuple(not bool(int(i)) for i in t.text.split())
+    # else:
+    #     mask = False
+    # widget.mask = mask
 
 
 def loadNmrXML(widget, xmle):
-    pass
+    raise NotImplementedError
 
 
 # deprecate
@@ -361,29 +379,42 @@ def loadSpeciationXML(widget, xmle):
 
 
 def loadSpectrXML(widget, xmle):
-    pass
+    raise NotImplementedError
 
 
-def loadTitrationBaseXML(widget, xmle):
+def loadTitrationBaseXML(widget, xmle) -> None:
     """Load XML information into self.
 
     Parameters:
         xmle (:class:`xml.etree.ElementTree`): object with the XML info.
     """
     verr = float(xmle.find('volumeerror').text)
+    widget.volume_error = verr
+
     init = __read_floats(xmle, 'init')
+    widget.initial_amount = init
+
     initk = __read_ints(xmle, 'initkey')
+    widget.init_flags = initk
+
     buret = __read_floats(xmle, 'buret')
+    widget.buret = buret
+
     buretk = __read_ints(xmle,  'buretkey')
+    widget.buret_flags = buretk
+
     vinit = float(xmle.find('startingvolume').text)
-    vfinal = xmle.find('finalvolume')
-    npoints = xmle.find('totalpoints')
-    if vfinal is not None and npoints is not None:
-        widget.set_volume_implicit(True)
+    widget.starting_volume = vinit
+
+    if (titre := xmle.find('titre')) is not None:
+        widget.titre = tuple(map(float, titre.text.split()))
+        widget.set_volume_implicit(False)
+    else:
+        vfinal = xmle.find('finalvolume')
+        npoints = xmle.find('totalpoints')
         widget.final_volume = float(vfinal.text)
         widget.n_points = int(npoints.text)
-    else:
-        widget.set_volume_implicit(False)
+        widget.set_volume_implicit(True)
 
 
 def loadTitrationXML(widget, xmle):
@@ -403,6 +434,10 @@ def loadTitrationXML(widget, xmle):
     # TODO add support for external data
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  SAVE ROUTINES
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 def saveXML(app, f):
     """Save the data into an XML file.
 
@@ -414,11 +449,8 @@ def saveXML(app, f):
     root = ET.Element('apes', attrib={'version': '1.0'})
     tree = ET.ElementTree(root)
 
-    title = ET.SubElement(root, 'title')
-    title.text = app.project.title
-
-    # TODO add metadata support
     metadata = ET.SubElement(root, 'metadata')
+    ET.SubElement(metadata, 'title').text = app.project.title
     ET.SubElement(metadata, 'author').text = app.project.author
     ET.SubElement(metadata, 'comments').text = app.project.comments
     ET.SubElement(metadata, 'lastmodified').text = datetime.datetime.now().ctime()
@@ -436,7 +468,10 @@ def saveXML(app, f):
              saveEmfXML, saveNmrXML, saveSpectrXML, saveCalorXML,
              saveExternalXML, saveTitrationBaseXML)
 
-    for widget in app.ui.tab_main.widgets_to_save():
+    for window in app.ui.mdiArea.subWindowList():
+        widget = window.widget()
+        if type(widget) not in types:
+            continue
         which = types.index(type(widget))
         call = calls[which]
         dtag = call(widget)
@@ -445,8 +480,28 @@ def saveXML(app, f):
     tree.write(f)
 
 
+def saveFittingXML(twidget):
+    if not isinstance(twidget, tabwidget.TabWidget):
+        raise TypeError
+    xmle = ET.Element('fittinggroup', attrib={'name': twidget.name})
+
+    types = (emfwidget.EmfWidget, nmrwidget.NmrWidget, specwidget.SpecWidget,
+             calorwidget.CalorWidget, otherwidgets.TitrationBaseWidget)
+    calls = (saveEmfXML, saveNmrXML, saveSpectrXML, saveCalorXML, saveTitrationBaseXML)
+
+    for widget in twidget.widgets_to_save():
+        if type(twidget) not in types:
+            continue
+
+        which = types.index(type(widget))
+        call = calls[which]
+        dtag = call(widget)
+        xmle.append(dtag)
+
+    return xmle
+
+
 def saveModelWidgetXML(widget):
-    # import modelwidget
     if not isinstance(widget, modelwidget.ModelWidget):
         raise TypeError
     xmle = ET.Element('models')
@@ -678,6 +733,10 @@ def _checkXML(xmle, tag):
 def _read_seq(xmle, x, dtype=float):
     return (dtype(i) for i in xmle.find(x).text.split())
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  IMPORT OTHER FORMATS
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def import_pasat(filename):
     """Import data from a file which complies with PASAT file format.
@@ -1091,7 +1150,7 @@ def importPasatApp(app):
     "import data from a PASAT file into current dataset and update."
 
     widget = app.ui.tab_main.currentWidget()
-    assert isinstance(widget, EmfWidget)
+    assert isinstance(widget, emfwidget.EmfWidget)
 
     filters = "PASAT Files (*.ptr);;All Files (*.*)"
     fhandler, ok = app.open_dialog(filters)
@@ -1109,7 +1168,7 @@ def importTiamoApp(app):
     "import data from a TIAMO file into current dataset and update."
 
     widget = app.ui.tab_main.currentWidget()
-    assert isinstance(widget, EmfWidget)
+    assert isinstance(widget, emfwidget.EmfWidget)
     filters = "TIAMO Files (*.csv);;All Files (*.*)"
     fhandler, ok = app.open_dialog(filters)
     if not ok:
