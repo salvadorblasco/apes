@@ -155,6 +155,10 @@ class TabWidget(QtWidgets.QTabWidget):
         tcombo.setCurrentIndex(index)
         spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
 
+    def plot(self, canvas):
+        widgets_to_plot = [w for w in self._itertabs() if isinstance(w, DataWidget)]
+        canvas.plot_fitting(widgets_to_plot, None)
+
     def widgets_to_save(self):
         types = (EmfWidget, NmrWidget, SpecWidget, CalorWidget, TitrationBaseWidget)
         for widget in self._itertabs():

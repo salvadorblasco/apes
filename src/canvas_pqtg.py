@@ -19,6 +19,8 @@ import pyqtgraph
 
 import libaux
 import libplot
+from datawidget import DataWidget
+from emfwidget import EmfWidget
 
 
 class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
@@ -85,6 +87,18 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         """
         ...
 
+
+    def plot_fitting(self, widgets, parameters):
+        self.clear()
+        for col, widg in enumerate(widgets):
+            plot = self.addPlot(row=0, col=col)
+            match widg:
+                case EmfWidget():
+                    self.plot_emf(plot, widg)
+                case _:
+                    raise TypeError
+                    
+
     def plot_calor(self, widget):
         """Plot calorimetry fit.
 
@@ -101,7 +115,7 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         """
         ...
 
-    def plot_emf(self, widgets, fitdata={}):
+    def plot_emf(self, plot, widget, fitdata={}):
         """Plot potentiometry fit data.
 
         This function plots all the information for a potentiometry fit. It
@@ -118,7 +132,28 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         Raises:
             ValueError: if any of the widgets if of the wrong type.
         """
-        ...
+        plot.setWindowTitle(widget.name)
+        x = np.fromiter(widget.titre, dtype=float)
+        yexp = np.array(widget.emf).T
+        for y in yexp:
+            plot.plot(x, y, symbol='o')
+
+        ycal = widget.emffitted.T
+        for y in ycal:
+            plot.plot(x, y, pen='r')
+
+        pconcs = pyqtgraph.ViewBox()
+        plot.showAxis('right')
+        plot.scene().addItem(pconcs)
+        plot.getAxis('right').linkToView(pconcs)
+        pconcs.setXLink(plot)
+        plot.getAxis('right').setLabel('concentrations')
+
+        concs = widget.titration.free_conc.T
+        for c in concs:
+            pconcs.addItem(pyqtgraph.PlotCurveItem(x=x, y=c))
+
+        pconcs.setGeometry(plot.vb.sceneBoundingRect())
 
     def plot_ionic(self, **kwargs):
         ...

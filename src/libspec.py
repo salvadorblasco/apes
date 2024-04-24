@@ -120,7 +120,7 @@ def spec_function(free_concentrations, optical_activity, optical_path, baseline=
 
     .. math:: A_{i\lambda} = l \sum_{j=1}^{E+S} \varepsilon_{\lambda, j} c_{ij} + B
     """   
-    return optical_path * free_concentrations @ optical_activity.T) + baseline
+    return optical_path * free_concentrations @ optical_activity.T + baseline
 
 
 # TODO delete
@@ -313,31 +313,3 @@ def jac_sub_beta(e, C, P):
     assert J.shape == (Nl, N, Nb)
     return J
 
-
-def ravel_A(A):
-    """This function takes all A data and flattens it.
-
-    Parameters:
-        A (:class:`numpy.ndarray`): An 2D or 3D matrix where dim 1 is the
-            experimental point, dim 2 is the wavelength and dim 3 (optional)
-            is the replica.
-
-    Returns:
-        :class:`numpy.ndarray`: A flattened array with all the valid data.
-    """
-    
-    pass
-
-
-def unravel_A(A):
-    """This function undoes what :func:`ravel_A` does.
-
-    Parameters:
-        A (:class:`numpy.ndarray`): A flattened array with all the valid data.
-
-    Returns:
-        :class:`numpy.ndarray`: An 2D or 3D matrix where dim 1 is the
-            experimental point, dim 2 is the wavelength and dim 3 (optional)
-            is the replica.
-    """
-    pass

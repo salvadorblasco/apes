@@ -47,11 +47,13 @@ import typing
 
 import numpy as np
 from numpy.typing import NDArray
+import scipy
 
 import consts
 import libaux
 import libeq
 import libemf
+import libspec
 
 from modelwidget import ModelWidget
 from calorwidget import CalorWidget
@@ -90,10 +92,12 @@ class Slices():
 class Bridge():
     """Bridge between the GUI and the fitting engine.
     """
-    def __init__(self, parameters):
+    def __init__(self, parameters, report_buffer=None):
         self.parameters = parameters
         self.stoichiometry = parameters.stoichiometry(extended=False)
         self.stoichiometryx = parameters.stoichiometry(extended=True)
+
+        self.report_buffer = report_buffer
 
         self.jacobian = np.empty(parameters.jacobian_shape, dtype=float)
         self.residual = np.empty(parameters.residual_shape, dtype=float)
@@ -148,6 +152,17 @@ class Bridge():
 
                 self.jacobian[row_slice, col_slice] = jac_partial
         return self.jacobian, self.residual
+
+    def report_step(self, **kwargs):
+        if self.report_buffer is None:
+            return
+        write = self.report_buffer.write
+
+        if 'iteration' in kwargs:
+            write(f"iteration {kwargs['iteration']}\n")
+
+        # print refined betas
+
 
     def update_titrations(self, beta) -> None:
         for titration in self.parameters.titrations.values():
@@ -391,6 +406,7 @@ class TitrationData():
 
     def dump(self, widget: TitrationBaseWidget) -> None:
         "Dump data into the widget to update the GUI."
+        widget.free_conc = self.free_conc
         if self.refine:
             return
         if any(self.init_flags):
@@ -418,6 +434,7 @@ class EmfData():
 
     def dump(self, widget: EmfWidget) -> None:
         "Dump data into the widget to update the GUI."
+        widget.emffitted = self.emf_calc()
         if any(self.emf0_flags):
             widget.emf0 = self.emf0
 
@@ -457,6 +474,7 @@ class SpectralData:
         self.xdata = np.empty(0)
         self.ydata = np.empty(0)
         self.spanning = 5.0  # nanometres
+        self.cubicspline = None
 
     def add_spectrum(self, optically_active: tuple[bool], spectrum: "SpectrumData") -> None:
         self._assert_active_consistency(optically_active)
@@ -567,11 +585,13 @@ class Constraint:
         self.stored_value: float | None = None
 
     def accept_value(self):
+        "accept and store current value."
         self.stored_value = None
 
     def increment_value(self, increment):
+        "increment variable value."
         if self.stored_value is None:
-            self.stored_value = self.get_value() 
+            self.stored_value = self.get_value()
         if abs(increment) > self.max_increment:
             increment = math.copysign(self.max_increment, increment)
         new_value = self.stored_value + increment
@@ -624,8 +644,9 @@ def max_ratio_capping(x, dx, ratio):
     else:
         return x*(1+aux)
 
+
 def abs_capping(x, dx, maximum):
     if abs(dx) < maximum:
         return x + dx
     else:
-        return x + maximum 
+        return x + maximum

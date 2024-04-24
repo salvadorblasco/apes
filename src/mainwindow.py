@@ -133,6 +133,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 raise NotImplementedError
             case TabWidget():
                 current_widget.fitting(self.option)
+                current_widget.plot(self.canvas)
             case _:
                 raise ValueError
 

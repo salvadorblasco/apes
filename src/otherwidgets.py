@@ -583,6 +583,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
         self.ui.dsb_Vf.valueChanged.connect(self.__implicit_volume_changed)
         self.ui.sb_NPoints.valueChanged.connect(self.__implicit_volume_changed)
         self._explicit_titre = None
+        self.free_conc = None
 
     def is_fixed(self):
         return np.all(i == consts.RF_CONSTANT for i in self.init_flags) and \

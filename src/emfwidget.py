@@ -43,6 +43,8 @@ class EmfWidget(datawidget.DataWidget):
         # self.amount_flags = (0, 0)
         # self.buret_flags = (0, 0)
 
+        self.emffitted = None
+
         for n, l in enumerate(model.labels):
             self.updateLabel(n, l)
 
