@@ -1,26 +1,23 @@
 import numpy as np
 
 
-def covariance(J, W, F):
+def covariance(J, weights):
     """Compute covariance matrix.
-
-    Returns the covariance matrix :math:`CV = inv(J'.W.J)*MSE`
-    Where MSE is mean-square error :math:`MSE = (R'*R)/(N-p)`
-    where *R* are the residuals, *N* is the number of observations and
-    *p* is the number of coefficients estimated
 
     Parameters:
         J (:class:`numpy.ndarray`): the jacobian
-        W (:class:`numpy.ndarray`): the weights matrix
-        F (:class:`numpy.ndarray`): the residuals
+        weights (:class:`numpy.ndarray`): the weights matrix
     Returns:
         :class:`numpy.ndarray`: an (*p*, *p*)-sized array representing
             the covariance matrix.
     """
-    aux1 = np.sum(F*W*F)
-    aux2 = np.dot(np.dot(J.T, W), J)
-    # return np.sum(F*W*F) * np.dot(np.dot(J.T, np.diag(W)), J)
-    return aux1 * aux2
+    W = np.diag(weights)
+    aux2 = J.T @ W @ J
+    return np.linalg.pinv(aux2)
+
+
+def fitting_errors(covar):
+    return np.sqrt(np.diag(covar))
 
 
 def correlation_matrix(covar):

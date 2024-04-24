@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import bridge
 import consts
 import libfit
+import libmath
 import libio
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
@@ -140,8 +141,12 @@ class TabWidget(QtWidgets.QTabWidget):
         
         info = ffit(bridgeobj, report=self.output.buffer)
 
+        covariance = libmath.covariance(info['jacobian'], bridgeobj.weights())
+        errors = libmath.fitting_errors(covariance)
+
         self.output.refresh()
         params.accept_values()
+        params.set_errors(errors)
         params.dump_to_widgets()
 
     def import_txtspectrum(self, filename):

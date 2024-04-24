@@ -303,6 +303,11 @@ class Parameters:
         for variable, value in zip(self.variables, increments):
             variable.increment_value(value)
 
+    def set_errors(self, values):
+        "Set the variable errors"
+        for variable, value in zip(self.variables, values):
+            variable.set_error(value)
+
     def update_parameters(self, values):
         "Update values for all variables."
         for variable, value in zip(self.variables, values):
@@ -454,6 +459,10 @@ class BetaData:
     logbeta: np.ndarray     # the value of log(β)
     beta_flags: tuple[int]
     to_refine: tuple[int] = field(init=False)
+    errors: NDArray[float] = field(init=False)
+
+    def __post_init__(self):
+        self.errors = np.zeros_like(self.logbeta)
 
     def beta(self) -> np.ndarray:
         "Return beta values."
@@ -466,6 +475,7 @@ class BetaData:
         "Dump data into the widget to update the GUI."
         if any(self.beta_flags):
             widget.beta_raw = self.logbeta/consts.LOGK      # dump value as LOG10
+            widget.beta_error = self.errors/consts.LOGK
 
 
 class SpectralData:
@@ -525,6 +535,7 @@ class SpectrumData:
 class FreeVariable(typing.Protocol):
     max_increment: float 
     stored_value: float | None
+    error: float
 
     def accept_value(self):
         ...
@@ -533,6 +544,9 @@ class FreeVariable(typing.Protocol):
         ...
 
     def get_value(self) -> float:
+        ...
+
+    def set_error(self, value: float) -> None:
         ...
 
     def set_value(self, value: float) -> None:
@@ -546,6 +560,7 @@ class Variable:
             raise ValueError(f"data {type(data)} does not contain property {key}")
         self.data: float = data
         self.key = key
+        self.keyerror = "errors"
         self.position: int = position
         self.max_increment: float = math.inf
         self.stored_value: float | None = None
@@ -565,6 +580,14 @@ class Variable:
         "Get the value of the variable."
         dataholder = getattr(self.data, self.key)
         return dataholder[self.position]
+
+    def get_error(self) -> float:
+        dataholder = getattr(self.data, self.keyerror)
+        return dataholder[self.position]
+
+    def set_error(self, value: float) -> None:
+        dataholder = getattr(self.data, self.keyerror)
+        dataholder[self.position] = value
 
     def set_value(self, value: float) -> None:
         """Set value for all parameters in this Constraint.
@@ -612,6 +635,12 @@ class Constraint:
     def get_value(self) -> float:
         "Get the value of the variable."
         return self.__values[0]
+
+    def set_error(self, value: float) -> None:
+        new_values = (value*self.__values[0]/val for val in self.__values)
+        for (data, parname, position), value in zip(self.__data, new_values):
+            dataholder = getattr(data, "errors")
+            dataholder[position] = value
 
     def set_value(self, new_value: float) -> None:
         """Set value for all parameters in this Constraint.
