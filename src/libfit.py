@@ -83,6 +83,7 @@ def levenberg_marquardt(bridge, **kwargs):
     # assert W.shape == (n_points, n_points)
     chisq = 1e99
     sigma = math.inf
+    advance = 0
 
     # breakpoint()
     for iteration in range(max_iterations):
@@ -112,6 +113,7 @@ def levenberg_marquardt(bridge, **kwargs):
             damping *= 10
             # print('\tnot decreasing')
         else:
+            advance += 1
             # report_buffer.write(report.iteration(new_x, dx))
             # f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}  " "\n")
             # print('\tdecreasing')
@@ -128,6 +130,8 @@ def levenberg_marquardt(bridge, **kwargs):
             chisq = new_chisq
             # chisq_hist.append(chisq)
             # sigma_hist.append(sigma)
+
+            bridge.report_step(iteration=advance, damping=damping, chisq=chisq, sigma=sigma)
 
             if (test < threshold) and iteration > 2:
                 break

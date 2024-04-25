@@ -305,6 +305,12 @@
     <addaction name="separator"/>
     <addaction name="actionIonic_strength_calculator"/>
    </widget>
+   <widget class="QMenu" name="menuWindows">
+    <property name="title">
+     <string>Windows</string>
+    </property>
+    <addaction name="actionTile_windows"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Model"/>
    <addaction name="menuDataset"/>
@@ -312,6 +318,7 @@
    <addaction name="menuFit"/>
    <addaction name="menuOutput"/>
    <addaction name="menuTools"/>
+   <addaction name="menuWindows"/>
    <addaction name="menu_Help"/>
   </widget>
   <action name="actionOpen">
@@ -993,6 +1000,11 @@
   <action name="actionNewTitration">
    <property name="text">
     <string>Titration</string>
+   </property>
+  </action>
+  <action name="actionTile_windows">
+   <property name="text">
+    <string>Tile windows</string>
    </property>
   </action>
  </widget>

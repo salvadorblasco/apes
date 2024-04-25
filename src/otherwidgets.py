@@ -245,9 +245,8 @@ class OutputWidget(QtWidgets.QWidget):
         self.buffer = io.StringIO()
         self.__last_result = None
         self.clear()
-        self.buffer.write("""*APES*, the All-Purpose Equilibrium Solver\n
-                  (c) 2016-2024\n 
-        Salvador Blasco <salvador.blasco@gmail.com>\n""")
+        self.buffer.write("**APES, the All-Purpose Equilibrium Solver (c) 2016-2024**  \n")
+        self.buffer.write("by Salvador Blasco  <salvador.blasco@gmail.com>  \n  \n")
 
         self.ui.pb_clear.clicked.connect(self.clear)
         self.report = None
@@ -274,8 +273,8 @@ class OutputWidget(QtWidgets.QWidget):
     #     "appends <hr> tag"
     #     self.ui.textBrowser.append("<hr>")
 
-    def fitting_header(self, **kwargs):
-        self.ui.textBrowser.append(report.html_start(**kwargs))
+    # def fitting_header(self, **kwargs):
+    #     self.ui.textBrowser.append(report.html_start(**kwargs))
 
     def get_last_result(self):
         return self.__last_result

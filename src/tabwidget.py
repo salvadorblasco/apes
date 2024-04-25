@@ -126,7 +126,7 @@ class TabWidget(QtWidgets.QTabWidget):
             self.addTab(self.output, "Output")
 
         self.setCurrentWidget(self.output)
-        self.output.write("starting fitting at TIME  ")
+        self.output.write("starting fitting at TIME  \n")
 
         method = option('fitting algorithm')
         if method not in (consts.METHOD_NM, consts.METHOD_LM):
@@ -135,7 +135,7 @@ class TabWidget(QtWidgets.QTabWidget):
         titwidgets = [w for w in self._itertabs() if isinstance(w, TitrationBaseWidget)]
         datwidgets = [w for w in self._itertabs() if isinstance(w, DataWidget)]
         params = bridge.Parameters(self.model, titwidgets, datwidgets)
-        bridgeobj = bridge.Bridge(params)
+        bridgeobj = bridge.Bridge(params, report_buffer=self.output.buffer)
 
         ffit = libfit.fitting_functions[method]
         

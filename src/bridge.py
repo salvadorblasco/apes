@@ -159,7 +159,14 @@ class Bridge():
         write = self.report_buffer.write
 
         if 'iteration' in kwargs:
-            write(f"iteration {kwargs['iteration']}\n")
+            write(f"  \niteration {kwargs['iteration']}  \n")
+            write(f" chi-squared={kwargs['chisq']:.3e}; sigma={kwargs['sigma']:.3e}  \n")
+
+        write(f" NUM  VALUE    STEP  \n")
+        for n, v in enumerate(self.parameters.beta.variables):
+            vvalue = v.get_value() / consts.LOGK
+            vstep = v.last_increment / consts.LOGK
+            write(f" {n:4}  {vvalue:7.4f}  {vstep:7.4f}  \n")
 
         # print refined betas
 
@@ -217,6 +224,7 @@ class Parameters:
         self.beta = BetaData(logbeta=consts.LOGK*np.array(model.beta_raw), beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
         jacobian_slice.stamp_slice('beta', self.jacobian_part)
+        self.beta.variables = self.variables.copy()
 
         # datawidgets are processed next
         for dw in datawidgets:                          # for each datawidget
@@ -460,6 +468,7 @@ class BetaData:
     beta_flags: tuple[int]
     to_refine: tuple[int] = field(init=False)
     errors: NDArray[float] = field(init=False)
+    variables: list["FreeVariable"] = field(init=False)
 
     def __post_init__(self):
         self.errors = np.zeros_like(self.logbeta)
@@ -564,6 +573,7 @@ class Variable:
         self.position: int = position
         self.max_increment: float = math.inf
         self.stored_value: float | None = None
+        self.last_increment: float
 
     def accept_value(self):
         self.stored_value = None
@@ -573,6 +583,7 @@ class Variable:
             self.stored_value = self.get_value() 
         if abs(increment) > self.max_increment:
             increment = math.copysign(self.max_increment, increment)
+        self.last_increment = increment
         new_value = self.stored_value + increment
         self.set_value(new_value)
 
@@ -606,6 +617,7 @@ class Constraint:
         self.__data = []
         self.max_increment = math.inf
         self.stored_value: float | None = None
+        self.last_increment: float
 
     def accept_value(self):
         "accept and store current value."
@@ -617,6 +629,7 @@ class Constraint:
             self.stored_value = self.get_value()
         if abs(increment) > self.max_increment:
             increment = math.copysign(self.max_increment, increment)
+        self.last_increment = increment
         new_value = self.stored_value + increment
         self.set_value(new_value)
 

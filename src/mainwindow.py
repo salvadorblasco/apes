@@ -861,6 +861,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         ui.actionIonic_strength_calculator.triggered.connect(self.newIonic)
 
+        ui.actionTile_windows.triggered.connect(self.__tilewindows)
+
         ui.actionHelp.triggered.connect(self.menuShowHelp)
         ui.actionAbout_APES.triggered.connect(self.menu_about)
 
@@ -1197,6 +1199,9 @@ class MainWindow(QtWidgets.QMainWindow):
         items = infodict.get(type(widget), [])
         for item in all_items:
             item.setEnabled(item in items)
+
+    def __tilewindows(self):
+        self.ui.mdiArea.tileSubWindows()
 
     def __unlabellowerthan(self, threshold):
         self.canvas.unlabellowerthan = threshold
