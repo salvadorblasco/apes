@@ -91,10 +91,11 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
     def plot_fitting(self, widgets, parameters):
         self.clear()
         for col, widg in enumerate(widgets):
-            plot = self.addPlot(row=0, col=col)
+            data_plot = self.addPlot(row=0, col=col)
+            resi_plot = self.addPlot(row=1, col=col)
             match widg:
                 case EmfWidget():
-                    self.plot_emf(plot, widg)
+                    self.plot_emf(widg, data_plot, resi_plot)
                 case _:
                     raise TypeError
                     
@@ -115,7 +116,7 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         """
         ...
 
-    def plot_emf(self, plot, widget, fitdata={}):
+    def plot_emf(self, widget, data_plot, resi_plot, fitdata={}):
         """Plot potentiometry fit data.
 
         This function plots all the information for a potentiometry fit. It
