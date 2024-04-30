@@ -142,8 +142,8 @@ class EmfWidget(datawidget.DataWidget):
     def active_species(self, activ):
         # TODO check input
         # TODO reshape table if needed
-        libqt.fill_row_comboindex(self.ui.table_params, self.__num2it(activ),
-                                  self._model.labels, row=4)
+        libqt.fill_row_comboindex(self.ui.table_params, activ, #self.__num2it(activ),
+                                  tuple(self._model.extended_labels), row=4)
 
     # @property
     # def amount_flags(self):
@@ -223,7 +223,7 @@ class EmfWidget(datawidget.DataWidget):
     def emf0_error(self, erremf0):
         # TODO check input
         # TODO reshape table if needed
-        libqt.fill_row(self.ui.table_params, row=2, data=self.__num2it(erremf0))
+        libqt.fill_row(self.ui.table_params, row=2, data=erremf0) # self.__num2it(erremf0))
 
     @property
     def emf0(self):
@@ -233,10 +233,9 @@ class EmfWidget(datawidget.DataWidget):
 
     @emf0.setter
     def emf0(self, emf0):
-        # TODO check input
-        # if self.nelectrodes != len(emf0):
-        #     SELF._NELECTRS_CHANGED(SELF, LEN(EMF0))
-        libqt.fill_row(self.ui.table_params, row=0, data=self.__num2it(emf0))
+        self.ui.table_params.setColumnCount(len(emf0))
+        self.nelectrodes = len(emf0)
+        libqt.fill_row(self.ui.table_params, row=0, data=emf0)  #self.__num2it(emf0))
 
     @property
     def emf0_flags(self):
@@ -251,6 +250,10 @@ class EmfWidget(datawidget.DataWidget):
     def slope(self):
         stream = libqt.iter_row_text(self.ui.table_params, row=5)
         return tuple(float(i) for i in stream)
+
+    @slope.setter
+    def slope(self, values):
+        libqt.fill_row(self.ui.table_params, row=5, data=values)
 
     @property
     def slope_flags(self):
@@ -330,8 +333,10 @@ class EmfWidget(datawidget.DataWidget):
     def nelectrons(self, n):
         # TODO check input
         # TODO reshape table if needed
-        libaux.assert_type(int, *n)
-        libqt.fill_column(self.ui.table_data, col=3, data=self.__num2it(n))
+        # libaux.assert_type(int, *n)
+        # breakpoint()
+        libqt.fill_row(self.ui.table_params, row=3, data=n)
+        # libqt.fill_column(self.ui.table_data, col=3, data=self.__num2it(n))
 
     @property
     def npoints(self):

@@ -36,7 +36,7 @@ from calorwidget import CalorWidget
 from specwidget import SpecWidget
 from nmrwidget import NmrWidget
 from otherwidgets import OutputWidget, ExternalDataWidget, IonicWidget, TitrationBaseWidget
-from simulationwidgets import SpeciationWidget, TitrationWidget
+from simulationwidgets import SpeciationWidget, TitrationWidget, SimulationData
 from project import Project
 from tabwidget import TabWidget
 from tabmodels import TabModelWidget
@@ -85,8 +85,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/znedta.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/kk.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
+        _debug_fname_ = '../data/lmh.xml'
         # _debug_fname_ = '../data/phosphate.xml'
-        _debug_fname_ = '../data/hexaprotic.xml'
+        # _debug_fname_ = '../data/hexaprotic.xml'
         # _debug_fname_ = '../data/hdtc.xml'
         # _debug_fname_ = '../data/hpytren4q.xml'
         # _debug_fname_ = '../data/distri_cudtc.xml'
@@ -108,10 +109,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.tab_main.add_nmr()
         # self.ui.tab_main.add_ionic()
         # self.ui.tab_main.import_txtspectrum('./spec1.txt')
-        self.ui.mdiArea.activateNextSubWindow()
-        self.ui.mdiArea.activateNextSubWindow()
-        self.ui.mdiArea.activateNextSubWindow()
-        self.go()
+        # self.ui.mdiArea.activateNextSubWindow()
+        # self.ui.mdiArea.activateNextSubWindow()
+        # self.ui.mdiArea.activateNextSubWindow()
+        # self.go()
         # self._manual_fitting()
         # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
@@ -125,17 +126,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def go(self):
         'Start calculations.'
         current_widget = self.ui.mdiArea.activeSubWindow().widget()
-        match current_widget:
-            case SpeciationWidget():
-                current_widget.calc_free_concentration()
-                self.canvas.plot_speciation(current_widget)
-            case TitrationWidget():
-                raise NotImplementedError
-            case TabWidget():
-                current_widget.fitting(self.option)
-                current_widget.plot(self.canvas)
-            case _:
-                raise ValueError
+        if isinstance(current_widget, SimulationData):
+            current_widget.calc_free_concentration()
+            self.canvas.plot_speciation(current_widget)
+        elif isinstance(current_widget, TabWidget):
+            current_widget.fitting(self.option)
+            current_widget.plot(self.canvas)
+        else:
+            raise ValueError
 
     def iterate(self):
         "Perform only one iteration."
@@ -209,8 +207,8 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             raise RuntimeError
 
-        self.ui.tab_main.clear()
-        self.newModel()
+        self.ui.mdiArea.closeAllSubWindows()
+        self.new_model()
         self._model_connections(renew=True)
         self._fmode = consts.FM_NONE
         self.__notifymode()
@@ -428,12 +426,13 @@ class MainWindow(QtWidgets.QMainWindow):
             :class:`TitrationWidget`: the newly created widget.
         '''
         widget = TitrationWidget(self.modelwidget)
-        self._newtab('Titration', widget, self.ui.actionNewTitrSim)
+        window = self.ui.mdiArea.addSubWindow(widget)
+        window.setWindowTitle("Titration simulation")
 
-        # connect w.labelsChanged con model.updateLabel
-        # w.labelsChanged.connect(self.modelwidget.updateLabel)
         self.modelwidget.componentAdded.connect(widget.add_component)
         self.modelwidget.labelsChanged.connect(widget.updateLabel)
+
+        window.show()
         return widget
 
     def new_fitting_group(self):
@@ -1101,7 +1100,8 @@ class MainWindow(QtWidgets.QMainWindow):
         libio.saveXML(self, filename)
 
     def __concentration_matrix(self):
-        current_widget = self.ui.tab_main.currentWidget()
+        current_window = self.ui.mdiArea.activeSubWindow()
+        current_widget = current_window.widget()
         fail_msg = 'No concentration values available'
         if not hasattr(current_widget, 'free_concentration'):
             self.message(fail_msg)

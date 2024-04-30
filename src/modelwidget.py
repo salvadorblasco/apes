@@ -137,7 +137,7 @@ class ModelWidget(QtWidgets.QWidget):
         """
         self.__models = []
         # self.__iscalori = False
-        self.ui.table_model.clear()
+        self.ui.table_model.clearContents()
         self.ui.table_model.setRowCount(n_equils)
         self.ui.table_model.setColumnCount(3 + n_species)
         # self.__iscalori = False
@@ -268,6 +268,7 @@ class ModelWidget(QtWidgets.QWidget):
         with libqt.signals_blocked(self.ui.table_model):
             table.setRowCount(rows)
             table.setColumnCount(columns)
+            table.clearContents()
             libqt.replace_nones(table)
             self.__set_horizontal_headers()
 
@@ -391,8 +392,8 @@ class ModelWidget(QtWidgets.QWidget):
         "Update table header when reagent labels change."
         if self.number_components != len(labels):
             columns = len(labels) + 3
-            if self.isCalori():
-                columns += 5
+            # if self.isCalori():
+            #     columns += 5
             self.ui.table_model.setColumnCount(columns)
         header_labels = labels + ['Value', 'Error', 'Flag']
         self.ui.table_model.setHorizontalHeaderLabels(header_labels)

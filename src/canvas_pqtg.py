@@ -90,15 +90,33 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
 
     def plot_fitting(self, widgets, parameters):
         self.clear()
+
+        plt_data = []
+        plt_resi = []
+
         for col, widg in enumerate(widgets):
             data_plot = self.addPlot(row=0, col=col)
+            data_plot.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Expanding)
+            data_plot.setLabel('bottom', 'titre / mL')
+            data_plot.showAxes('both')
+
             resi_plot = self.addPlot(row=1, col=col)
+            resi_plot.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Minimum)
+            resi_plot.showAxes('both')
+
             match widg:
                 case EmfWidget():
                     self.plot_emf(widg, data_plot, resi_plot)
                 case _:
                     raise TypeError
                     
+        pltr = win.addPlot(row=2, col=0, colspan=2)
+        bar = pg.BarGraphItem(x=np.arange(10), height=np.exp(-np.linspace(0.1, 10.0, 10)), width=1.0)
+        pltr.addItem(bar)
+        pltr.setLabel('bottom', 'iteration')
+        pltr.setLabel('left', 'sum(χ²)')
+        pltr.showAxes('both')
+        pltr.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Minimum)
 
     def plot_calor(self, widget):
         """Plot calorimetry fit.

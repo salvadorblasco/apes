@@ -276,20 +276,25 @@ def loadEmfXML(widget, xmle):
     _checkXML(xmle, 'potentiometricdata')
 
     with libqt.signals_blocked(widget):
-        widget.emf0 = _read_seq(xmle, 'emf0')
-        widget.nelectrons = _read_seq(xmle, 'n', dtype=int)
+        widget.ui.table_params.clearContents()
+        # IMPORTANT: set always first emf0 in order fot th widget to reshape the table
+        widget.emf0 = tuple(_read_seq(xmle, 'emf0'))
+        widget.slope = tuple(_read_seq(xmle, 'slope'))
+        widget.slope_flags = tuple(_read_seq(xmle, 'slopeflags', dtype=int))
+        widget.nelectrons = tuple(_read_seq(xmle, 'n', dtype=int))
         widget.emf0_error = _read_seq(xmle, 'erroremf0')
         widget.active_species = _read_seq(xmle, 'active', dtype=int)
-        widget.flags_emf0 = _read_seq(xmle, 'emf0flags', dtype=int)
+        widget.emf0_flags = tuple(_read_seq(xmle, 'emf0flags', dtype=int))
 
         nelectrod = widget.nelectrodes
-        flat_emf = tuple(_read_seq(xmle, 'emfread'))
 
         widget.titration = xmle.attrib['titration']
 
         exppoints = widget.titration.n_points
 
-        emf = np.array(flat_emf).reshape((exppoints, nelectrod))
+        # flat_emf = tuple(_read_seq(xmle, 'emfread'))
+        # emf = np.array(flat_emf).reshape(exppoints, nelectrod)
+        emf = np.fromiter(_read_seq(xmle, 'emfread'), dtype=float).reshape(exppoints, nelectrod)
         widget.nelectrodes = nelectrod
         widget.npoints = exppoints
 

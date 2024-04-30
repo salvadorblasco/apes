@@ -497,7 +497,7 @@ class TitrationWidget(SimulationData):
         """
         libqt.fill_column(self.ui.table_titration, data=buret, col=2)
 
-    def _recalc_free_concentration(self):
+    def calc_free_concentration(self):
         'The :term:`free concentrations array`'
         beta = np.array(self._model.beta)
         stoich = np.array(self._model.stoich)
