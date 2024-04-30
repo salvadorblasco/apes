@@ -14,6 +14,7 @@ import numpy as np
 __version__ = '0.1'
 
 
+# DEPRECATE -> use typing
 def assert_array(*args):
     """Check that all arguments provided are arrays.
 
@@ -184,73 +185,75 @@ def assert_sequence(*args):
 #             return default_values
 
 
-def unravel(x, flags):
-    """Unravel data according to flags provided.
+# DEPRECATE. Use bridge instead
+# def unravel(x, flags):
+#     """Unravel data according to flags provided.
+# 
+#     This routine takes an array of data and an array of flags of the same
+#     length and returns another array with only the independet variables.
+# 
+#     Parameters:
+#         x (iterable): the original data values
+#         flags (iterable): the flags indicating how to update x.
+#             Values must int. Accepted values are
+# 
+#             * 0: value is to be kept constant
+#             * 1: value is to be refined and the corresponding value from x
+#               will be substituted by the corresponding value from y.
+#             * >2: value is restrained. All places with the same number are
+#               refined together and the ratio between them is maintained.
+# 
+#     Returns:
+#         generator: Values of **x** processed according to **flags**.
+#     """
+#     constr_list = []
+#     for i, f in zip(x, flags):
+#         if f == 1:
+#             yield i
+#         if f > 1:
+#             if f not in constr_list:
+#                 yield i
+#                 constr_list.append(f)
 
-    This routine takes an array of data and an array of flags of the same
-    length and returns another array with only the independet variables.
 
-    Parameters:
-        x (iterable): the original data values
-        flags (iterable): the flags indicating how to update x.
-            Values must int. Accepted values are
-
-            * 0: value is to be kept constant
-            * 1: value is to be refined and the corresponding value from x
-              will be substituted by the corresponding value from y.
-            * >2: value is restrained. All places with the same number are
-              refined together and the ratio between them is maintained.
-
-    Returns:
-        generator: Values of **x** processed according to **flags**.
-    """
-    constr_list = []
-    for i, f in zip(x, flags):
-        if f == 1:
-            yield i
-        if f > 1:
-            if f not in constr_list:
-                yield i
-                constr_list.append(f)
-
-
-def ravel(x, y, flags):
-    """Update values from one iterable with other iterable according to flags.
-
-    This function does the opposite action than :func:`unravel`.
-
-    Parameters:
-        x (iterable): the original array values
-        y (iterable): the updated values to be plugged into *x*.
-        flags (sequence): flags indicating how to update *x* with *y*. Accepted
-            values are:
-
-            * 0: value is to be kept constant
-            * 1: value is to be refined and the corresponding value from x
-              will be substituted by the corresponding value from y.
-            * >2: value is restrained. All places with the same number are
-              refined together and the ratio between them is maintained.
-
-    Yields:
-        float: Raveled values.
-    """
-    # indices of the reference parameter for constraining
-    ref_index = {i: flags.index(i) for i in range(2, 1+max(flags))}
-    ref_val = {}
-
-    ity = iter(y)
-    for i, f in enumerate(flags):
-        if f == 1:                      # refinable: return new value
-            yield next(ity)
-        elif f == 0:                    # constant: return old value
-            yield x[i]
-        else:                           # constrained: return or compute
-            if i == ref_index[f]:
-                val = next(ity)         # reference value: return new value
-                ref_val[f] = val        # and store ref value
-                yield val
-            else:                       # other: compute proportional value
-                yield x[i]*ref_val[f]/x[ref_index[f]]
+# DEPRECATE. Use bridge instead
+# def ravel(x, y, flags):
+#     """Update values from one iterable with other iterable according to flags.
+# 
+#     This function does the opposite action than :func:`unravel`.
+# 
+#     Parameters:
+#         x (iterable): the original array values
+#         y (iterable): the updated values to be plugged into *x*.
+#         flags (sequence): flags indicating how to update *x* with *y*. Accepted
+#             values are:
+# 
+#             * 0: value is to be kept constant
+#             * 1: value is to be refined and the corresponding value from x
+#               will be substituted by the corresponding value from y.
+#             * >2: value is restrained. All places with the same number are
+#               refined together and the ratio between them is maintained.
+# 
+#     Yields:
+#         float: Raveled values.
+#     """
+#     # indices of the reference parameter for constraining
+#     ref_index = {i: flags.index(i) for i in range(2, 1+max(flags))}
+#     ref_val = {}
+# 
+#     ity = iter(y)
+#     for i, f in enumerate(flags):
+#         if f == 1:                      # refinable: return new value
+#             yield next(ity)
+#         elif f == 0:                    # constant: return old value
+#             yield x[i]
+#         else:                           # constrained: return or compute
+#             if i == ref_index[f]:
+#                 val = next(ity)         # reference value: return new value
+#                 ref_val[f] = val        # and store ref value
+#                 yield val
+#             else:                       # other: compute proportional value
+#                 yield x[i]*ref_val[f]/x[ref_index[f]]
 
 
 # TODO rewrite this to do more stuff

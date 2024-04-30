@@ -73,58 +73,47 @@ class LibAuxTests(unittest.TestCase):
     def test_assert_BPT_consistency(self):
         pass
 
-    @unittest.skip('not implemented')
-    def test_assert_sequence(self):
-        pass
+    # def test_unravel(self):
+    #     x = ('a', 'b', 'c', 'd')
+    #     test_flags = {
+    #         (1,1,1,1): 'abcd',
+    #         (0,1,1,1): 'bcd',
+    #         (1,1,2,2): 'abc',
+    #         (0,0,0,0): ''
+    #     }
 
-    @unittest.skip('not implemented')
-    def test_setkw(self):
-        pass
+    #     for flags, result in test_flags.items():
+    #         msg = "".join(map(str, flags))
+    #         with self.subTest(msg):
+    #             retv = "".join(libaux.unravel(x, flags))
+    #             self.assertEqual(retv, result)
 
-    @unittest.skip('not implemented')
-    def test_setkwpop(self):
-        pass
+    # def test_ravel(self):
+    #     x = ('a', 'b', 'c', 'd')
+    #     y = ('A', 'B', 'C', 'D')
+    #     test_flags = {
+    #         (1,1,1,1): 'ABCD',
+    #         (0,1,1,1): 'aABC',
+    #         (0,0,0,0): 'abcd'
+    #     }
+    #     for flags, result in test_flags.items():
+    #         msg = "".join(map(str, flags))
+    #         with self.subTest(msg):
+    #             retv = "".join(libaux.ravel(x, y, flags))
+    #             self.assertEqual(retv, result)
 
-    def test_unravel(self):
-        x = ('a', 'b', 'c', 'd')
-        test_flags = {
-            (1,1,1,1): 'abcd',
-            (0,1,1,1): 'bcd',
-            (1,1,2,2): 'abc',
-            (0,0,0,0): ''
-        }
-
-        for flags, result in test_flags.items():
-            msg = "".join(map(str, flags))
-            with self.subTest(msg):
-                retv = "".join(libaux.unravel(x, flags))
-                self.assertEqual(retv, result)
-
-    def test_ravel(self):
-        x = ('a', 'b', 'c', 'd')
-        y = ('A', 'B', 'C', 'D')
-        test_flags = {
-            (1,1,1,1): 'ABCD',
-            (0,1,1,1): 'aABC',
-            (0,0,0,0): 'abcd'
-        }
-        for flags, result in test_flags.items():
-            msg = "".join(map(str, flags))
-            with self.subTest(msg):
-                retv = "".join(libaux.ravel(x, y, flags))
-                self.assertEqual(retv, result)
-
-        x = (1, 2, 3, 4)
-        y = (4, 8)
-        flags = (0, 2, 0, 2)
-        result = (1, 4, 3, 8)
-        out = tuple(libaux.ravel(x, y, flags))
-        self.assertTupleEqual(out, result)
+    #     x = (1, 2, 3, 4)
+    #     y = (4, 8)
+    #     flags = (0, 2, 0, 2)
+    #     result = (1, 4, 3, 8)
+    #     out = tuple(libaux.ravel(x, y, flags))
+    #     self.assertTupleEqual(out, result)
 
     @unittest.skip('not implemented')
     def test_check_refine_flags(self):
         pass
 
+    @unittest.skip('deprecate')
     def test_count_flags(self):
         test_list = {(0,0,1,1,0,1): (3, 3, {}),
                      (0,0,0,0,0,0): (6, 0, {}),

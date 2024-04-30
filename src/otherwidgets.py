@@ -678,7 +678,7 @@ class TitrationBaseWidget(QtWidgets.QWidget):
             float: the value of the titre.
         """
         if self.is_titre_implicit():
-            return libaux.calc_titre(self.final_volume - self.starting_volume, self.n_points)
+            return tuple(libaux.calc_titre(self.final_volume - self.starting_volume, self.n_points))
         else:
             return self._explicit_titre
 
