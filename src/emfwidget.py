@@ -24,7 +24,7 @@ class EmfWidget(datawidget.DataWidget):
     (2) table_params and (3) table_data.
     """
 
-    def __init__(self, model, parent):
+    def __init__(self, model, parent=None):
         """Initiate widget."""
         super().__init__(model)
         self.parent = parent

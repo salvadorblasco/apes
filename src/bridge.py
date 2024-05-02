@@ -44,6 +44,7 @@ import collections
 from dataclasses import dataclass, field
 import math
 import typing
+from functools import reduce, partial
 
 import numpy as np
 from numpy.typing import NDArray
@@ -61,6 +62,9 @@ from emfwidget import EmfWidget
 from nmrwidget import NmrWidget
 from specwidget import SpecWidget
 from otherwidgets import TitrationBaseWidget
+
+
+prod_tuple = partial(reduce, lambda x, y: x*y)
 
 
 class Slices():
@@ -130,9 +134,11 @@ class Bridge():
                     if jpart == "beta":
                         eactiv = data.electroactive
                         full_dl = data.titration.dlcdlbeta
+                        part_dl = full_dl[:,eactiv,:][...,beta_refine]
+                        flatten_shape = (prod_tuple(part_dl.shape[:-1]), part_dl.shape[-1])
+                        flat_dl = np.reshape(part_dl, flatten_shape)
                         # TODO replace slope=1.0 with data['slope']
-                        part_dl = np.squeeze(full_dl[:,eactiv,:][...,beta_refine])
-                        jac_partial = libemf.emf_jac_beta(part_dl, slope=1.0, temperature=temp)
+                        jac_partial = libemf.emf_jac_beta(flat_dl, slope=1.0, temperature=temp)
                     elif jpart == (dataid, 'emf0'):
                         jac_partial = libemf.emf_jac_e0(_size(row_slice, col_slice))
                     elif jpart == (dataid, 'init'):

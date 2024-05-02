@@ -27,6 +27,7 @@ class TestBridge(unittest.TestCase):
         self.assertTupleEqual(self.bridge.residual.shape, (89, ))
 
     def test_titrations(self):
+        # breakpoint()
         jac, res = self.bridge.build_matrices()
 
         for cc in self.params.titrations.values():
@@ -76,6 +77,57 @@ class TestParameters(unittest.TestCase):
             self.assertIn(id(widget), self.b.data)
 
 
+class TestParameters2(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def setUp(self):
+        self.params, self.data = load_lmh()
+
+
+def load_lmh():
+    import data_lmh
+
+    from modelwidget import ModelWidget, ModelData
+    model = ModelWidget()
+    mdata = ModelData(n_equils=data_lmh.N_EQUILS, n_species=data_lmh.N_COMPON)
+    mdata.stoich = data_lmh.stoich
+    mdata.const = data_lmh.logbeta
+    mdata.const_flags = 6*[consts.RF_CONSTANT] + 3*[consts.RF_REFINE] + [consts.RF_CONSTANT]
+    model.append(mdata)
+    model.setCurrentModel(-1)
+
+    from otherwidgets import TitrationBaseWidget
+    titr1 = TitrationBaseWidget(model)
+    titr1.name = 'Titration 1'
+    titr1.initial_amount = data_lmh.t1_init
+    titr1.buret = data_lmh.t1_buret
+    titr1.starting_volume = data_lmh.t1_startingvol
+    titr1.final_volume = data_lmh.t1_endvol
+
+    titr2 = TitrationBaseWidget(model)
+    titr2.name = 'Titration 2'
+    titr2.initial_amount = data_lmh.t2_init
+    titr2.buret = data_lmh.t2_buret
+    titr2.starting_volume = data_lmh.t2_startingvol
+    titr2.final_volume = data_lmh.t2_endvol
+
+    from emfwidget import EmfWidget
+    emfw1 = EmfWidget(model)
+    emfw1.emf0 = data_lmh.t1_emf0
+    emfw1.emf = data_lmh.t1_emf
+    emfw1._titrationid = id(titr1)
+
+    emfw2 = EmfWidget(model)
+    emfw2.emf0 = data_lmh.t2_emf0
+    emfw2.emf = data_lmh.t2_emf
+    emfw2._titrationid = id(titr2)
+
+    from bridge import Parameters
+    b = Parameters(model, [titr1, titr2], [emfw1, emfw2])
+    return b, data_lmh
+
+
 def load_hexaprotic():
     from modelwidget import ModelWidget, ModelData
     model = ModelWidget()
@@ -98,7 +150,7 @@ def load_hexaprotic():
     emfw = EmfWidget(model)
     emfw.emf0 = hexaprotic.emf0
     emfw.emf = hexaprotic.emf
-    emfw._titrationid = id(titr)
+    emfw.titration = titr
 
     from bridge import Parameters
     b = Parameters(model, [titr], [emfw])

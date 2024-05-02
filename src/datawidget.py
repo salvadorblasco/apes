@@ -166,11 +166,11 @@ class DataWidget(QtGui.QWidget):
         return self._titration
 
     @titration.setter
-    def titration(self, titr):
-        if type(titr) == TitrationBaseWidget:
+    def titration(self, titrationwidget):
+        if type(titrationwidget) == TitrationBaseWidget:
             self._titration = titrationwidget
         else:
-            self._titration = self.parent.find_titration_byname(titr)
+            self._titration = self.parent.find_titration_byname(titrationwidget)
 
     @property
     def use(self):

@@ -20,8 +20,8 @@ stoichx = np.array([[1, 0],
 
 logbeta = np.array([10.00, 18.00, 24.00, 28.00, 31.00, 33.00, -13.77])
 
-emf0 = 405.0
-slope = -59.16
+emf0 =  np.array([405.0])
+slope = np.array([-59.16])
 v0 = 25.0
 
 init = np.array([0.125, 0.75])
