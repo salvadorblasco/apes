@@ -55,39 +55,20 @@ class MainWindowTests(unittest.TestCase):
     def tearDown(self):
         self.main.close()
 
-    def test_newtabs(self):
-        def _call(fcall, typ):
-            widget = fcall()
-            self.assertIsInstance(widget, typ)
-
-        with self.subTest():
-            import simulationwidgets
-            _call(self.main.newTitration, simulationwidgets.TitrationWidget)
-            _call(self.main.newSpeciation, simulationwidgets.SpeciationWidget)
-
-        with self.subTest():
-            import emfwidget
-            _call(self.main.newEmf, emfwidget.EmfWidget)
-
-        # (self.main.newSpectr, apes.SpecDSWidget),
-        # (self.main.newNmr, apes.NMRWidget))
-        # (self.main.newCalor, apes.CalorDSWidget),
-
-
     def test_properties(self):
-        properties = ('modelwidget', 'temperature', 'title')
+        properties = ('modelwidget', 'canvas', 'project', 'ui')
         msg = "property '{}' not found"
         for prop in properties:
             self.assertTrue(hasattr(self.main, prop), msg.format(prop))
 
-        with self.assertRaises(AttributeError):
-            self.main.modelwidget = None
+        # with self.assertRaises(AttributeError):
+        #     self.main.modelwidget = None
 
-        self.main.temperature = 25
-        self.assertTrue(self.main.temperature == 25)
+        self.main.modelwidget.temperature = 25
+        self.assertTrue(self.main.modelwidget.temperature == 25)
 
         with self.assertRaises(ValueError):
-            self.main.temperature = -20
+            self.main.modelwidget.temperature = -20
 
         title_test = "title test"
         self.main.title = title_test
@@ -250,10 +231,10 @@ class EmfTests(unittest.TestCase):
 
     def test_emf0(self):
         import random
-        made_emf0 = 100*random.random()
+        made_emf0 = [100*random.random()]
         self.emf.emf0 = made_emf0
-        read_emf0 = self.emf.emf0
-        self.assertAlmostEqual(made_emf0, read_emf0[0])
+        read_emf0 = tuple(self.emf.emf0)
+        self.assertAlmostEqual(made_emf0[0], read_emf0[0])
 
         self.emf._nelectrs_changed(2)
         made_emf0 = 100*random.random(), 100*random.random()

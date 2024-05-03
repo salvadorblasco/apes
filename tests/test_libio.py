@@ -63,7 +63,7 @@ class TestLoad(unittest.TestCase):
         libio.loadXML(mainw, fname)
 
         self.assertListEqual(mainw.modelwidget.labels, ['L', 'H'])
-        self.assertEqual(mainw.temperature, 298.15)
+        self.assertEqual(mainw.modelwidget.temperature, 298.15)
         metadata = {
             'author': 'author 1',
             'title': 'my title',

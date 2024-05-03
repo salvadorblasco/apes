@@ -607,11 +607,10 @@ class TitrationWidget(SimulationData):
         """
         # Warning: when this routine is invoked usually self.model has changed.
         # do not use self.model.number_components
-        table = self._maintable
-        number_components = table.rowCount()
+        number_components = self._maintable.rowCount()
         insert = libqt.clamp_range(position, number_components)
 
-        with libqt.table_locked(table):
+        with libqt.signals_blocked(self._maintable) as table:
             table.insertRow(insert)
             for col in range(table.columnCount()):
                 self._set_main_table_defaults(insert, col)
