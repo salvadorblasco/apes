@@ -61,7 +61,7 @@ def load_hexaprotic():
     emfw = EmfWidget(model)
     emfw.emf0 = hexaprotic.emf0
     emfw.emf = hexaprotic.emf
-    emfw._titrationid = id(titr)
+    emfw.titration = titr
 
     from bridge import Parameters
     b = Parameters(model, [titr], [emfw])
