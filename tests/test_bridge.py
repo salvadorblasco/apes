@@ -11,11 +11,15 @@ sys.path.append('../src')
 
 import hexaprotic
 import consts
+# import libeq.consol
 
 
 class TestBridge(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.pconsol = unittest.mock.patch("libeq.consol.consol", new=unittest.mock.MagicMock(return_value=hexaprotic.free_concentration))
+        self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess", new=unittest.mock.MagicMock(return_value=hexaprotic.free_concentration))
 
     def setUp(self):
         from bridge import Bridge
@@ -27,7 +31,6 @@ class TestBridge(unittest.TestCase):
         self.assertTupleEqual(self.bridge.residual.shape, (89, ))
 
     def test_titrations(self):
-        # breakpoint()
         jac, res = self.bridge.build_matrices()
 
         for cc in self.params.titrations.values():
@@ -35,11 +38,14 @@ class TestBridge(unittest.TestCase):
             np.testing.assert_allclose(cc.amatrix, hexaprotic.matrix_a, atol=0.2)
 
     def test_matrices(self):
-        import libeq.consol
-        libeq.consol.consol = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
-        libeq.consol.initial_guess = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
-    
+        # import libeq.consol
+        # libeq.consol.consol = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
+        # libeq.consol.initial_guess = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
+        self.pconsol.start()   
+        self.pinitgu.start()
         jac, res = self.bridge.build_matrices()
+        self.pconsol.stop()   
+        self.pinitgu.stop()
 
         np.testing.assert_allclose(res, hexaprotic.residuals, atol=0.1)
         np.testing.assert_allclose(jac, hexaprotic.emf_jac, atol=0.001)
@@ -57,6 +63,13 @@ class TestBridge2(unittest.TestCase):
     def test_dimmensions(self):
         self.assertTupleEqual(self.bridge.jacobian.shape, (404, 3))
         self.assertTupleEqual(self.bridge.residual.shape, (404, ))
+
+    def test_titrations(self):
+        # breakpoint()
+        jac, res = self.bridge.build_matrices()
+
+        for titr, creal in zip(self.params.titrations.values(), (self.data.t1_freeconc, self.data.t2_freeconc)):
+            np.testing.assert_allclose(titr.free_conc, creal, atol=5e-5)
 
 
 class TestParameters(unittest.TestCase):
@@ -111,6 +124,7 @@ def load_lmh():
     titr1.buret = data_lmh.t1_buret
     titr1.starting_volume = data_lmh.t1_startingvol
     titr1.final_volume = data_lmh.t1_endvol
+    titr1.n_points = 101
 
     titr2 = TitrationBaseWidget(model)
     titr2.name = 'Titration 2'
@@ -118,6 +132,7 @@ def load_lmh():
     titr2.buret = data_lmh.t2_buret
     titr2.starting_volume = data_lmh.t2_startingvol
     titr2.final_volume = data_lmh.t2_endvol
+    titr2.n_points = 101
 
     from emfwidget import EmfWidget
     emfw1 = EmfWidget(model)
@@ -141,7 +156,7 @@ def load_lmh():
     emfw2.active_species = (1, 2)
     emfw2.emf0_flags = (0,0)
     emfw2.titration = titr2
-    emfw2.emf = data_lmh.t2_emf.T
+    emfw2.emf = data_lmh.t2_emf
 
     from bridge import Parameters
     b = Parameters(model, [titr1, titr2], [emfw1, emfw2])
@@ -179,5 +194,6 @@ def load_hexaprotic():
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
+
 
     unittest.main()
