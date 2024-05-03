@@ -69,9 +69,10 @@ class TestLoad(unittest.TestCase):
             'title': 'my title',
             'comments': 'comment 1',
             'created': '07/02/2016 15:25',
-            'last modified': '07/02/2016 15:25'
+            'last_modified': '07/02/2016 15:25'
         }
-        self.assertDictEqual(mainw.docproperties, metadata)
+        for key, val in metadata.items():
+            self.assertEqual(getattr(mainw.project, key), val)
 
     def test_load_model(self):
         text = """<model title="title example" energy_units='kcal/mol'>
