@@ -193,8 +193,8 @@ class EmfWidget(datawidget.DataWidget):
             libqt.fill_column(self.ui.table_data, 1, emf,
                               formatting="{:.3f}")
         else:
-            nrows = len(emf[0]) + 1
-            ncols = len(emf)
+            ncols = 1+ len(emf[0])
+            nrows = len(emf)
             self.__resize_emf_table(nrows, ncols)
             libqt.array2tab(self.ui.table_data, emf, col0=1,
                             formatting="{:.3f}")
@@ -233,8 +233,9 @@ class EmfWidget(datawidget.DataWidget):
 
     @emf0.setter
     def emf0(self, emf0):
-        self.ui.table_params.setColumnCount(len(emf0))
         self.nelectrodes = len(emf0)
+        self.ui.table_params.setColumnCount(self.nelectrodes)
+        self.ui.table_data.setColumnCount(1+self.nelectrodes)
         libqt.fill_row(self.ui.table_params, row=0, data=emf0)  #self.__num2it(emf0))
 
     @property

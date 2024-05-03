@@ -45,6 +45,20 @@ class TestBridge(unittest.TestCase):
         np.testing.assert_allclose(jac, hexaprotic.emf_jac, atol=0.001)
 
 
+class TestBridge2(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def setUp(self):
+        from bridge import Bridge
+        self.params, self.data = load_lmh()
+        self.bridge = Bridge(self.params)
+
+    def test_dimmensions(self):
+        self.assertTupleEqual(self.bridge.jacobian.shape, (404, 3))
+        self.assertTupleEqual(self.bridge.residual.shape, (404, ))
+
+
 class TestParameters(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,19 +91,12 @@ class TestParameters(unittest.TestCase):
             self.assertIn(id(widget), self.b.data)
 
 
-class TestParameters2(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def setUp(self):
-        self.params, self.data = load_lmh()
-
-
 def load_lmh():
     import data_lmh
 
     from modelwidget import ModelWidget, ModelData
     model = ModelWidget()
+    model.clear(n_equils=data_lmh.N_EQUILS, n_species=data_lmh.N_COMPON)
     mdata = ModelData(n_equils=data_lmh.N_EQUILS, n_species=data_lmh.N_COMPON)
     mdata.stoich = data_lmh.stoich
     mdata.const = data_lmh.logbeta
@@ -115,13 +122,26 @@ def load_lmh():
     from emfwidget import EmfWidget
     emfw1 = EmfWidget(model)
     emfw1.emf0 = data_lmh.t1_emf0
+    emfw1.slope = (1.0, 1.0)
+    emfw1.slope_flags = (0, 0)
+    emfw1.nelectrons = (1, 1)
+    emfw1.emf0_error = (0.01,0.01)
+    emfw1.active_species = (1, 2)
+    emfw1.emf0_flags = (0,0)
+    emfw1.titration = titr1
+    emfw1.titre = titr1.titre
     emfw1.emf = data_lmh.t1_emf
-    emfw1._titrationid = id(titr1)
 
     emfw2 = EmfWidget(model)
     emfw2.emf0 = data_lmh.t2_emf0
-    emfw2.emf = data_lmh.t2_emf
-    emfw2._titrationid = id(titr2)
+    emfw2.slope = (1.0, 1.0)
+    emfw2.slope_flags = (0, 0)
+    emfw2.nelectrons = (1, 1)
+    emfw2.emf0_error = (0.01,0.01)
+    emfw2.active_species = (1, 2)
+    emfw2.emf0_flags = (0,0)
+    emfw2.titration = titr2
+    emfw2.emf = data_lmh.t2_emf.T
 
     from bridge import Parameters
     b = Parameters(model, [titr1, titr2], [emfw1, emfw2])
