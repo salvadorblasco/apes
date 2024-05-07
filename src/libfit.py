@@ -115,7 +115,7 @@ def levenberg_marquardt(bridge, **kwargs):
         else:
             advance += 1
             # report_buffer.write(report.iteration(new_x, dx))
-            # f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}  " "\n")
+            print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}, {dx=}")
             # print('\tdecreasing')
             bridge.accept_values()
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)

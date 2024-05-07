@@ -7,9 +7,10 @@ import sys
 import numpy as np
 from PyQt5 import QtWidgets
 
+import _syntheticdata
+
 sys.path.append('../src')
 
-import hexaprotic
 import consts
 # import libeq.consol
 
@@ -18,12 +19,13 @@ class TestBridge(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.pconsol = unittest.mock.patch("libeq.consol.consol", new=unittest.mock.MagicMock(return_value=hexaprotic.free_concentration))
-        self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess", new=unittest.mock.MagicMock(return_value=hexaprotic.free_concentration))
+        self.data, self.params = _syntheticdata.load_hexaprotic()
+
+        self.pconsol = unittest.mock.patch("libeq.consol.consol", new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
+        self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess", new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
 
     def setUp(self):
         from bridge import Bridge
-        self.params = load_hexaprotic()
         self.bridge = Bridge(self.params)
 
     def test_dimmensions(self):
@@ -34,8 +36,8 @@ class TestBridge(unittest.TestCase):
         jac, res = self.bridge.build_matrices()
 
         for cc in self.params.titrations.values():
-            np.testing.assert_allclose(cc.free_conc, hexaprotic.free_concentration, atol=4e-3)
-            np.testing.assert_allclose(cc.amatrix, hexaprotic.matrix_a, atol=0.2)
+            np.testing.assert_allclose(cc.free_conc, self.data.free_concentration, atol=4e-3)
+            np.testing.assert_allclose(cc.amatrix, self.data.matrix_a, atol=0.2)
 
     def test_matrices(self):
         # import libeq.consol
@@ -47,8 +49,8 @@ class TestBridge(unittest.TestCase):
         self.pconsol.stop()   
         self.pinitgu.stop()
 
-        np.testing.assert_allclose(res, hexaprotic.residuals, atol=0.1)
-        np.testing.assert_allclose(jac, hexaprotic.emf_jac, atol=0.001)
+        np.testing.assert_allclose(res, self.data.residuals, atol=0.1)
+        np.testing.assert_allclose(jac, self.data.emf_jac, atol=0.001)
 
 
 class TestBridge2(unittest.TestCase):
@@ -57,7 +59,7 @@ class TestBridge2(unittest.TestCase):
 
     def setUp(self):
         from bridge import Bridge
-        self.params, self.data = load_lmh()
+        self.data, self.params = _syntheticdata.load_lmh()
         self.bridge = Bridge(self.params)
 
     def test_dimmensions(self):
@@ -77,7 +79,7 @@ class TestParameters(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
     def setUp(self):
-        self.b = load_hexaprotic()
+        self.data, self.b = _syntheticdata.load_hexaprotic()
 
     def test_variables(self):
         _vars = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
@@ -102,94 +104,6 @@ class TestParameters(unittest.TestCase):
     def test_datawidgets(self):
         for widget in self.b.datawidgets:
             self.assertIn(id(widget), self.b.data)
-
-
-def load_lmh():
-    import data_lmh
-
-    from modelwidget import ModelWidget, ModelData
-    model = ModelWidget()
-    model.clear(n_equils=data_lmh.N_EQUILS, n_species=data_lmh.N_COMPON)
-    mdata = ModelData(n_equils=data_lmh.N_EQUILS, n_species=data_lmh.N_COMPON)
-    mdata.stoich = data_lmh.stoich
-    mdata.const = data_lmh.logbeta
-    mdata.const_flags = 6*[consts.RF_CONSTANT] + 3*[consts.RF_REFINE] + [consts.RF_CONSTANT]
-    model.append(mdata)
-    model.setCurrentModel(-1)
-
-    from otherwidgets import TitrationBaseWidget
-    titr1 = TitrationBaseWidget(model)
-    titr1.name = 'Titration 1'
-    titr1.initial_amount = data_lmh.t1_init
-    titr1.buret = data_lmh.t1_buret
-    titr1.starting_volume = data_lmh.t1_startingvol
-    titr1.final_volume = data_lmh.t1_endvol
-    titr1.n_points = 101
-
-    titr2 = TitrationBaseWidget(model)
-    titr2.name = 'Titration 2'
-    titr2.initial_amount = data_lmh.t2_init
-    titr2.buret = data_lmh.t2_buret
-    titr2.starting_volume = data_lmh.t2_startingvol
-    titr2.final_volume = data_lmh.t2_endvol
-    titr2.n_points = 101
-
-    from emfwidget import EmfWidget
-    emfw1 = EmfWidget(model)
-    emfw1.emf0 = data_lmh.t1_emf0
-    emfw1.slope = (1.0, 1.0)
-    emfw1.slope_flags = (0, 0)
-    emfw1.nelectrons = (1, 1)
-    emfw1.emf0_error = (0.01,0.01)
-    emfw1.active_species = (1, 2)
-    emfw1.emf0_flags = (0,0)
-    emfw1.titration = titr1
-    emfw1.titre = titr1.titre
-    emfw1.emf = data_lmh.t1_emf
-
-    emfw2 = EmfWidget(model)
-    emfw2.emf0 = data_lmh.t2_emf0
-    emfw2.slope = (1.0, 1.0)
-    emfw2.slope_flags = (0, 0)
-    emfw2.nelectrons = (1, 1)
-    emfw2.emf0_error = (0.01,0.01)
-    emfw2.active_species = (1, 2)
-    emfw2.emf0_flags = (0,0)
-    emfw2.titration = titr2
-    emfw2.emf = data_lmh.t2_emf
-
-    from bridge import Parameters
-    b = Parameters(model, [titr1, titr2], [emfw1, emfw2])
-    return b, data_lmh
-
-
-def load_hexaprotic():
-    from modelwidget import ModelWidget, ModelData
-    model = ModelWidget()
-    mdata = ModelData(n_equils=7, n_species=2)
-    mdata.stoich = hexaprotic.stoich
-    mdata.const = hexaprotic.logbeta
-    mdata.const_flags = 6*[consts.RF_REFINE] + [consts.RF_CONSTANT]
-    model.append(mdata)
-    model.setCurrentModel(-1)
-
-    from otherwidgets import TitrationBaseWidget
-    titr = TitrationBaseWidget(model)
-    titr.name = 'Titration'
-    titr.initial_amount = hexaprotic.init
-    titr.buret = hexaprotic.buret
-    titr.starting_volume = hexaprotic.v0
-    titr.titre = hexaprotic.titre.tolist()
-
-    from emfwidget import EmfWidget
-    emfw = EmfWidget(model)
-    emfw.emf0 = hexaprotic.emf0
-    emfw.emf = hexaprotic.emf
-    emfw.titration = titr
-
-    from bridge import Parameters
-    b = Parameters(model, [titr], [emfw])
-    return b
 
 
 if __name__ == '__main__':
