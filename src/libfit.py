@@ -87,15 +87,15 @@ def levenberg_marquardt(bridge, **kwargs):
 
     # breakpoint()
     for iteration in range(max_iterations):
-        try:
-            if iteration:
-                # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
-                dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
-            else:
-                dx = np.zeros(n_vars)
-        except np.linalg.linalg.LinAlgError:
-            damping *= 10
-            continue
+        # try:
+        if iteration:
+            # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
+            dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
+        else:
+            dx = np.zeros(n_vars)
+        # except np.linalg.linalg.LinAlgError:
+        #     damping *= 10
+        #     continue
 
         # new_x = x + dx
         #new_x = fcapping(x, dx)

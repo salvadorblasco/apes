@@ -405,8 +405,8 @@ class TitrationData():
     buret_flags: tuple[int]
     free_conc: NDArray[float] | None = field(init=False, default=None)
     anal_conc: NDArray[float] = field(init=False)
-    amatrix: NDArray[float] = field(init=False)
-    dlcdlbeta: NDArray[float] = field(init=False)
+    amatrix: NDArray[float] = field(init=False, repr=False)
+    dlcdlbeta: NDArray[float] = field(init=False, repr=False)
     rf_init: tuple[int] = field(init=False)  # indices of elements to be refined
     rf_buret: tuple[int] = field(init=False )# indices of elements to be refined
     refine: bool = field(init=False, default=False)
