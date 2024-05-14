@@ -49,7 +49,6 @@ class TestLevenberg2(unittest.TestCase):
 
     def test_levenberg(self):
         for noise in (0.0, 0.1, 0.2, 0.5, 0.75, 1.0):
-            breakpoint()
             with self.subTest(noise=noise):
                 self._marquardt_call(noise)
                 values = np.fromiter(self.params.initial_values(), dtype=float) / consts.LOGK

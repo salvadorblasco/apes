@@ -5,7 +5,7 @@ import unittest
 import sys
 import numpy as np
 
-import hexaprotic
+# import hexaprotic
 
 sys.path.append('../src')
 # pylint: disable=import-error
@@ -187,11 +187,25 @@ class Test2Jacobian(unittest.TestCase):
 
     def test_amatrix(self):
         import libeq.jacobian
+        import hexaprotic
         amatrix = libeq.jacobian.amatrix(hexaprotic.free_concentration, hexaprotic.stoichx)
         np.testing.assert_array_almost_equal(amatrix, hexaprotic.matrix_a, decimal=4)
 
+    def test_amatrix_lmh(self):
+        import libeq.jacobian
+        import data_lmh
+
+        with self.subTest(dataset='t1'):
+            amatrix_t1 = libeq.jacobian.amatrix(data_lmh.t1_freeconc, data_lmh.stoichx)
+            np.testing.assert_array_almost_equal(amatrix_t1, data_lmh.t1_amatrix)
+
+        with self.subTest(dataset='t2'):
+            amatrix_t2 = libeq.jacobian.amatrix(data_lmh.t2_freeconc, data_lmh.stoichx)
+            np.testing.assert_array_almost_equal(amatrix_t2, data_lmh.t2_amatrix)
+
     def test_dlogcdlogbeta(self):
         import libeq.jacobian
+        import hexaprotic
         tested = libeq.jacobian.dlogcdlogbeta(hexaprotic.matrix_a,
                                               hexaprotic.free_concentration,
                                               hexaprotic.stoich)
@@ -199,6 +213,7 @@ class Test2Jacobian(unittest.TestCase):
 
     def test_dlogcdt(self):
         import libeq.jacobian
+        import hexaprotic
         tested = libeq.jacobian.dlogcdt(hexaprotic.matrix_a,
                                         hexaprotic.titre,
                                         hexaprotic.v0)
@@ -206,6 +221,7 @@ class Test2Jacobian(unittest.TestCase):
 
     def test_dlogcdb(self):
         import libeq.jacobian
+        import hexaprotic
         tested = libeq.jacobian.dlogcdb(hexaprotic.matrix_a,
                                         hexaprotic.titre,
                                         hexaprotic.v0)

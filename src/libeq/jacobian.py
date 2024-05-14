@@ -79,6 +79,18 @@ def dlogcdlogbeta(Amatrix, concentration, stoichiometry):
     return np.linalg.solve(Amatrix, B.swapaxes(-1,-2))
 
 
+def extended_dlogcdlogbeta(dlcdlb, stoichiometry):
+    r"""Return ∂logc_k/∂logβ_i for the extended species E->E+S.
+
+    It returns the values of:
+    .. math :: \frac{\partial\log c_{i+S}}{\partial\log\beta_k} = 
+               \delta_{ik} + \sum_{j=1}^S p_{ij} 
+               \frac{\partial\log c_j}{\partial\log\beta_k} 
+    """
+    n_equil = stoichiometry.shape[0]
+    return np.eye(n_equil) + np.einsum('ijk,lj->ikl', dlcdlb, stoichiometry)
+
+
 def dlogcdt(Amatrix, vol, vol0):
     r"""Return ∂logc_k/∂t_i.
 

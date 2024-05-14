@@ -90,9 +90,14 @@ def levenberg_marquardt(bridge, **kwargs):
         # try:
         if iteration:
             # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
-            dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
+            try:
+                dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
+            except:
+                pass
+                breakpoint()
         else:
             dx = np.zeros(n_vars)
+
         # except np.linalg.linalg.LinAlgError:
         #     damping *= 10
         #     continue
