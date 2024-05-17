@@ -142,8 +142,13 @@ def emf_jac_e0(size: int) -> NDArray[float]:
     return np.ones(size)
 
 
-# Everything below this line can probably be deleted 
+def emf_weights(titre: NDArray[float], titre_error: float,
+                emf: NDArray[float], emf_error: float) -> NDArray[float]:
+    gradient = np.gradient(emf, titre, axis=0)
+    return 1/(emf_error**2 + gradient**2 * titre_error**2)
 
+
+# Everything below this line can probably be deleted 
 
 # def emffit(beta, beta_flags, stoichiometry, titration_data, electrodes,
 #            method=consts.METHOD_LM, **kwargs):

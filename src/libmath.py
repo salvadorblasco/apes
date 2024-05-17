@@ -26,21 +26,22 @@ def correlation_matrix(covar):
     return covar/np.sqrt(np.dot(D.reshape((nD, 1)), D.reshape((1, nD))))
 
 
-def numerical_derivative_uneven(x, y):
-    """Calculate a numerical derivative for unevenly spaced data.
-
-    Parameters:
-        x (iterable): the *x* values
-        y (iterable): the *y* values
-    Yields:
-        the value of the calculated derivarive for each point in turn.
-    """
-    yield (y[1] - y[0])/(x[1] - x[0])      # first point
-    for i in range(1, len(x)-1):
-        yield y[i-1] * (x[i]-x[i+1])/((x[i-1]-x[i])*(x[i-1]-x[i+1])) + \
-              y[i] * (2*x[i]-x[i-1]-x[i+1])/((x[i]-x[i-1])*(x[i]-x[i+1])) + \
-              y[i+1] * (x[i]-x[i-1])/((x[i+1]-x[i-1])*(x[i+1]-x[i]))
-    yield (y[-1] - y[-2])/(x[-1] - x[-2])  # last point
+# DEPRECATE use numpy.gradient instead
+# def numerical_derivative_uneven(x, y):
+#     """Calculate a numerical derivative for unevenly spaced data.
+# 
+#     Parameters:
+#         x (iterable): the *x* values
+#         y (iterable): the *y* values
+#     Yields:
+#         the value of the calculated derivarive for each point in turn.
+#     """
+#     yield (y[1] - y[0])/(x[1] - x[0])      # first point
+#     for i in range(1, len(x)-1):
+#         yield y[i-1] * (x[i]-x[i+1])/((x[i-1]-x[i])*(x[i-1]-x[i+1])) + \
+#               y[i] * (2*x[i]-x[i-1]-x[i+1])/((x[i]-x[i-1])*(x[i]-x[i+1])) + \
+#               y[i+1] * (x[i]-x[i-1])/((x[i+1]-x[i-1])*(x[i+1]-x[i]))
+#     yield (y[-1] - y[-2])/(x[-1] - x[-2])  # last point
 
 
 def extrapoly(x0, X, Y):

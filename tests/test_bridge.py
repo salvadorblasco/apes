@@ -73,6 +73,15 @@ class TestBridge2(unittest.TestCase):
         for titr, creal in zip(self.params.titrations.values(), (self.data.t1_freeconc, self.data.t2_freeconc)):
             np.testing.assert_allclose(titr.free_conc, creal, atol=5e-5)
 
+    def test_matrices(self):
+        #breakpoint()
+        jac, res = self.bridge.build_matrices()
+
+        comb_jac = np.concatenate((self.data.t1_emf_jac.reshape(202,3), self.data.t2_emf_jac.reshape(202,3)))
+        np.testing.assert_allclose(comb_jac*consts.NERNST, jac)  #, atol=0.001)
+
+        np.testing.assert_allclose(res, np.zeros_like(res))  #, atol=0.1)
+
 
 class TestParameters(unittest.TestCase):
     def __init__(self, *args, **kwargs):
