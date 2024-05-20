@@ -45,6 +45,7 @@ from dataclasses import dataclass, field
 import math
 import typing
 from functools import reduce, partial
+import itertools
 
 import numpy as np
 from numpy.typing import NDArray
@@ -191,8 +192,23 @@ class Bridge():
                                                                self.stoichiometry)
 
     def weights(self):
+        """Calculate the weight matrix.
+
+        .. note :: It is not necessary to call :func:`update_titrations` first because no free
+        concentrations are used in this function.
+        """
         # TODO change this to real values
-        return np.ones_like(self.residual)
+        #return np.ones_like(self.residual)
+        w = np.zeros_like(self.residual)
+        wdiag = np.zeros_like(self.residual)
+        for dataid, datatype, data in self.parameters.iter_data():
+            row_slice = data.vslice
+            weight_partial = data.weight()
+            w[row_slice] = weight_partial.flat
+            wdiag[row_slice] = data.variance()
+            
+        return np.diag(wdiag) + w[:,None] @ w[None, :]
+
 
 
 class Parameters:
@@ -222,7 +238,7 @@ class Parameters:
         # ~~~~ start collecting information ~~~~
         jacobian_slice = Slices()
         residual_slice = Slices()
-        self.data_order = []    # the id of the datawidgets in order of appearance
+        self.data_order: list = []    # the id of the datawidgets in order of appearance
 
         # betas are always included first
         # BEWARE! the widget provides the values of the constants as LOG10
@@ -302,6 +318,22 @@ class Parameters:
         # return dataid, datatype, data
         for _id, _type in self.data_order:
             yield _id, _type, self.data[_id]
+
+    def iter_unique_pairs_data(self):
+        """Iterate over unique pair of data with repetition.
+
+        Yields:
+            int: the id of the first data begin yielded
+            type: the typr of the first data being yielded
+            data: the first data itself
+            int: the id of the second data begin yielded
+            type: the typr of the second data being yielded
+            data: the second data itself
+        """
+        for data1, data2 in itertools.combinations_with_replacement(self.data_order, 2):
+            id1, type1 = data1 
+            id2, type2 = data2 
+            yield ((id1, type1, self.data[id1]),(id2, type2, self.data[id2]))
 
     def iter_jblock(self):
         "Iterate over jacobian column blocks."
@@ -401,6 +433,7 @@ class TitrationData():
     buret: np.ndarray          # values of the buret
     titre: np.ndarray
     starting_volume: float
+    error_volume: float
     init_flags: tuple[int]
     buret_flags: tuple[int]
     free_conc: NDArray[float] | None = field(init=False, default=None)
@@ -450,6 +483,7 @@ class EmfData():
     temperature: float
     vslice: slice = field(init=False)
     emf0_torefine: tuple[int] = field(init=False)
+    error_emf: float
 
     def dump(self, widget: EmfWidget) -> None:
         "Dump data into the widget to update the GUI."
@@ -461,6 +495,12 @@ class EmfData():
         "Return calculated emf values."
         hconc = libemf.hselect(self.titration.free_conc, self.electroactive)
         return libemf.nernst(hconc, self.emf0, self.slope, 0.0, self.temperature)
+
+    def variance(self) -> float:
+        return emf**2
+
+    def weight(self) -> NDArray[float]:
+        return np.gradient(self.emf, self.titration.titre) * self.titration.error_volume
 
     def residual(self) -> np.ndarray:
         "Return residual."
