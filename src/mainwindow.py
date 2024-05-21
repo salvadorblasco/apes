@@ -96,7 +96,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        libio.loadXML(self, _debug_fname_)
+        # libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -121,6 +121,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
+        self.newIonic()
         # END TESTING PART
 
     def go(self):
@@ -132,6 +133,8 @@ class MainWindow(QtWidgets.QMainWindow):
         elif isinstance(current_widget, TabWidget):
             current_widget.fitting(self.option)
             current_widget.plot(self.canvas)
+        elif isinstance(current_widget, IonicWidget):
+            self.canvas.plot_ionic(current_widget)
         else:
             raise ValueError
 
@@ -351,10 +354,13 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`IonicWidget`: The newly created widget.
         '''
-        # dsw = IonicWidget()
-        # self._newtab('Ionic strength', dsw)
-        # return dsw
-        return self.ui.tab_main.add_ionic()
+        dsw = IonicWidget()
+        #self._newtab('Ionic strength', dsw)
+        window = self.ui.mdiArea.addSubWindow(dsw)
+        window.setWindowTitle("Ionic Strength Calculator")
+        window.show()
+        return dsw
+        #return self.ui.tab_main.add_ionic()
  
     # TODO deprecate and use tabmain.add_external_data instead
     def new_external_data(self):

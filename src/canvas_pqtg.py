@@ -174,8 +174,23 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
 
         pconcs.setGeometry(plot.vb.sceneBoundingRect())
 
-    def plot_ionic(self, **kwargs):
-        ...
+    def plot_ionic(self, ionicwidget):
+        self.clear()
+        plot = self.addPlot(row=1, col=1)
+
+        plot.setLabel("bottom", "titre / mL")
+        plot.setLabel("left", "Ionic strength / mol/L")
+        x = np.fromiter(ionicwidget.titre, dtype=float)
+        y = np.fromiter(ionicwidget.ionic_strength, dtype=float)
+        plot.plot(x, y)
+
+        # ax2 = axes.twinx()
+        # ax2.set_ylabel("Percent change")
+        # Imin, Imax = axes.get_ylim()
+        # I0 = kwargs['ionic'][0]
+        # ax2.set_ylim(bottom=(Imin-I0)/I0*100,
+        #              top=(Imax-I0)/I0*100)
+        # self.draw()
 
     def plot_speciation(self, widget, externaldata=None, **plotoptions):
         """Plot Titration simulation or species ditribuction.
