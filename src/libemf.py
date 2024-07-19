@@ -150,8 +150,9 @@ def emf_weights(titre: NDArray[float], titre_error: float,
 
 def residual_jacobian(emf: NDArray[float], calc_emf: NDArray[float],
                       weights: NDArray[float], demfdx):
-    aux = np.sqrt(weights)*(emf - calc_emf)
-    return -2*np.sum(aux*emf*demfdx)
+    # breakpoint()
+    aux = np.sqrt(weights)*(emf - calc_emf)*emf
+    return -2*np.sum(aux[:,None,None]*demfdx, axis=0)
 
 # Everything below this line can probably be deleted 
 
