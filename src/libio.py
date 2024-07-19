@@ -797,7 +797,7 @@ def importSuperquadApp(app, filename):
     data = importSuperquad(filename)
     app.title = next(data)
     _ = next(data)    # control numbers (unused)
-    model = app.ui.tab_main.add_model()
+    model = app.new_model()
     model.labels = list(next(data))
     app.temperature = next(data)
     logB = next(data)
@@ -813,11 +813,13 @@ def importSuperquadApp(app, filename):
     # model.append(model)
     model.setCurrentModel(0)
 
+    fgroup = app.new_fitting_group()
+
     for emfd in data:
-        titr_widget = app.ui.tab_main.add_titrationbase()
+        titr_widget = fgroup.add_titration()
         titr_widget.set_volume_implicit(False)
         titr_widget.set_labels(model.labels)
-        data_widget = app.ui.tab_main.add_emf()
+        data_widget = fgroup.add_emf()
 
         # cascade unpacking
         amounts, electr, dataset = emfd
@@ -829,10 +831,10 @@ def importSuperquadApp(app, filename):
         titr_widget.volume_error = errV
         titr_widget.initial_amount = t0
         titr_widget.buret = buret
-        data_widget.emf0 = emf0
-        data_widget.emf0_error = erremf0
+        data_widget.emf0 = (emf0,)
+        data_widget.emf0_error = (erremf0,)
         data_widget.nelectrons = (n,)
-        data_widget.active_species = order.index(hindex)
+        data_widget.active_species = (order.index(hindex),)
         data_widget.emf = emf
         data_widget.titre = V
 
@@ -949,10 +951,18 @@ def importHyperquad(filename):
 
     This function imports data from a Hyperquad file. Those are XML files.
 
+    HQD files are usually malformed because they contain two root elements. An exception
+    in triggered. This implementation removes the <HySS> tag to avoid this error.
+
     Parameters:
         filename (str): The file to import data from
     """
-    tree = ET.parse(filename)
+    try:
+        tree = ET.parse(filename)
+    except ET.ParseError:
+        with open(filename, 'r') as f:
+            text = f.read().replace('<HySS></HySS>', '')
+        tree = ET.fromstring(text)
 
     ret = {}
 
@@ -969,7 +979,7 @@ def importHyperquad(filename):
     ret['betas_key'] = [int(tree.findtext('model/betas/b%d/refine' % (r+1)))
              for r in range(E)]
 
-    if tree.find('HySS').text: 
+    if (t_hyss := tree.find('HySS') is not None) and t_hyss.text:
         t_V0 = float(tree.findtext('HySS/titration/volume'))
         t_V1 = float(tree.findtext('HySS/titration/final'))
         t_T0 = [float(tree.findtext('HySS/titration/r%d/total' % (r+1)))
@@ -996,7 +1006,7 @@ def importHyperquad(filename):
         for et in (emfdata.find('curve%d' % (_+1)) for _ in range(numcurves)):
             thiscurve = {}
             num_points = int(et.findtext('points'))
-            thiscurve['startingvolume'] = float(et.findtext('vinit'))
+            thiscurve['starting volume'] = float(et.findtext('vinit'))
             thiscurve['sigma_v'] = float(et.findtext('sigmav'))
             thiscurve['initial amount'] = [float(et.findtext('r%d/totmm' % (r+1))) for r in range(S)]
             thiscurve['buret'] = [float(et.findtext('r%d/addc' % (r+1))) for r in range(S)]

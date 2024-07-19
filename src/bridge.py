@@ -44,7 +44,7 @@ import collections
 from dataclasses import dataclass, field
 import math
 import typing
-from functools import reduce, partial
+from functools import reduce, partial, cache
 import itertools
 
 import numpy as np
@@ -191,6 +191,7 @@ class Bridge():
             titration.dlcdlbeta = libeq.jacobian.dlogcdlogbeta(titration.amatrix, conc,
                                                                self.stoichiometry)
 
+    @cache
     def weights(self):
         """Calculate the weight matrix.
 
@@ -205,10 +206,10 @@ class Bridge():
             row_slice = data.vslice
             weight_partial = data.weight()
             w[row_slice] = weight_partial.flat
-            wdiag[row_slice] = data.variance()
+            wdiag[row_slice] = data.variance().flat
             
-        return np.diag(wdiag) + w[:,None] @ w[None, :]
-
+        covar = np.diag(wdiag) + w[:,None] @ w[None, :]
+        return 1/covar
 
 
 class Parameters:
@@ -390,7 +391,8 @@ class Parameters:
             emf = np.array(widget.emf),
             slope = np.array(widget.slope),
             electroactive = widget.active_species,  # it must be immutable
-            temperature = self.get_temp()
+            temperature = self.get_temp(),
+            error_emf = np.array(widget.emf0_error)
         )
         rstep = data.emf.size
         rslice.step(rstep)
@@ -413,7 +415,8 @@ class Parameters:
                              buret=np.array(twidget.buret),
                              buret_flags=twidget.buret_flags,
                              starting_volume=twidget.starting_volume,
-                             titre=np.array(twidget.titre))
+                             titre=np.array(twidget.titre),
+                             error_volume=twidget.volume_error)
 
         self._process_flags(data, 'init', 'init_flags', 'rf_init', jslice)
         key = (id(twidget), 'init')
@@ -497,10 +500,10 @@ class EmfData():
         return libemf.nernst(hconc, self.emf0, self.slope, 0.0, self.temperature)
 
     def variance(self) -> float:
-        return emf**2
+        return np.full_like(self.emf, self.error_emf**2)
 
     def weight(self) -> NDArray[float]:
-        return np.gradient(self.emf, self.titration.titre) * self.titration.error_volume
+        return np.gradient(self.emf.T, self.titration.titre, axis=1) * self.titration.error_volume
 
     def residual(self) -> np.ndarray:
         "Return residual."

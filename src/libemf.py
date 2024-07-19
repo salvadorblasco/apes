@@ -148,6 +148,11 @@ def emf_weights(titre: NDArray[float], titre_error: float,
     return 1/(emf_error**2 + gradient**2 * titre_error**2)
 
 
+def residual_jacobian(emf: NDArray[float], calc_emf: NDArray[float],
+                      weights: NDArray[float], demfdx):
+    aux = np.sqrt(weights)*(emf - calc_emf)
+    return -2*np.sum(aux*emf*demfdx)
+
 # Everything below this line can probably be deleted 
 
 # def emffit(beta, beta_flags, stoichiometry, titration_data, electrodes,

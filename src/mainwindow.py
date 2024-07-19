@@ -82,10 +82,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/hcit3.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/znedta.xml'
+        _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA2/hedta8.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/kk.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
-        _debug_fname_ = '../data/lmh.xml'
+        # _debug_fname_ = '../data/lmh.xml'
         # _debug_fname_ = '../data/phosphate.xml'
         # _debug_fname_ = '../data/hexaprotic.xml'
         # _debug_fname_ = '../data/hdtc.xml'
@@ -117,11 +117,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
-        # libio.importSuperquadApp(self, '../data/hpytren1.sup')
+        libio.importSuperquadApp(self, '../data/hpytren1.sup')
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
-        self.newIonic()
+        # self.newIonic()
         # END TESTING PART
 
     def go(self):
