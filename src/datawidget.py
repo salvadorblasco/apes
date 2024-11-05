@@ -6,6 +6,7 @@ import numpy as np
 import consts
 import libqt
 import libeq
+from modelwidget import ModelWidget
 from otherwidgets import TitrationBaseWidget
 
 
@@ -22,13 +23,13 @@ class DataWidget(QtGui.QWidget):
     # labelsChanged = QtCore.pyqtSignal(int, str)
     titrationChanged = QtCore.pyqtSignal(object, str)
 
-    def __init__(self, model, parent=None):
+    def __init__(self, model: ModelWidget, parent=None):
         super().__init__(parent)
-        self._name = 'No name'
-        self._collabels = 0         # column number for table_trit
-        self._temperature = 298.15  # Kelvin
-        self._model = model
-        self._use = True
+        self._name: str = 'No name'
+        self._collabels: int = 0         # column number for table_trit
+        self._temperature: float = 298.15  # Kelvin
+        self._model: ModelWidget = model
+        self._use: bool = True
         self._tabdata = None
         # self._tabtitr = None
         self._datafit = None    # slot for data from fitting

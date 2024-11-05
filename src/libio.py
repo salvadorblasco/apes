@@ -786,7 +786,7 @@ def import_tiamo(filename):
     return data[:, 0].tolist(), data[:, 1].tolist()
 
 
-def importSuperquadApp(app, filename):
+def importSuperquadApp(app, filename: str):
     """Import data from a superquad file.
 
     Parameters:
@@ -816,27 +816,30 @@ def importSuperquadApp(app, filename):
     fgroup = app.new_fitting_group()
 
     for emfd in data:
-        titr_widget = fgroup.add_titration()
-        titr_widget.set_volume_implicit(False)
-        titr_widget.set_labels(model.labels)
-        data_widget = fgroup.add_emf()
-
         # cascade unpacking
         amounts, electr, dataset = emfd
         plot_keys, order, t0, buret, tflag = amounts
         V0, errV, n, hindex, emf0, erremf0 = electr
         V, emf = dataset
 
+        titr_widget = fgroup.add_titration()
+        with libqt.signals_blocked(titr_widget):
+            titr_widget.set_volume_implicit(False)
+            titr_widget.titre = V
+
+        titr_widget.set_labels(model.labels)
+        data_widget = fgroup.add_emf()
+        titr_widget.final_volume = V0 + V[-1]
         titr_widget.starting_volume = V0
         titr_widget.volume_error = errV
         titr_widget.initial_amount = t0
         titr_widget.buret = buret
+        data_widget.titre = titr_widget.titre
         data_widget.emf0 = (emf0,)
         data_widget.emf0_error = (erremf0,)
         data_widget.nelectrons = (n,)
         data_widget.active_species = (order.index(hindex),)
         data_widget.emf = emf
-        data_widget.titre = V
 
 
 def importSuperquad(filename):

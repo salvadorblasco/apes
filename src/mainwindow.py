@@ -13,7 +13,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
-from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
+# from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 import csolver
 import dialogs
