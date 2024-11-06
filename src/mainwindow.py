@@ -112,9 +112,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.mdiArea.activateNextSubWindow()
         # self.ui.mdiArea.activateNextSubWindow()
         # self.ui.mdiArea.activateNextSubWindow()
-        # self.go()
         # self._manual_fitting()
-        # self.refresh()
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
         libio.importSuperquadApp(self, '../data/hpytren1.sup')
@@ -122,11 +120,17 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
         # self.newIonic()
+        self.go()
         # END TESTING PART
 
     def go(self):
         'Start calculations.'
-        current_widget = self.ui.mdiArea.activeSubWindow().widget()
+        window = self.ui.mdiArea.currentSubWindow()
+        if window is None:
+            self.message("Select a data window to fit")
+            return
+        current_widget = window.widget()
+
         if isinstance(current_widget, SimulationData):
             current_widget.calc_free_concentration()
             self.canvas.plot_speciation(current_widget)

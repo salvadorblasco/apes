@@ -44,6 +44,7 @@ import collections
 from dataclasses import dataclass, field
 import math
 import typing
+from typing import Sequence, Dict
 from functools import reduce, partial, cache
 import itertools
 
@@ -57,6 +58,7 @@ import libeq
 import libemf
 import libspec
 
+from datawidget import DataWidget
 from modelwidget import ModelWidget
 from calorwidget import CalorWidget
 from emfwidget import EmfWidget
@@ -97,7 +99,7 @@ class Slices():
 class Bridge():
     """Bridge between the GUI and the fitting engine.
     """
-    def __init__(self, parameters, report_buffer=None):
+    def __init__(self, parameters: "Parameters", report_buffer: "StringIO|None"=None):
         self.parameters = parameters
         self.stoichiometry = parameters.stoichiometry(extended=False)
         self.stoichiometryx = parameters.stoichiometry(extended=True)
@@ -213,13 +215,18 @@ class Bridge():
 
 
 class Parameters:
-    "Class that handles parameters."
-    def __init__(self, model, titrationwidgets, datawidgets):
+    """Class that handles parameters and creates a bond between the dataclasses and regular Python
+    data structures.
+    """
+    def __init__(self,
+                 model: ModelWidget,
+                 titrationwidgets: Sequence[TitrationBaseWidget],
+                 datawidgets: Sequence[DataWidget]):
         self.model = model                          # store these values to
         self.titrationwidgets = titrationwidgets    # update their values after
         self.datawidgets = datawidgets              # the fitting
 
-        self.data = {}
+        self.data: Dict[int, DataWidget] = {}
 
         # related to the variables
         self.variables: list[FreeVariable] = []       # parameters that are to be refined and
@@ -233,7 +240,7 @@ class Parameters:
 
         # other variables
         self.constraint = 6*[None]
-        titration_match = {}
+        titration_match = {}    # keys are id of datawidgets and values are id of the matching TitrationBaseWidget
         self.spectraldata = None
 
         # ~~~~ start collecting information ~~~~
@@ -446,8 +453,8 @@ class TitrationData():
     rf_init: tuple[int] = field(init=False)  # indices of elements to be refined
     rf_buret: tuple[int] = field(init=False )# indices of elements to be refined
     refine: bool = field(init=False, default=False)
-    init_slice: Slices = field(init=False)
-    buret_slice: Slices = field(init=False)
+    init_slice: Slices = field(init=False, repr=False)
+    buret_slice: Slices = field(init=False, repr=False)
 
     def __post_init__(self):
         self.refine = any(self.init_flags) or any(self.buret_flags)

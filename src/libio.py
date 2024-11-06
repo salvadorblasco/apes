@@ -840,6 +840,7 @@ def importSuperquadApp(app, filename: str):
         data_widget.nelectrons = (n,)
         data_widget.active_species = (order.index(hindex),)
         data_widget.emf = emf
+        data_widget.titration = titr_widget
 
 
 def importSuperquad(filename):
