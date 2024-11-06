@@ -53,9 +53,10 @@ def levenberg_marquardt(bridge, **kwargs):
     report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
     threshold = kwargs.pop('threshold', 1e-4)
-    max_iterations = kwargs.pop('max_iterations', 150)
+    max_iterations = kwargs.pop('max_iterations', 200)
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping = kwargs.pop('damping', 100.0)
+    debug: bool = kwargs.pop('debug', False)
     # fcapping = trivial_capping if capping is None else capping 
 
     n_points, n_vars = bridge.size()
@@ -93,7 +94,6 @@ def levenberg_marquardt(bridge, **kwargs):
                 dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
             except:
                 pass
-                breakpoint()
         else:
             dx = np.zeros(n_vars)
 
@@ -119,7 +119,8 @@ def levenberg_marquardt(bridge, **kwargs):
         else:
             advance += 1
             # report_buffer.write(report.iteration(new_x, dx))
-            print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}, {dx=}")
+            if debug:
+                print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}, {dx=}")
             # print('\tdecreasing')
             bridge.accept_values()
             # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)

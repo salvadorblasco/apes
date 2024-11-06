@@ -1,6 +1,9 @@
 """Main QTabWidget to organize tabs in mainwindow
 """
 
+import datetime
+from typing import Callable, Any
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import bridge
@@ -120,17 +123,20 @@ class TabWidget(QtWidgets.QTabWidget):
                 return tab
         raise KeyError(f"object {name} does not exist")
 
-    def fitting(self, option) -> None:
+    def fitting(self, option: Callable[[str], Any]) -> None:
         if self.output is None:
             self.output = OutputWidget()
             self.addTab(self.output, "Output")
 
+        start_time = datetime.datetime.now().isoformat(timespec='seconds')
         self.setCurrentWidget(self.output)
-        self.output.write("starting fitting at TIME  \n")
+        self.output.write(f"starting fitting at {start_time} \n")
 
         method = option('fitting algorithm')
         if method not in (consts.METHOD_NM, consts.METHOD_LM):
             raise ValueError("Method not known")
+
+        self.output.refresh()
 
         titwidgets = [w for w in self._itertabs() if isinstance(w, TitrationBaseWidget)]
         datwidgets = [w for w in self._itertabs() if isinstance(w, DataWidget)]
@@ -139,7 +145,7 @@ class TabWidget(QtWidgets.QTabWidget):
 
         ffit = libfit.fitting_functions[method]
         
-        info = ffit(bridgeobj, weight=bridgeobj.weights(), report=self.output.buffer)
+        info = ffit(bridgeobj, weight=bridgeobj.weights(), report=self.output.buffer, debug=True)
 
         covariance = libmath.covariance(info['jacobian'], bridgeobj.weights())
         errors = libmath.fitting_errors(covariance)
