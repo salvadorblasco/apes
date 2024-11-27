@@ -46,7 +46,7 @@ class ModelWidget(QtWidgets.QWidget):
         self.__okbg = QtGui.QBrush(QtGui.QColor("white"))
 
         self.__iscalori = False                 # TODO remove
-        self._temperature = 298.15
+        self._temperature = 298.15              # TODO remove
         self.__currentmodel = ModelData()
         self.__models = [self.__currentmodel]
         self.__labels = ['L', 'H']
@@ -392,8 +392,6 @@ class ModelWidget(QtWidgets.QWidget):
         "Update table header when reagent labels change."
         if self.number_components != len(labels):
             columns = len(labels) + 3
-            # if self.isCalori():
-            #     columns += 5
             self.ui.table_model.setColumnCount(columns)
         header_labels = labels + ['Value', 'Error', 'Flag']
         self.ui.table_model.setHorizontalHeaderLabels(header_labels)

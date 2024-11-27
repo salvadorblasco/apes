@@ -794,24 +794,30 @@ def importSuperquadApp(app, filename: str):
         filename (str): The file to read data from.
     """
     # from modelwidget import ModelData
+    # breakpoint()
     data = importSuperquad(filename)
     app.title = next(data)
     _ = next(data)    # control numbers (unused)
     model = app.new_model()
+    model.clear()
     model.labels = list(next(data))
     app.temperature = next(data)
     logB = next(data)
 
-    model.clear()
-    modeldata = model.newModel()
-    modeldata.name = 'model #0'
-    modeldata.const = logB
-    modeldata.stoich = next(data)
-    modeldata.const_flags = next(data)
-    modeldata.const_error = len(logB)*[0.0]
+    model.ui.table_model.setRowCount(len(logB))
+    model.beta_raw = logB
+    model.stoich = next(data)
+    model.beta_flags = next(data)
+    model.beta_error = len(logB) * [0.0]
+    #modeldata = model.newModel()
+    #modeldata.name = 'model #0'
+    #modeldata.const = logB
+    #modeldata.stoich = next(data)
+    #modeldata.const_flags = next(data)
+    #modeldata.const_error = len(logB)*[0.0]
 
     # model.append(model)
-    model.setCurrentModel(0)
+    # model.setCurrentModel(0)
 
     fgroup = app.new_fitting_group()
 

@@ -13,8 +13,6 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
-# from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
-
 import csolver
 import dialogs
 import excepts
@@ -25,7 +23,6 @@ import libeq.consol
 import libemf
 import libqt
 import canvas_pqtg as canvas
-#import canvas
 import consts
 import ui_mainwindow as mainui
 import datawidget
@@ -87,7 +84,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
         # _debug_fname_ = '../data/lmh.xml'
         # _debug_fname_ = '../data/phosphate.xml'
-        _debug_fname_ = '../data/hexaprotic.xml'
+        # _debug_fname_ = '../data/hexaprotic.xml'
+        # _debug_fname_ = '../data/znedta_berto.sup'
         # _debug_fname_ = '../data/hdtc.xml'
         # _debug_fname_ = '../data/hpytren4q.xml'
         # _debug_fname_ = '../data/distri_cudtc.xml'
@@ -96,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        libio.loadXML(self, _debug_fname_)
+        # libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -116,11 +114,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
         # libio.importSuperquadApp(self, '../data/hpytren1.sup')
+        # libio.importSuperquadApp(self, '../data/znedta_berto.sup')
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
         # self.newIonic()
-        self.go()
+        # self.go()
         # END TESTING PART
 
     def go(self):
