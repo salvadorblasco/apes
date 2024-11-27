@@ -1,4 +1,12 @@
-"""Main QTabWidget to organize tabs in mainwindow
+"""
+Main module containing the TabWidget class, which organizes and manages tab-based widgets 
+for various scientific or analytical tasks within the main application window.
+
+Dependencies:
+    - PyQt5.QtCore
+    - PyQt5.QtGui
+    - PyQt5.QtWidgets
+    - Various custom widgets and libraries (e.g., bridge, libfit, libmath)
 """
 
 import datetime
@@ -22,14 +30,20 @@ from datawidget import DataWidget
 
 
 class TabWidget(QtWidgets.QTabWidget):
-    def __init__(self, parent):
+    """A QTabWidget subclass that organizes and manages different types of widgets (e.g., 
+    analytical and simulation widgets) in the main application.
+
+    Attributes:
+        model (ModelWidget or None): The current model widget.
+        output (OutputWidget or None): The output widget for displaying logs or reports.
+        _specmodel (SpecModelWidget or None): The current spectral model widget.
+    """
+    def __init__(self, parent=None):
         super().__init__(parent)
         super().setMovable(True)
         self.model = None
         self.output = None
         self._specmodel = None
-        # self.__tabdicts = {}
-        # self.__tabcounter = {}
 
     # def add_external_data(self):
     #     widget = ExternalDataWidget()
@@ -37,11 +51,13 @@ class TabWidget(QtWidgets.QTabWidget):
     #     return widget
 
     def add_calor(self):
+        "Add a calorimetric widget to the tab."
         widget = CalorWidget(self.model)
         self.__stamp(widget, "Calor")
         return widget
 
     def add_emf(self):
+        "Add an EMF (Electromotive Force) widget to the tab."
         widget = EmfWidget(model=self.model, parent=self)
         self.__stamp(widget, "EMF")
         return widget
@@ -52,6 +68,7 @@ class TabWidget(QtWidgets.QTabWidget):
     #     return widget
 
     def add_nmr(self):
+        "Add an NMR (Nuclear Magnetic Resonance) widget to the tab."
         widget = NmrWidget(self.model)
         self.__stamp(widget, "NMR")
         return widget
@@ -81,6 +98,7 @@ class TabWidget(QtWidgets.QTabWidget):
     #     return widget
 
     def add_titration(self):
+        "Add a titration widget to the tab."
         widget = TitrationBaseWidget(self.model)
         self.__stamp(widget, "Titration")
         self._update_titration_list()
@@ -97,15 +115,15 @@ class TabWidget(QtWidgets.QTabWidget):
     #     return widget
 
     def clear(self):
-        "Clear all the tabs and delete everything."
+        "Clear all tabs and reset state."
         self.model = None
-        # self.__tabdicts = {}
         super().clear()
 
     def delete_current_tab(self):
+        "Delete the currently selected tab."
         match self.currentWidget():
             case ModelWidget():
-                pass
+                pass  # Prevent deletion of the model widget. 
             case TitrationBaseWidget():
                 self.__delete_current_tab()
                 self._update_titration_list()
@@ -124,6 +142,11 @@ class TabWidget(QtWidgets.QTabWidget):
         raise KeyError(f"object {name} does not exist")
 
     def fitting(self, option: Callable[[str], Any]) -> None:
+        """Perform data fitting using the specified fitting algorithm.
+
+        Args:
+            option (Callable): A callback function to fetch fitting options.
+        """
         if self.output is None:
             self.output = OutputWidget()
             self.addTab(self.output, "Output")
@@ -145,7 +168,7 @@ class TabWidget(QtWidgets.QTabWidget):
 
         ffit = libfit.fitting_functions[method]
         
-        info = ffit(bridgeobj, weight=bridgeobj.weights(), report=self.output.buffer, debug=True)
+        info = ffit(bridgeobj, weight=bridgeobj.weights(), report=self.output.buffer, debug=False)
 
         covariance = libmath.covariance(info['jacobian'], bridgeobj.weights())
         errors = libmath.fitting_errors(covariance)
@@ -206,6 +229,7 @@ class TabWidget(QtWidgets.QTabWidget):
                 widget.populate_cb_titration(tnames)
 
     def __delete_current_tab(self):
+        "Delete the currently selected tab by index."
         idx = self.currentIndex()
         self.removeTab(idx)
 
@@ -215,16 +239,19 @@ class TabWidget(QtWidgets.QTabWidget):
     #             return tab.self.__tabdicts[key]
 
     def __stamp(self, widget, group):
-        # counter = group +
+        """Add a widget to the tab and assign it a unique name.
+
+        Args:
+            widget (QtWidgets.QWidget): The widget to add.
+            group (str): The group name for the widget.
+        """
         name = group + str(self.count())
         widget.name = name
         if hasattr(widget, 'populate_cb_titration'):
             tnames = tuple(self.get_titration_names())
             widget.titrationChanged.connect(self.__titration_changed)
             widget.populate_cb_titration(tnames)
-        # self.__tabdicts[name] = widget
         self.addTab(widget, name)
-        # self.__tabcounter[group] = counter
 
     @QtCore.pyqtSlot(object, str)
     def __titration_changed(self, widget, txt):

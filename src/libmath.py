@@ -1,18 +1,17 @@
 import numpy as np
 
 
-def covariance(J, weights):
+def covariance(J, W):
     """Compute covariance matrix.
 
     Parameters:
         J (:class:`numpy.ndarray`): the jacobian
-        weights (:class:`numpy.ndarray`): the weights matrix
+        W (:class:`numpy.ndarray`): the weights matrix
     Returns:
         :class:`numpy.ndarray`: an (*p*, *p*)-sized array representing
             the covariance matrix.
     """
-    W = np.diag(weights)
-    aux2 = J.T @ W @ J
+    aux2 = J.T @ np.diag(np.diag(W)) @ J
     return np.linalg.pinv(aux2)
 
 

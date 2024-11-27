@@ -1,16 +1,21 @@
 """General functions for nonlinear fitting."""
 
 import math
+from typing import Callable, Tuple, Dict, List
 
 import numpy as np
+from numpy.typing import NDArray
 
 import consts
 import excepts
 import libmath
-import report
+# import report
 
 
-def levenberg_marquardt(bridge, **kwargs):
+FloatArray = NDArray[float]
+
+
+def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     r"""Non linear fitting by means of the Levenberg-Marquardt method.
 
     Parameters:
@@ -46,9 +51,6 @@ def levenberg_marquardt(bridge, **kwargs):
     Raises:
         ValueError: If invalid parameters are passed.
     """
-    # def _report(*kws):
-    #     if report is not None:
-    #         report(*kws)
 
     report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
@@ -57,105 +59,77 @@ def levenberg_marquardt(bridge, **kwargs):
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping = kwargs.pop('damping', 100.0)
     debug: bool = kwargs.pop('debug', False)
-    # fcapping = trivial_capping if capping is None else capping 
+    MAX_DAMPING = 1e50
 
     n_points, n_vars = bridge.size()
-    chisq_hist = []
-    sigma_hist = []
+    chisq_hist: list[float] = []
+    sigma_hist: list[float] = []
 
-    iterations = 1
-    W = bridge.weights()
-    # assert W.shape == (n_points, n_points)
-
-    # x = np.copy(x0)
-
-    # # compute χ₂(dx)
-    # J, resid = func(x)
-    # assert resid.shape == weights.shape
-    # chisq = np.sum(resid**2)
-    # sigma = fit_sigma(resid, weights, n_points, n_vars)
-    # assert isinstance(chisq, float)
-    # assert J.ndim == 2 and J.shape == (n_points, n_vars)
-    # M = J.T @ W @ J
-    # # M = np.dot(np.dot(J.T, W), J)
-    # D = np.diag(np.diag(M))
-
-    # assert W.shape == (n_points, n_points)
-    chisq = 1e99
-    sigma = math.inf
-    advance = 0
-
+    iteration: int = 0
+    W: FloatArray = bridge.weights()
+    chisq: float = 1e99
+    sigma: float = math.inf
+    sentinel: bool = False
+    execution_status: int = consts.EXEC_RUNNING
     # breakpoint()
-    for iteration in range(max_iterations):
-        # try:
-        if iteration:
-            # dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), resid))
-            try:
-                dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
-            except:
-                pass
-        else:
-            dx = np.zeros(n_vars)
 
-        # except np.linalg.linalg.LinAlgError:
-        #     damping *= 10
-        #     continue
+    while iteration < max_iterations:
+        dx = np.linalg.solve(M+damping*D, J.T @ W @ resid) if iteration else np.zeros(n_vars)
 
-        # new_x = x + dx
-        #new_x = fcapping(x, dx)
-        #J, resid = func(new_x)
-        bridge.step_values(dx)
+        bridge.step_values(dx)                # Step bridge values and build matrices
         J, resid = bridge.build_matrices()
-
         new_chisq = np.sum(resid**2)
-        test = (chisq-new_chisq)/chisq
-
-        # print(iteration, dx)
-        # print(f'\t {damping:10.4e}  {test:10.4e} {sigma:10.4e}')
 
         if new_chisq >= chisq:
             damping *= 10
-            # print('\tnot decreasing')
         else:
-            advance += 1
-            # report_buffer.write(report.iteration(new_x, dx))
-            if debug:
-                print(f"{iteration=:4d}, {damping=:6.2e}, {test=:10.4e}, {dx=}")
-            # print('\tdecreasing')
+            iteration += 1
             bridge.accept_values()
-            # _report(iterations, x/consts.LOGK, dx/consts.LOGK, chisq)
-            # iterations += 1
             damping /= 5
             sigma = fit_sigma(resid, np.diag(W), n_points, n_vars)
-            # x = new_x
             if one_iter:
                 break
             M = J.T @ W @ J
             D = np.diag(np.diag(M))
             chisq = new_chisq
-            # chisq_hist.append(chisq)
-            # sigma_hist.append(sigma)
+            chisq_hist.append(chisq)
+            sigma_hist.append(sigma)
 
-            bridge.report_step(iteration=advance, damping=damping, chisq=chisq, sigma=sigma)
+            bridge.report_step(iteration=iteration, damping=damping, chisq=chisq, sigma=sigma)
 
-            if (test < threshold) and iteration > 2:
-                break
+        test = abs(chisq-new_chisq)/chisq
+        if (test < threshold) and sentinel:
+            execution_status = consts.EXEC_NORMAL_END
+            if debug:
+                print(f"END: threshold   {test}<{threshold}")
+                print(f"\tx={tuple(bridge.parameters.initial_values())}")
+            break
 
+        if math.isnan(test) or any(np.isnan(dx)):
+            execution_status = consts.EXEC_ABNORMAL_END
+            break
+
+        if debug:
+            print(f"{iteration=}, {damping=:.2e}, {test=:.4e}, {sigma=:.4e}, {chisq=:.4e}")
+            print(f"\t{dx=}\n\tx={tuple(bridge.parameters.initial_values())}")
+
+        sentinel = True
     else:
-        # if np.all(np.abs(dx)/x < threshold):
-        #     break
-        ret = {'jacobian': J, 
-               'residuals': resid,
-               'damping': damping, 'convergence': chisq_hist,
-               'iterations': iterations}
+        execution_status = consts.EXEC_TOO_MANY_ITERS
+
+    ret = {'jacobian': J,
+           'residuals': resid,
+           'damping': damping,
+           'convergence': chisq_hist,
+           'iterations': iteration}
+    if execution_status == consts.EXEC_TOO_MANY_ITERS:
         raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),
                                         last_value=ret)
+    if execution_status == consts.EXEC_ABNORMAL_END:
+        raise excepts.UnstableIteration(msg=("The iteration is not stable"),
+                                        last_value=ret)
 
-    ret_extra = {'jacobian': J, 'residuals': resid,
-                 'damping': damping, 'convergence': chisq_hist,
-                 'sigma': sigma_hist,
-                 'iterations': iterations}
-    return ret_extra
+    return ret
 
 
 def simplex(x0, y, fnc, free_conc, weights, **kwargs):
@@ -420,7 +394,8 @@ def _hsl(lst):
     return f_idx[0], f_idx[1], f_idx[-1]
 
 
-def fit_sigma(residuals, weights, npoints, nparams):
+def fit_sigma(residuals: np.ndarray, weights: np.ndarray, npoints: int, nparams: int) -> float:
+    """Calculate the fit's sigma value for a given set of residuals and weights."""
     return np.sum(weights*residuals**2)/(npoints-nparams)
 
 

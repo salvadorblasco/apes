@@ -71,7 +71,29 @@ prod_tuple = partial(reduce, lambda x, y: x*y)
 
 
 class Slices():
-    "Simple counter that returns a slice object."
+    """Utility class to generate and manage slice objects.
+
+    This class provides an incrementing slice, allowing for controlled and organized
+    slicing of arrays, especially useful in matrix construction (e.g., Jacobian assembly).
+
+    Attributes:
+        start (int): Starting index for the slice.
+        stop (int): Stopping index, dynamically updated.
+
+    Methods:
+        step(step: int): Increments the stop index by a given amount.
+        stamp_slice(key: str, dict_: dict): Stores the current slice in the provided dictionary.
+        yield_slice() -> slice: Returns a slice object from start to stop.
+        __len__() -> int: Returns the length of the current slice.
+
+    Example:
+        >>> slices = Slices(0)
+        >>> slices.step(5)
+        >>> print(slices.yield_slice())  # slice(0, 5)
+        >>> slices.step(3)
+        >>> print(slices.yield_slice())  # slice(5, 8)
+    """
+
     def __init__(self, start=0):
         self.start = start
         self.stop = start
@@ -98,7 +120,13 @@ class Slices():
 
 class Bridge():
     """Bridge between the GUI and the fitting engine.
+
+    This class serves as a central point to connect GUI data inputs (e.g., titration,
+    widget data) with the underlying fitting engine. It manages the intermediate
+    calculations necessary for fitting, including building Jacobian and residual matrices,
+    updating parameters, and refining estimates.
     """
+
     def __init__(self, parameters: "Parameters", report_buffer: "StringIO|None"=None):
         self.parameters = parameters
         self.stoichiometry = parameters.stoichiometry(extended=False)
@@ -119,6 +147,16 @@ class Bridge():
         self.parameters.increment_variables(increments)
 
     def build_matrices(self) -> tuple[NDArray[float], NDArray[float]]:
+        """Builds the Jacobian and residual matrices required for refinement.
+
+        This method iterates over available data to calculate partial derivatives and residuals
+        for each data type (e.g., EmfWidget, CalorWidget), storing results in pre-allocated
+        matrices. Each data type's specific processing function is called to compute the 
+        respective Jacobian and residual components.
+
+        Returns:
+            tuple[NDArray[float], NDArray[float]]: The computed Jacobian and residual matrices.
+        """
         temp = self.parameters.get_temp()
         betadata = self.parameters.beta
         beta = betadata.beta()
@@ -127,40 +165,48 @@ class Bridge():
 
         self.update_titrations(beta)
 
+        data_methods = {
+            EmfWidget: self._process_emf_data,
+            CalorWidget: self.__not_implemented,
+            NmrWidget: self.__not_implemented,
+            SpecWidget: self.__not_implemented
+        }
+
         for dataid, datatype, data in self.parameters.iter_data():
             row_slice = data.vslice
             residual_partial = data.residual()
             self.residual[row_slice] = residual_partial.flat
 
             for jpart, col_slice in self.parameters.iter_jblock():
-                if datatype is EmfWidget:
-                    if jpart == "beta":
-                        eactiv = data.electroactive
-                        full_dl = data.titration.dlcdlbeta
-                        part_dl = full_dl[:,eactiv,:][...,beta_refine]
-                        flatten_shape = (prod_tuple(part_dl.shape[:-1]), part_dl.shape[-1])
-                        flat_dl = np.reshape(part_dl, flatten_shape)
-                        # TODO replace slope=1.0 with data['slope']
-                        jac_partial = libemf.emf_jac_beta(flat_dl, slope=1.0, temperature=temp)
-                    elif jpart == (dataid, 'emf0'):
-                        jac_partial = libemf.emf_jac_e0(_size(row_slice, col_slice))
-                    elif jpart == (dataid, 'init'):
-                        raise NotImplementedError
-                    elif jpart == (dataid, 'buret'):
-                        raise NotImplementedError
-                    else:       # zeros
-                        jac_partial = np.zeros(_size(row_slice, col_slice))
-                elif datatype is CalorWidget:
-                    raise NotImplementedError
-                elif datatype is NmrWidget:
-                    raise NotImplementedError
-                elif datatype is CalorWidget:
-                    raise NotImplementedError
-                elif datatype is SpecWidget:
-                    raise NotImplementedError
-
+                if datatype in data_methods:
+                    jac_partial = data_methods[datatype](dataid, data, jpart, beta_refine, row_slice, col_slice, temp)
+                else:
+                    jac_partial = np.zeros(_size(row_slice, col_slice))
+                
                 self.jacobian[row_slice, col_slice] = jac_partial
         return self.jacobian, self.residual
+
+    def _process_emf_data(self, dataid, data, jpart, beta_refine, row_slice, col_slice, temp):
+        if jpart == "beta":
+            eactiv = data.electroactive
+            full_dl = data.titration.dlcdlbeta
+            part_dl = full_dl[:,eactiv,:][...,beta_refine]
+            flatten_shape = (prod_tuple(part_dl.shape[:-1]), part_dl.shape[-1])
+            flat_dl = np.reshape(part_dl, flatten_shape)
+            # TODO replace slope=1.0 with data['slope']
+            jac_partial = libemf.emf_jac_beta(flat_dl, slope=1.0, temperature=temp)
+        elif jpart == (dataid, 'emf0'):
+            jac_partial = libemf.emf_jac_e0(_size(row_slice, col_slice))
+        elif jpart == (dataid, 'init'):
+            raise NotImplementedError
+        elif jpart == (dataid, 'buret'):
+            raise NotImplementedError
+        else:       # zeros
+            jac_partial = np.zeros(_size(row_slice, col_slice))
+        return jac_partial
+
+    def __not_implemented(self):
+        raise NotImplementedError
 
     def report_step(self, **kwargs):
         if self.report_buffer is None:
@@ -171,7 +217,7 @@ class Bridge():
             write(f"  \niteration {kwargs['iteration']}  \n")
             write(f" chi-squared={kwargs['chisq']:.3e}; sigma={kwargs['sigma']:.3e}  \n")
 
-        write(f" NUM  VALUE    STEP  \n")
+        write(" NUM  VALUE    STEP  \n")
         for n, v in enumerate(self.parameters.beta.variables):
             vvalue = v.get_value() / consts.LOGK
             vstep = v.last_increment / consts.LOGK
@@ -180,7 +226,20 @@ class Bridge():
         # print refined betas
 
 
-    def update_titrations(self, beta) -> None:
+    def update_titrations(self, beta: np.ndarray) -> None:
+        """Update titration data by recalculating free concentrations and analytical matrices.
+
+        For each titration instance, calculates new free concentrations and updates the Jacobian
+        with respect to the provided `beta` values. If `free_conc` is uninitialized, an initial
+        guess is computed, otherwise, it refines the existing concentration values.
+
+        Args:
+            beta (np.ndarray): Array of current beta values used to update titration calculations.
+
+        Notes:
+            This function assumes that the stoichiometry has been initialized and that `free_conc`
+            has either initial guesses or prior calculated values.
+        """
         for titration in self.parameters.titrations.values():
             analc = titration.analc()
 
@@ -209,7 +268,7 @@ class Bridge():
             weight_partial = data.weight()
             w[row_slice] = weight_partial.flat
             wdiag[row_slice] = data.variance().flat
-            
+
         covar = np.diag(wdiag) + w[:,None] @ w[None, :]
         return 1/covar
 
@@ -312,8 +371,7 @@ class Parameters:
         if extended:
             return np.vstack((np.eye(self.model.number_components, dtype=int),
                               np.array(self.model.stoich)))
-        else:
-            return np.array(self.model.stoich)
+        return np.array(self.model.stoich)
 
     def iter_data(self):
         """Iterate over data.
@@ -339,8 +397,8 @@ class Parameters:
             data: the second data itself
         """
         for data1, data2 in itertools.combinations_with_replacement(self.data_order, 2):
-            id1, type1 = data1 
-            id2, type2 = data2 
+            id1, type1 = data1
+            id2, type2 = data2
             yield ((id1, type1, self.data[id1]),(id2, type2, self.data[id2]))
 
     def iter_jblock(self):
@@ -368,6 +426,23 @@ class Parameters:
             variable.set_value(value)
 
     def _process_flags(self, data, attr_values:str, attr_flags:str, attr_toref:str, jslice:Slices):
+        """Processes flags for refinement, setting up constraints and variables.
+
+        This method inspects the flags within a specified attribute of `data` to determine
+        which parameters are refinable, which are constants, and which are constrained. It then
+        updates the provided slice to reflect any variables identified for refinement.
+
+        Args:
+            data (Any): Object containing the data and associated flags.
+            attr_values (str): Name of the attribute containing the variable values.
+            attr_flags (str): Name of the attribute containing the flags.
+            attr_toref (str): Name of the attribute to store indices of refinable variables.
+            jslice (Slices): Slice object used to incrementally build Jacobian slices.
+
+        Notes:
+            Constraints are added if the flag falls within a predefined range, and new `Variable`
+            objects are created for each refinable parameter.
+        """
         to_refine = []
         flags = getattr(data, attr_flags)
         for n, flag in enumerate(flags):
@@ -409,11 +484,11 @@ class Parameters:
         jslice.stamp_slice(key, self.jacobian_part)
         return data
 
-    def _process_spectrum(self, dw, jacobian_slice, residual_slice):
-        data = SpectrumData(absorbance=np.array(dw.spectrum),
-                            wavelength=np.fromiter(dw.wavelengths, dtype=float),
-                            optical_path=dw.optical_path)
-        self.spectraldata.add_spectrum(dw.optically_active, data)
+    def _process_spectrum(self, datawidget, jacobian_slice, residual_slice):
+        data = SpectrumData(absorbance=np.array(datawidget.spectrum),
+                            wavelength=np.fromiter(datawidget.wavelengths, dtype=float),
+                            optical_path=datawidget.optical_path)
+        self.spectraldata.add_spectrum(datawidget.optically_active, data)
         return data
 
     def _process_titration(self, twidget, jslice):
@@ -438,7 +513,30 @@ class Parameters:
 
 @dataclass
 class TitrationData():
-    "Placeholder for titration data."
+    """Container for titration data required for analysis and refinement.
+
+    Attributes:
+        init (np.ndarray): Initial amounts.
+        buret (np.ndarray): Buret measurements.
+        titre (np.ndarray): Titre values.
+        starting_volume (float): Starting volume for titration.
+        error_volume (float): Error associated with volume measurements.
+        init_flags (tuple[int]): Flags for initial amounts.
+        buret_flags (tuple[int]): Flags for buret measurements.
+        free_conc (NDArray[float] | None): Free concentration, calculated post-initialization.
+        anal_conc (NDArray[float]): Analytical concentration.
+        amatrix (NDArray[float]): Analytical matrix for Jacobian computation.
+        dlcdlbeta (NDArray[float]): Derivative matrix with respect to beta values.
+        rf_init (tuple[int]): Indices of refinable initial amounts.
+        rf_buret (tuple[int]): Indices of refinable buret measurements.
+        refine (bool): Indicates if this titration is being refined.
+
+    Example:
+        >>> init_values = np.array([0.1, 0.2])
+        >>> buret_values = np.array([0.05, 0.1])
+        >>> data = TitrationData(init=init_values, buret=buret_values, ...)
+        >>> data.analc()
+    """
     init: np.ndarray           # values of the initial amount
     buret: np.ndarray          # values of the buret
     titre: np.ndarray
@@ -506,7 +604,7 @@ class EmfData():
         hconc = libemf.hselect(self.titration.free_conc, self.electroactive)
         return libemf.nernst(hconc, self.emf0, self.slope, 0.0, self.temperature)
 
-    def variance(self) -> float:
+    def variance(self) -> NDArray[float]:
         return np.full_like(self.emf, self.error_emf**2)
 
     def weight(self) -> NDArray[float]:
@@ -598,7 +696,7 @@ class SpectrumData:
 
 
 class FreeVariable(typing.Protocol):
-    max_increment: float 
+    max_increment: float
     stored_value: float | None
     error: float
 
@@ -619,7 +717,38 @@ class FreeVariable(typing.Protocol):
 
 
 class Variable:
-    "Handling of variables."
+    """Handles a single variable's data and operations for fitting routines.
+
+    This class provides methods to retrieve, update, and increment a variable's value,
+    as well as to manage associated error data. Each `Variable` instance represents a
+    single parameter that can be refined in a fitting process, with constraints on the
+    maximum allowable change per iteration.
+
+    Attributes:
+        data (Any): The object that holds the actual value of the variable.
+        key (str): The attribute name in `data` that contains the variable value.
+        keyerror (str): The attribute name in `data` that holds the variable error.
+        position (int): The index of this variable within the data array.
+        max_increment (float): The maximum allowed change in value per increment step.
+        stored_value (float | None): Stores the current value when incrementing;
+                                     reset after accepting the new value.
+        last_increment (float): The last increment applied to the variable's value.
+
+    Methods:
+        accept_value(): Resets `stored_value`, indicating acceptance of the current value.
+        increment_value(increment: float): Adjusts the variable's value by a specified increment,
+                                           respecting `max_increment`.
+        get_value() -> float: Retrieves the current value of the variable.
+        get_error() -> float: Retrieves the current error associated with the variable.
+        set_error(value: float): Sets the error for the variable.
+        set_value(value: float): Updates the variable's value directly.
+
+    Example:
+        >>> variable = Variable(data=some_data_obj, key="attribute_name", position=0)
+        >>> variable.get_value()   # Retrieve the current value
+        >>> variable.increment_value(0.05)  # Increment by 0.05, respecting max_increment
+        >>> variable.accept_value()  # Accept the current increment, resetting stored_value
+    """
     def __init__(self, data, key, position):
         if not hasattr(data, key):
             raise ValueError(f"data {type(data)} does not contain property {key}")
@@ -631,17 +760,19 @@ class Variable:
         self.stored_value: float | None = None
         self.last_increment: float
 
-    def accept_value(self):
+    def accept_value(self) -> None:
+        self.set_value(self.stored_value)
         self.stored_value = None
 
-    def increment_value(self, increment):
+    def increment_value(self, increment: float) -> None:
         if self.stored_value is None:
-            self.stored_value = self.get_value() 
-        if abs(increment) > self.max_increment:
-            increment = math.copysign(self.max_increment, increment)
+            self.stored_value = self.get_value()
+        else:
+            if abs(increment) > self.max_increment:
+                increment = math.copysign(self.max_increment, increment)
+            self.stored_value += increment
+            #self.set_value(new_value)
         self.last_increment = increment
-        new_value = self.stored_value + increment
-        self.set_value(new_value)
 
     def get_value(self) -> float:
         "Get the value of the variable."
@@ -707,9 +838,9 @@ class Constraint:
 
     def set_error(self, value: float) -> None:
         new_values = (value*self.__values[0]/val for val in self.__values)
-        for (data, parname, position), value in zip(self.__data, new_values):
+        for (data, _, position), val in zip(self.__data, new_values):
             dataholder = getattr(data, "errors")
-            dataholder[position] = value
+            dataholder[position] = val
 
     def set_value(self, new_value: float) -> None:
         """Set value for all parameters in this Constraint.
@@ -730,21 +861,19 @@ def _size(*slices):
     return tuple(len(s) for s in slices)
 
 
-def trivial_capping(x, dx):
+def trivial_capping(x: NDArray[float], dx: NDArray[float]) -> NDArray[float]:
     "Capping function where there is no capping"
     return x + dx
 
 
-def max_ratio_capping(x, dx, ratio):
+def max_ratio_capping(x: NDArray[float], dx: NDArray[float], ratio: float) -> NDArray[float]:
     "Capping to a fraction of change"
     if (aux := np.abs(dx)/x) < ratio:
         return x+dx
-    else:
-        return x*(1+aux)
+    return x*(1+aux)
 
 
 def abs_capping(x, dx, maximum):
     if abs(dx) < maximum:
         return x + dx
-    else:
-        return x + maximum
+    return x + maximum

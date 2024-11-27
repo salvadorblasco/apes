@@ -120,7 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
         # self.newIonic()
-        # self.go()
+        self.go()
         # END TESTING PART
 
     def go(self):

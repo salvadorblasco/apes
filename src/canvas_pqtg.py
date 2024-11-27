@@ -1,9 +1,22 @@
 """
-This module contains the canvas where the plots are drawn with pyqtgraph as plotter.
+This module provides a graphical canvas for plotting scientific data using PyQtGraph.
+
+Classes:
+    - MyCanvas: A graphical layout widget for rendering scientific plots.
+    - PlotStyle: A dataclass encapsulating plot style attributes.
+
+Functions:
+    - smooth_curve: Smooth a curve using interpolation.
+
+Dependencies:
+    - PyQt5
+    - pyqtgraph
+    - NumPy
+    - SciPy
+    - Various internal libraries (e.g., libaux, libplot)
 
 .. module:: canvas_pqtg.py
 .. moduleauthor:: Salvador Blasco <salvador.blasco@protonmail.com>
-
 """
 
 import itertools
@@ -12,6 +25,7 @@ import dataclasses
 import numpy as np
 from scipy.interpolate import interp1d
 
+import PyQt5.Qt
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
@@ -21,6 +35,18 @@ import libaux
 import libplot
 from datawidget import DataWidget
 from emfwidget import EmfWidget
+
+
+@dataclasses.dataclass
+class PlotStyle:
+    "Encapsulates plot style attributes."
+    linestyle: str
+    linewidth: float
+    plot_error: bool
+
+    def kwargs(self):
+        "Return style attributes as a dictionary for use in plot functions."
+        return {'linestyle': self.linestyle, 'linewidth': self.linewidth}
 
 
 class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
@@ -66,12 +92,20 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
 
     @QtCore.pyqtSlot(float)
     def label_size_changed(self, new_size):
-        """Slot for when label size changes"""
-        ...
+        """Handle label size change event.
+
+        Args:
+            new_size (float): The new size of the labels.
+        """
+        pass
 
     @QtCore.pyqtSlot(int)
     def style_color_changed(self, new_color_id):
-        """Slot for when label size changes"""
+        """Handle color scheme change event.
+
+        Args:
+            new_color_id (int): ID of the new color scheme.
+        """
         pass
 
     @QtCore.pyqtSlot(int)
@@ -89,34 +123,42 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
 
 
     def plot_fitting(self, widgets, parameters):
+        """Render fitting data plots.
+
+        Args:
+            widgets (list): List of widgets containing data to be plotted.
+            parameters (dict): Additional parameters for the plot.
+        Raises:
+            TypeError: If widget type is not supported.
+        """
         self.clear()
 
-        plt_data = []
-        plt_resi = []
+        # plt_data = []
+        # plt_resi = []
 
-        for col, widg in enumerate(widgets):
-            data_plot = self.addPlot(row=0, col=col)
-            data_plot.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Expanding)
-            data_plot.setLabel('bottom', 'titre / mL')
-            data_plot.showAxes('both')
+        for col, widget in enumerate(widgets):
+            data_plot = self._create_plot(row=0, col=col, label='titre / mL')
+            resi_plot = self._create_plot(row=1, col=col, label='Residuals')
+            resi_plot.setXLink(data_plot)
 
-            resi_plot = self.addPlot(row=1, col=col)
-            resi_plot.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Minimum)
-            resi_plot.showAxes('both')
+            if isinstance(widget, EmfWidget):
+                self.plot_emf(widget, data_plot, resi_plot)
+            else:
+                raise TypeError(f"Unsupported widget type: {type(widget)}")
 
-            match widg:
+            match widget:
                 case EmfWidget():
-                    self.plot_emf(widg, data_plot, resi_plot)
+                    self.plot_emf(widget, data_plot, resi_plot, parameters)
                 case _:
                     raise TypeError
                     
-        pltr = win.addPlot(row=2, col=0, colspan=2)
-        bar = pg.BarGraphItem(x=np.arange(10), height=np.exp(-np.linspace(0.1, 10.0, 10)), width=1.0)
-        pltr.addItem(bar)
-        pltr.setLabel('bottom', 'iteration')
-        pltr.setLabel('left', 'sum(χ²)')
-        pltr.showAxes('both')
-        pltr.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Minimum)
+        pltr = self.addPlot(row=2, col=0, colspan=len(widgets))
+        # bar = pg.BarGraphItem(x=np.arange(10), height=np.exp(-np.linspace(0.1, 10.0, 10)), width=1.0)
+        # pltr.addItem(bar)
+        # pltr.setLabel('bottom', 'iteration')
+        # pltr.setLabel('left', 'sum(χ²)')
+        # pltr.showAxes('both')
+        # pltr.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Minimum)
 
     def plot_calor(self, widget):
         """Plot calorimetry fit.
@@ -134,7 +176,7 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         """
         ...
 
-    def plot_emf(self, widget, data_plot, resi_plot, fitdata={}):
+    def plot_emf(self, widget, data_plot, resi_plot, fitdata=None):
         """Plot potentiometry fit data.
 
         This function plots all the information for a potentiometry fit. It
@@ -151,28 +193,40 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         Raises:
             ValueError: if any of the widgets if of the wrong type.
         """
-        plot.setWindowTitle(widget.name)
+        if fitdata is None:
+            fitdata = {}
+
+        # plot.setWindowTitle(widget.name)
         x = np.fromiter(widget.titre, dtype=float)
         yexp = np.array(widget.emf).T
-        for y in yexp:
-            plot.plot(x, y, symbol='o')
-
         ycal = widget.emffitted.T
-        for y in ycal:
-            plot.plot(x, y, pen='r')
+        yres = yexp - ycal
 
-        pconcs = pyqtgraph.ViewBox()
-        plot.showAxis('right')
-        plot.scene().addItem(pconcs)
-        plot.getAxis('right').linkToView(pconcs)
-        pconcs.setXLink(plot)
-        plot.getAxis('right').setLabel('concentrations')
+        data_plot.plot(x, yexp.flat, symbol='o')
+        data_plot.plot(x, ycal.flat, pen='r')
+        resi_plot.plot(x, yres.flat, symbol='o')
 
-        concs = widget.titration.free_conc.T
-        for c in concs:
-            pconcs.addItem(pyqtgraph.PlotCurveItem(x=x, y=c))
+        data_plot.setLabel("left", "emf / mV")
+        resi_plot.setLabel("left", "emf / mV")
 
-        pconcs.setGeometry(plot.vb.sceneBoundingRect())
+        # for y in yexp:
+        #     data_plot.plot(x, y, symbol='o')
+        # for yc, yr in ycal:
+        #     data_plot.plot(x, y, pen='r')
+        #     resi_plot.plot(x, y, pen='r')
+
+        # pconcs = pyqtgraph.ViewBox()
+        # plot.showAxis('right')
+        # plot.scene().addItem(pconcs)
+        # plot.getAxis('right').linkToView(pconcs)
+        # pconcs.setXLink(plot)
+        # plot.getAxis('right').setLabel('concentrations')
+
+        # concs = widget.titration.free_conc.T
+        # for c in concs:
+        #     pconcs.addItem(pyqtgraph.PlotCurveItem(x=x, y=c))
+
+        # pconcs.setGeometry(plot.vb.sceneBoundingRect())
 
     def plot_ionic(self, ionicwidget):
         self.clear()
@@ -298,9 +352,24 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         """
         ...
 
-
     def mpl_connect(*args, **kwargs):
         pass
+
+    def _create_plot(self, row, col, label):
+        """Utility method to create and configure a plot.
+
+        Args:
+            row (int): Row index for the plot.
+            col (int): Column index for the plot.
+            label (str): Label for the x-axis.
+        Returns:
+            pyqtgraph.PlotItem: Configured plot item.
+        """
+        plot = self.addPlot(row=row, col=col)
+        plot.setLabel("bottom", label)
+        plot.showAxes('both')
+        return plot
+
 
 
 def smooth_curve(xmin, xmax, ydata):            # TODO move somewhere else
@@ -319,14 +388,3 @@ def smooth_curve(xmin, xmax, ydata):            # TODO move somewhere else
     finterp = interp1d(new_xdata, ydata, kind='cubic', axis=0)
     new_ydata = finterp(ydata)
     return new_xdata, new_ydata
-
-
-@dataclasses.dataclass
-class PlotStyle:
-    linestyle: str
-    linewidth: float
-    plot_error: bool
-
-    def kwargs(self):
-        return {'linestyle': self.linestyle}
-
