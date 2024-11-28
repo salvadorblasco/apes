@@ -172,6 +172,7 @@ class DataWidget(QtGui.QWidget):
             self._titration = titrationwidget
         else:
             self._titration = self.parent.find_titration_byname(titrationwidget)
+        self._select_titration_dropdown()
 
     @property
     def use(self):

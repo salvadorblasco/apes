@@ -261,7 +261,7 @@ class TabWidget(QtWidgets.QTabWidget):
             titre = titration.titre
             widget.npoints = titration.n_points
             widget.titre = titre
-        widget._titrationid = id(titration)
+        widget._titrationid = id(widget.titration)
 
     @QtCore.pyqtSlot()
     def __implicit_titre_changed(self):

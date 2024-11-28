@@ -82,7 +82,7 @@ class EmfWidget(datawidget.DataWidget):
             self.starting_volume,
             self.titre))
 
-    def allow_dangerous(self, allow=False):
+    def allow_dangerous(self, allow=False):                       # NOTE: maybe move to parent class
         "Activate the refinement of dangerous parameters."
         def _touch(what):
             for dropdown in what:
@@ -376,6 +376,13 @@ class EmfWidget(datawidget.DataWidget):
     @property
     def titration_name(self):
         return self.ui.cb_titration.currentText()
+
+    def _select_titration_dropdown(self):
+        idx = self.ui.cb_titration.findText(self.titration.name)
+        if idx == -1:
+            self.ui.cb_titration.addItem(self.titration.name)
+        else:
+            self.ui.cb_titration.setCurrentIndex(idx)
 
     @property
     def titre(self):
