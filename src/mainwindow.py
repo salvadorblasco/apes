@@ -139,7 +139,7 @@ class MainWindow(QtWidgets.QMainWindow):
         elif isinstance(current_widget, IonicWidget):
             self.canvas.plot_ionic(current_widget)
         else:
-            raise ValueError
+            self.message('Please, select the data window you want to work with.')
 
     def iterate(self):
         "Perform only one iteration."

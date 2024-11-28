@@ -1,5 +1,6 @@
 """General functions for nonlinear fitting."""
 
+import enum
 import math
 from typing import Callable, Tuple, Dict, List
 
@@ -13,6 +14,14 @@ import libmath
 
 
 FloatArray = NDArray[float]
+
+
+class Exec(enum.IntEnum):
+    INITIALISING = enum.auto()
+    RUNNING = enum.auto()
+    NORMAL_END = enum.auto()
+    TOO_MANY_ITERS = enum.auto()
+    ABNORMAL_END = enum.auto()
 
 
 def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
@@ -54,7 +63,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
 
     report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
-    threshold = kwargs.pop('threshold', 1e-4)
+    threshold = kwargs.pop('threshold', 1e-6)
     max_iterations = kwargs.pop('max_iterations', 200)
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping = kwargs.pop('damping', 100.0)
@@ -70,7 +79,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     chisq: float = 1e99
     sigma: float = math.inf
     sentinel: bool = False
-    execution_status: int = consts.EXEC_RUNNING
+    execution_status: Exec = Exec.INITIALISING
     # breakpoint()
 
     while iteration < max_iterations:
@@ -99,14 +108,14 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
 
         test = abs(chisq-new_chisq)/chisq
         if (test < threshold) and sentinel:
-            execution_status = consts.EXEC_NORMAL_END
+            execution_status = Exec.NORMAL_END
             if debug:
                 print(f"END: threshold   {test}<{threshold}")
                 print(f"\tx={tuple(bridge.parameters.initial_values())}")
             break
 
         if math.isnan(test) or any(np.isnan(dx)):
-            execution_status = consts.EXEC_ABNORMAL_END
+            execution_status = Exec.ABNORMAL_END
             break
 
         if debug:
@@ -115,17 +124,17 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
 
         sentinel = True
     else:
-        execution_status = consts.EXEC_TOO_MANY_ITERS
+        execution_status = Exec.TOO_MANY_ITERS
 
     ret = {'jacobian': J,
            'residuals': resid,
            'damping': damping,
            'convergence': chisq_hist,
            'iterations': iteration}
-    if execution_status == consts.EXEC_TOO_MANY_ITERS:
+    if execution_status == Exec.TOO_MANY_ITERS:
         raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),
                                         last_value=ret)
-    if execution_status == consts.EXEC_ABNORMAL_END:
+    if execution_status == Exec.ABNORMAL_END:
         raise excepts.UnstableIteration(msg=("The iteration is not stable"),
                                         last_value=ret)
 
