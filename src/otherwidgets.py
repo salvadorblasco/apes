@@ -267,7 +267,8 @@ class OutputWidget(QtWidgets.QWidget):
         self.ui.textEdit.clear()
 
     def refresh(self):
-        self.ui.textEdit.setMarkdown(self.buffer.getvalue())
+        #self.ui.textEdit.setMarkdown(self.buffer.getvalue())
+        self.ui.textEdit.setPlainText(self.buffer.getvalue())
 
     # def addRuler(self):
     #     "appends <hr> tag"

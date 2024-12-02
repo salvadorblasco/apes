@@ -219,13 +219,16 @@ class Bridge():
             write(f"  \niteration {kwargs['iteration']}  \n")
             write(f" chi-squared={kwargs['chisq']:.3e}; sigma={kwargs['sigma']:.3e}  \n")
 
-        write(" NUM  VALUE    STEP  \n")
+        write(" NUM  OLD VALUE    STEP   NEW VALUE  \n")
+        write(" ---  ---------  -------  ---------  \n")
         for n, v in enumerate(self.parameters.beta.variables):
-            vvalue = v.get_value() / consts.LOGK
+            ovalue = v.previous_value / consts.LOGK
+            nvalue = v.get_value() / consts.LOGK
             vstep = v.last_increment / consts.LOGK
-            write(f" {n:4}  {vvalue:7.4f}  {vstep:7.4f}  \n")
+            write(f"{n+1: 4d}  {ovalue:8.4f}  {vstep:8.4f}  {nvalue:8.4f}  \n")
 
-        # print refined betas
+    def report_raw(self, txt):
+        self.report_buffer.write(txt)
 
 
     def update_titrations(self, beta: np.ndarray) -> None:
@@ -760,12 +763,16 @@ class Variable:
         self.position: int = position
         self.max_increment: float = math.inf
         self.stored_value: float | None = None
+        self.increment: float = 0.0
+        self.previous_value: float = 0.0
         self.last_increment: float
 
     def accept_value(self) -> None:
-        self.set_value(self.stored_value + self.last_increment)
+        self.previous_value = self.stored_value
+        self.last_increment = self.increment
+        self.set_value(self.stored_value + self.increment)
         self.stored_value = None
-        self.last_increment = 0.0
+        self.increment = 0.0
 
     def increment_value(self, increment: float) -> None:
         if abs(increment) > self.max_increment:
@@ -774,7 +781,7 @@ class Variable:
         if self.stored_value is None:
             self.stored_value = self.get_value()
 
-        self.last_increment = increment
+        self.increment = increment
 
     def get_value(self) -> float:
         "Get the value of the variable."
@@ -782,7 +789,7 @@ class Variable:
             dataholder = getattr(self.data, self.key)
             return dataholder[self.position]
         else:
-            return self.stored_value + self.last_increment
+            return self.stored_value + self.increment
 
     def get_error(self) -> float:
         dataholder = getattr(self.data, self.keyerror)

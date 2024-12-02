@@ -122,6 +122,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
                 if debug:
                     print(f"END: threshold   {test}<{chisq_threshold}")
                     print(f"\tx={tuple(bridge.parameters.initial_values())}")
+                bridge.report_raw(f" refinent finished on threshold criteria [{test}<{chisq_threshold}]\n")
                 break
 
             if (gradient_norm := np.linalg.norm(J.T @ resid)) < grad_threshold:
@@ -129,6 +130,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
                 if debug:
                     print(f"END: gradient   {gradient_norm}<{grad_threshold}")
                     print(f"\tx={tuple(bridge.parameters.initial_values())}")
+                bridge.report_raw(f"refinent finished on gradient criteria [{gradient_norm}<{grad_threshold}]\n")
                 break
 
             if (step_size := np.linalg.norm(dx)) < step_threshold:
@@ -136,6 +138,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
                 if debug:
                     print(f"END: step   {step_size}<{step_threshold}")
                     print(f"\tx={tuple(bridge.parameters.initial_values())}")
+                bridge.report_raw(f"refinent ended on small step criteria [{step_size}<{step_threshold}]\n")
                 break
 
             if math.isnan(test) or any(np.isnan(dx)) or damping>MAX_DAMPING:
@@ -158,6 +161,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     if execution_status == Exec.ABNORMAL_END:
         raise excepts.UnstableIteration(msg=("The iteration is not stable"),
                                         last_value=ret)
+
 
     return ret
 
