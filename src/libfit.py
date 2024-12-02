@@ -63,7 +63,9 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
 
     report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
-    threshold = kwargs.pop('threshold', 1e-6)
+    chisq_threshold = kwargs.pop('chisq_threshold', 1e-8)
+    grad_threshold = kwargs.pop('grad_threshold', 1e-8)
+    step_threshold = kwargs.pop('step_threshold', 1e-8)
     max_iterations = kwargs.pop('max_iterations', 200)
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping = kwargs.pop('damping', 100.0)
@@ -78,51 +80,70 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     W: FloatArray = bridge.weights()
     chisq: float = 1e99
     sigma: float = math.inf
-    sentinel: bool = False
     execution_status: Exec = Exec.INITIALISING
     # breakpoint()
 
     while iteration < max_iterations:
-        dx = np.linalg.solve(M+damping*D, J.T @ W @ resid) if iteration else np.zeros(n_vars)
+        if execution_status == Exec.INITIALISING:
+            dx = np.zeros(n_vars)
+        else:
+            dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
 
         bridge.step_values(dx)                # Step bridge values and build matrices
         J, resid = bridge.build_matrices()
         new_chisq = np.sum(resid**2)
+        test = abs(chisq-new_chisq)/chisq
 
         if new_chisq >= chisq:
             damping *= 10
         else:
-            iteration += 1
             bridge.accept_values()
             damping /= 5
             sigma = fit_sigma(resid, np.diag(W), n_points, n_vars)
             if one_iter:
                 break
-            M = J.T @ W @ J
-            D = np.diag(np.diag(M))
-            chisq = new_chisq
-            chisq_hist.append(chisq)
-            sigma_hist.append(sigma)
+            M: FloatArray = J.T @ W @ J
+            D: FloatArray = np.diag(np.diag(M))
 
-            bridge.report_step(iteration=iteration, damping=damping, chisq=chisq, sigma=sigma)
+            if execution_status == Exec.RUNNING:
+                chisq = new_chisq
+                chisq_hist.append(chisq)
+                sigma_hist.append(sigma)
+                bridge.report_step(iteration=iteration, damping=damping, chisq=chisq, sigma=sigma)
+            iteration += 1
 
-        test = abs(chisq-new_chisq)/chisq
-        if (test < threshold) and sentinel:
-            execution_status = Exec.NORMAL_END
-            if debug:
-                print(f"END: threshold   {test}<{threshold}")
-                print(f"\tx={tuple(bridge.parameters.initial_values())}")
-            break
+        if execution_status == Exec.RUNNING:
+            if debug and iteration:
+                print(f"iteracion={iteration-1}, {damping=:.2e}, {test=:.4e}, {sigma=:.4e}, {chisq=:.4e}")
+                print(f"\t{dx=}\n\tx={tuple(bridge.parameters.initial_values())}")
 
-        if math.isnan(test) or any(np.isnan(dx)):
-            execution_status = Exec.ABNORMAL_END
-            break
+            if test  < chisq_threshold:
+                execution_status = Exec.NORMAL_END
+                if debug:
+                    print(f"END: threshold   {test}<{chisq_threshold}")
+                    print(f"\tx={tuple(bridge.parameters.initial_values())}")
+                break
 
-        if debug:
-            print(f"{iteration=}, {damping=:.2e}, {test=:.4e}, {sigma=:.4e}, {chisq=:.4e}")
-            print(f"\t{dx=}\n\tx={tuple(bridge.parameters.initial_values())}")
+            if (gradient_norm := np.linalg.norm(J.T @ resid)) < grad_threshold:
+                execution_status = Exec.NORMAL_END
+                if debug:
+                    print(f"END: gradient   {gradient_norm}<{grad_threshold}")
+                    print(f"\tx={tuple(bridge.parameters.initial_values())}")
+                break
 
-        sentinel = True
+            if (step_size := np.linalg.norm(dx)) < step_threshold:
+                execution_status = Exec.NORMAL_END
+                if debug:
+                    print(f"END: step   {step_size}<{step_threshold}")
+                    print(f"\tx={tuple(bridge.parameters.initial_values())}")
+                break
+
+            if math.isnan(test) or any(np.isnan(dx)) or damping>MAX_DAMPING:
+                execution_status = Exec.ABNORMAL_END
+                break
+
+        if execution_status == Exec.INITIALISING:
+            execution_status = Exec.RUNNING
     else:
         execution_status = Exec.TOO_MANY_ITERS
 

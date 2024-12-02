@@ -121,6 +121,33 @@ class TestParameters(unittest.TestCase):
             self.assertIn(id(widget), self.b.data)
 
 
+class DummyVar:
+    def __init__(self):
+        self.var = [0.0, 0.0]    
+
+
+class TestVariable(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def setUp(self):
+        import bridge
+        self.bridge = bridge
+        self.dummyvar = DummyVar()
+
+    def test_assign(self):
+        var = self.bridge.Variable(data=self.dummyvar, key="var", position=0)
+        self.assertEqual(var.get_value(), 0.0)
+        var.increment_value(1.0)
+        self.assertEqual(var.stored_value, 0.0)
+        self.assertEqual(var.last_increment, 1.0)
+        self.assertEqual(var.get_value(), 1.0)
+        # breakpoint()
+        var.accept_value()
+        self.assertEqual(var.get_value(), 1.0)
+        self.assertIsNone(var.stored_value)
+
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
 

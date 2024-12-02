@@ -138,12 +138,14 @@ class Bridge():
         self.residual = np.empty(parameters.residual_shape, dtype=float)
 
     def accept_values(self):
+        "Change definetly the values of the variables."
         self.parameters.accept_values()
 
     def size(self) -> tuple[int]:
         return self.parameters.jacobian_shape
 
     def step_values(self, increments):
+        "Change provisionally the values of the variables."
         self.parameters.increment_variables(increments)
 
     def build_matrices(self) -> tuple[NDArray[float], NDArray[float]]:
@@ -761,23 +763,26 @@ class Variable:
         self.last_increment: float
 
     def accept_value(self) -> None:
-        self.set_value(self.stored_value)
+        self.set_value(self.stored_value + self.last_increment)
         self.stored_value = None
+        self.last_increment = 0.0
 
     def increment_value(self, increment: float) -> None:
+        if abs(increment) > self.max_increment:
+            increment = math.copysign(self.max_increment, increment)
+
         if self.stored_value is None:
             self.stored_value = self.get_value()
-        else:
-            if abs(increment) > self.max_increment:
-                increment = math.copysign(self.max_increment, increment)
-            self.stored_value += increment
-            #self.set_value(new_value)
+
         self.last_increment = increment
 
     def get_value(self) -> float:
         "Get the value of the variable."
-        dataholder = getattr(self.data, self.key)
-        return dataholder[self.position]
+        if self.stored_value is None:
+            dataholder = getattr(self.data, self.key)
+            return dataholder[self.position]
+        else:
+            return self.stored_value + self.last_increment
 
     def get_error(self) -> float:
         dataholder = getattr(self.data, self.keyerror)
@@ -795,6 +800,7 @@ class Variable:
         """
         dataholder = getattr(self.data, self.key)
         dataholder[self.position] = value
+        # setattr(self.data, self.key, dataholder)
 
 
 class Constraint:

@@ -114,7 +114,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
         # libio.importSuperquadApp(self, '../data/hpytren1.sup')
-        libio.importSuperquadApp(self, '../data/znedta_berto.sup')
+        # libio.importSuperquadApp(self, '../data/znedta_berto.sup')
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
