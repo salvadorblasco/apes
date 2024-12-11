@@ -122,7 +122,7 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         ...
 
 
-    def plot_fitting(self, widgets, parameters):
+    def plot_fitting(self, widgets, bridge):
         """Render fitting data plots.
 
         Args:
@@ -148,16 +148,18 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
 
             match widget:
                 case EmfWidget():
-                    self.plot_emf(widget, data_plot, resi_plot, parameters)
+                    self.plot_emf(widget, data_plot, resi_plot, None)
                 case _:
                     raise TypeError
                     
         pltr = self.addPlot(row=2, col=0, colspan=len(widgets))
+        pltr.plot(bridge.chisq_hist) 
         # bar = pg.BarGraphItem(x=np.arange(10), height=np.exp(-np.linspace(0.1, 10.0, 10)), width=1.0)
         # pltr.addItem(bar)
-        # pltr.setLabel('bottom', 'iteration')
-        # pltr.setLabel('left', 'sum(χ²)')
-        # pltr.showAxes('both')
+        pltr.setLabel('bottom', 'iteration')
+        pltr.setLabel('left', 'sum(χ²)')
+        pltr.showAxes('both')
+        pltr.setLogMode(False, True)
         # pltr.setSizePolicy(PyQt5.Qt.QSizePolicy.Preferred, PyQt5.Qt.QSizePolicy.Minimum)
 
     def plot_calor(self, widget):

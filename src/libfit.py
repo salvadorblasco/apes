@@ -73,8 +73,8 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     MAX_DAMPING = 1e50
 
     n_points, n_vars = bridge.size()
-    chisq_hist: list[float] = []
-    sigma_hist: list[float] = []
+    # chisq_hist: list[float] = []
+    # sigma_hist: list[float] = []
 
     iteration: int = 0
     W: FloatArray = bridge.weights()
@@ -107,8 +107,8 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
 
             if execution_status == Exec.RUNNING:
                 chisq = new_chisq
-                chisq_hist.append(chisq)
-                sigma_hist.append(sigma)
+                # chisq_hist.append(chisq)
+                # sigma_hist.append(sigma)
                 bridge.report_step(iteration=iteration, damping=damping, chisq=chisq, sigma=sigma)
             iteration += 1
 
@@ -150,10 +150,12 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     else:
         execution_status = Exec.TOO_MANY_ITERS
 
+    bridge.iteration_history(chisq = chisq, sigma=sigma)
+
     ret = {'jacobian': J,
            'residuals': resid,
            'damping': damping,
-           'convergence': chisq_hist,
+           # 'convergence': chisq_hist,
            'iterations': iteration}
     if execution_status == Exec.TOO_MANY_ITERS:
         raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),

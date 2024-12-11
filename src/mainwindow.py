@@ -114,12 +114,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
         # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
         # libio.importSuperquadApp(self, '../data/hpytren1.sup')
-        # libio.importSuperquadApp(self, '../data/znedta_berto.sup')
+        ## libio.importSuperquadApp(self, '../data/znedta_berto.sup')
+        ## with libqt.signals_blocked(self.modelwidget.ui.table_model) as table:
+        ##     table.item(12, 3).setText("16.00")
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
         # self.newIonic()
-        # self.go()
+        ## self.go()
         # END TESTING PART
 
     def go(self):
@@ -134,8 +136,8 @@ class MainWindow(QtWidgets.QMainWindow):
             current_widget.calc_free_concentration()
             self.canvas.plot_speciation(current_widget)
         elif isinstance(current_widget, TabWidget):
-            current_widget.fitting(self.option)
-            current_widget.plot(self.canvas)
+            bridge = current_widget.fitting(self.option)
+            current_widget.plot(self.canvas, bridge)
         elif isinstance(current_widget, IonicWidget):
             self.canvas.plot_ionic(current_widget)
         else:

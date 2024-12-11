@@ -137,12 +137,19 @@ class Bridge():
         self.jacobian = np.empty(parameters.jacobian_shape, dtype=float)
         self.residual = np.empty(parameters.residual_shape, dtype=float)
 
+        self.chisq_hist: list[float] = []   # record fitting parameter history
+        self.sigma_hist: list[float] = []
+
     def accept_values(self):
         "Change definetly the values of the variables."
         self.parameters.accept_values()
 
     def size(self) -> tuple[int]:
         return self.parameters.jacobian_shape
+
+    def iteration_history(self, chisq:float, sigma:float) -> None:
+        self.chisq_hist.append(chisq)
+        self.sigma_hist.append(sigma)
 
     def step_values(self, increments):
         "Change provisionally the values of the variables."
@@ -211,6 +218,7 @@ class Bridge():
         raise NotImplementedError
 
     def report_step(self, **kwargs):
+        self.iteration_history(chisq=kwargs['chisq'], sigma=kwargs['sigma'])
         if self.report_buffer is None:
             return
         write = self.report_buffer.write
@@ -228,6 +236,8 @@ class Bridge():
             write(f"{n+1: 4d}  {ovalue:8.4f}  {vstep:8.4f}  {nvalue:8.4f}  \n")
 
     def report_raw(self, txt):
+        if self.report_buffer is None:
+            return
         self.report_buffer.write(txt)
 
 

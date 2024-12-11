@@ -178,6 +178,8 @@ class TabWidget(QtWidgets.QTabWidget):
         params.set_errors(errors)
         params.dump_to_widgets()
 
+        return bridgeobj
+
     def import_txtspectrum(self, filename):
         'Import data from text file.'
         wavelength, data = libio.import_spectrum_text(filename)
@@ -189,9 +191,9 @@ class TabWidget(QtWidgets.QTabWidget):
         tcombo.setCurrentIndex(index)
         spectwidget.feed_data(wavelengths=wavelength, spectra_data=data)
 
-    def plot(self, canvas):
+    def plot(self, canvas, bridge):
         widgets_to_plot = [w for w in self._itertabs() if isinstance(w, DataWidget)]
-        canvas.plot_fitting(widgets_to_plot, None)
+        canvas.plot_fitting(widgets_to_plot, bridge)
 
     def widgets_to_save(self):
         types = (EmfWidget, NmrWidget, SpecWidget, CalorWidget, TitrationBaseWidget)
