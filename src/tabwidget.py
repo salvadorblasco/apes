@@ -174,7 +174,8 @@ class TabWidget(QtWidgets.QTabWidget):
         errors = libmath.fitting_errors(covariance)
 
         self.output.refresh()
-        params.accept_values()
+        # breakpoint()
+        # params.accept_values()
         params.set_errors(errors)
         params.dump_to_widgets()
 

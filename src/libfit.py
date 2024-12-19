@@ -2,7 +2,7 @@
 
 import enum
 import math
-from typing import Callable, Tuple, Dict, List
+from typing import Callable, Tuple, Dict, List, Final
 
 import numpy as np
 from numpy.typing import NDArray
@@ -61,20 +61,23 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
         ValueError: If invalid parameters are passed.
     """
 
+    DAMPING_UPPER: Final[float] = 1e7
+    DAMPING_LOWER: Final[float] = 1e-7
+    DAMPING_UPF: Final[float] = 11.0
+    DAMPING_LOWF: Final[float] = 9.0
+    DAMPING0: Final[float] = 1e2
     report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
-    chisq_threshold = kwargs.pop('chisq_threshold', 1e-8)
-    grad_threshold = kwargs.pop('grad_threshold', 1e-8)
-    step_threshold = kwargs.pop('step_threshold', 1e-8)
+    chisq_threshold: Final[float] = kwargs.pop('chisq_threshold', 1e-1)
+    grad_threshold: Final[float] = kwargs.pop('grad_threshold', 1e-5)
+    step_threshold: Final[float] = kwargs.pop('step_threshold', 1e-5)
+    test_threshold: Final[float] = kwargs.pop('test_threshold', 1e-5)
     max_iterations = kwargs.pop('max_iterations', 200)
     quiet_maxits = kwargs.get('quiet_maxits', False)
-    damping = kwargs.pop('damping', 100.0)
+    damping: float = kwargs.pop('damping', DAMPING0)
     debug: bool = kwargs.pop('debug', False)
-    MAX_DAMPING = 1e50
 
     n_points, n_vars = bridge.size()
-    # chisq_hist: list[float] = []
-    # sigma_hist: list[float] = []
 
     iteration: int = 0
     W: FloatArray = bridge.weights()
@@ -87,45 +90,46 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
         if execution_status == Exec.INITIALISING:
             dx = np.zeros(n_vars)
         else:
-            dx = np.linalg.solve(M+damping*D, J.T @ W @ resid)
+            gradient: FloatArray = J.T @ W @ resid
+            dx = np.linalg.solve(M+damping*D, gradient)
 
         bridge.step_values(dx)                # Step bridge values and build matrices
-        J, resid = bridge.build_matrices()
-        new_chisq = np.sum(resid**2)
-        test = abs(chisq-new_chisq)/chisq
+        if execution_status == Exec.RUNNING:
+            new_chisq = resid.T @ W @ resid
+            test = (chisq-new_chisq)/abs(dx @ (damping*D @ dx - gradient))
+        elif execution_status == Exec.INITIALISING: 
+            test = test_threshold+1
 
-        if new_chisq >= chisq:
-            damping *= 10
-        else:
+        if test < test_threshold:                               # step ACCEPTED
+            damping = min((damping*DAMPING_UPF, DAMPING_UPPER))
+        else:                                                   # step REJECTED
             bridge.accept_values()
-            damping /= 5
-            sigma = fit_sigma(resid, np.diag(W), n_points, n_vars)
             if one_iter:
                 break
+            J, resid = bridge.build_matrices()
             M: FloatArray = J.T @ W @ J
             D: FloatArray = np.diag(np.diag(M))
 
             if execution_status == Exec.RUNNING:
                 chisq = new_chisq
-                # chisq_hist.append(chisq)
-                # sigma_hist.append(sigma)
+                sigma = fit_sigma(resid, np.diag(W), n_points, n_vars)
                 bridge.report_step(iteration=iteration, damping=damping, chisq=chisq, sigma=sigma)
-            iteration += 1
+                damping = max((damping/DAMPING_LOWF, DAMPING_LOWER))
 
         if execution_status == Exec.RUNNING:
             if debug and iteration:
-                print(f"iteracion={iteration-1}, {damping=:.2e}, {test=:.4e}, {sigma=:.4e}, {chisq=:.4e}")
+                print(f"iteration={iteration-1}, {damping=:.2e}, {test=:.4e}, {sigma=:.4e}, {chisq=:.4e}")
                 print(f"\t{dx=}\n\tx={tuple(bridge.parameters.initial_values())}")
 
-            if test  < chisq_threshold:
+            if chisq/bridge.degrees_of_freedom  < chisq_threshold:
                 execution_status = Exec.NORMAL_END
                 if debug:
-                    print(f"END: threshold   {test}<{chisq_threshold}")
+                    print(f"END: threshold   {test/bridge.degrees_of_freedom}<{chisq_threshold}")
                     print(f"\tx={tuple(bridge.parameters.initial_values())}")
                 bridge.report_raw(f" refinent finished on threshold criteria [{test}<{chisq_threshold}]\n")
                 break
 
-            if (gradient_norm := np.linalg.norm(J.T @ resid)) < grad_threshold:
+            if (gradient_norm := np.linalg.norm(gradient)) < grad_threshold:
                 execution_status = Exec.NORMAL_END
                 if debug:
                     print(f"END: gradient   {gradient_norm}<{grad_threshold}")
@@ -133,7 +137,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
                 bridge.report_raw(f"refinent finished on gradient criteria [{gradient_norm}<{grad_threshold}]\n")
                 break
 
-            if (step_size := np.linalg.norm(dx)) < step_threshold:
+            if (step_size := max(abs(a/b) for a, b in zip(dx, bridge.parameters.initial_values()))) < step_threshold:
                 execution_status = Exec.NORMAL_END
                 if debug:
                     print(f"END: step   {step_size}<{step_threshold}")
@@ -141,10 +145,11 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
                 bridge.report_raw(f"refinent ended on small step criteria [{step_size}<{step_threshold}]\n")
                 break
 
-            if math.isnan(test) or any(np.isnan(dx)) or damping>MAX_DAMPING:
+            if math.isnan(test) or any(np.isnan(dx)):
                 execution_status = Exec.ABNORMAL_END
                 break
 
+        iteration += 1
         if execution_status == Exec.INITIALISING:
             execution_status = Exec.RUNNING
     else:

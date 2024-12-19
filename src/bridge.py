@@ -140,6 +140,11 @@ class Bridge():
         self.chisq_hist: list[float] = []   # record fitting parameter history
         self.sigma_hist: list[float] = []
 
+    @property
+    def degrees_of_freedom(self):
+        n, m = self.jacobian.shape
+        return n-m+1
+
     def accept_values(self):
         "Change definetly the values of the variables."
         self.parameters.accept_values()
@@ -276,16 +281,18 @@ class Bridge():
         """
         # TODO change this to real values
         #return np.ones_like(self.residual)
+        # breakpoint()
         w = np.zeros_like(self.residual)
-        wdiag = np.zeros_like(self.residual)
+        #wdiag = np.zeros_like(self.residual)
         for dataid, datatype, data in self.parameters.iter_data():
             row_slice = data.vslice
             weight_partial = data.weight()
             w[row_slice] = weight_partial.flat
-            wdiag[row_slice] = data.variance().flat
+            #wdiag[row_slice] = data.variance().flat
 
-        covar = np.diag(wdiag) + w[:,None] @ w[None, :]
-        return 1/covar
+        # covar = np.diag(wdiag) # + w[:,None] @ w[None, :]
+        # return 1/covar
+        return np.diag(1/w)
 
 
 class Parameters:
@@ -380,6 +387,13 @@ class Parameters:
     def initial_values(self):
         for var in self.variables:
             yield var.get_value()
+
+    def abs_relative_increments(self):
+        yield from (abs(_) for _ in self.relative_increments())
+
+    def relative_increments(self):
+        for var in self.variables:
+            yield var.relative_increment()
 
     def stoichiometry(self, extended=False):
         "Get stoichiometry array."
@@ -623,7 +637,8 @@ class EmfData():
         return np.full_like(self.emf, self.error_emf**2)
 
     def weight(self) -> NDArray[float]:
-        return np.gradient(self.emf.T, self.titration.titre, axis=1) * self.titration.error_volume
+        return self.error_emf**2 + \
+               (np.gradient(self.emf.T, self.titration.titre, axis=1) * self.titration.error_volume)**2
 
     def residual(self) -> np.ndarray:
         "Return residual."
@@ -799,7 +814,10 @@ class Variable:
             dataholder = getattr(self.data, self.key)
             return dataholder[self.position]
         else:
-            return self.stored_value + self.increment
+            return self.stored_value # + self.increment
+
+    def relative_increment(self) -> float:
+        return self.increment/self.get_value()
 
     def get_error(self) -> float:
         dataholder = getattr(self.data, self.keyerror)
