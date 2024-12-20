@@ -2,7 +2,7 @@
 
 import enum
 import math
-from typing import Callable, Tuple, Dict, List, Final
+from typing import Tuple, Dict, List, Final
 
 import numpy as np
 from numpy.typing import NDArray
@@ -17,6 +17,7 @@ FloatArray = NDArray[float]
 
 
 class Exec(enum.IntEnum):
+    "Flag class for execution status."
     INITIALISING = enum.auto()
     RUNNING = enum.auto()
     NORMAL_END = enum.auto()
@@ -68,10 +69,10 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     DAMPING0: Final[float] = 1e2
     report_buffer = kwargs.get('report', DummyReport())
     one_iter = kwargs.get('one_iter', False)
-    chisq_threshold: Final[float] = kwargs.pop('chisq_threshold', 1e-1)
-    grad_threshold: Final[float] = kwargs.pop('grad_threshold', 1e-5)
-    step_threshold: Final[float] = kwargs.pop('step_threshold', 1e-5)
-    test_threshold: Final[float] = kwargs.pop('test_threshold', 1e-5)
+    chisq_threshold: Final[float] = kwargs.pop('chisq_threshold', 1e-2)
+    grad_threshold: Final[float] = kwargs.pop('grad_threshold', 1e-4)
+    step_threshold: Final[float] = kwargs.pop('step_threshold', 1e-4)
+    test_threshold: Final[float] = kwargs.pop('test_threshold', 1e-4)
     max_iterations = kwargs.pop('max_iterations', 200)
     quiet_maxits = kwargs.get('quiet_maxits', False)
     damping: float = kwargs.pop('damping', DAMPING0)
@@ -90,7 +91,9 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
         if execution_status == Exec.INITIALISING:
             dx = np.zeros(n_vars)
         else:
+            resid = bridge.tmp_residual()
             gradient: FloatArray = J.T @ W @ resid
+            gradient_norm = np.linalg.norm(gradient)
             dx = np.linalg.solve(M+damping*D, gradient)
 
         bridge.step_values(dx)                # Step bridge values and build matrices
@@ -113,7 +116,11 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
             if execution_status == Exec.RUNNING:
                 chisq = new_chisq
                 sigma = fit_sigma(resid, np.diag(W), n_points, n_vars)
-                bridge.report_step(iteration=iteration, damping=damping, chisq=chisq, sigma=sigma)
+                bridge.report_step(iteration=iteration, 
+                                   damping=damping, 
+                                   chisq=chisq/bridge.degrees_of_freedom, 
+                                   sigma=sigma,
+                                   gradient_norm=gradient_norm)
                 damping = max((damping/DAMPING_LOWF, DAMPING_LOWER))
 
         if execution_status == Exec.RUNNING:
@@ -129,7 +136,7 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
                 bridge.report_raw(f" refinent finished on threshold criteria [{test}<{chisq_threshold}]\n")
                 break
 
-            if (gradient_norm := np.linalg.norm(gradient)) < grad_threshold:
+            if gradient_norm  < grad_threshold:
                 execution_status = Exec.NORMAL_END
                 if debug:
                     print(f"END: gradient   {gradient_norm}<{grad_threshold}")
@@ -155,12 +162,13 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     else:
         execution_status = Exec.TOO_MANY_ITERS
 
-    bridge.iteration_history(chisq = chisq, sigma=sigma)
+    bridge.iteration_history(chisq = chisq/bridge.degrees_of_freedom,
+                             sigma=sigma,
+                             gradient_norm=gradient_norm)
 
     ret = {'jacobian': J,
            'residuals': resid,
            'damping': damping,
-           # 'convergence': chisq_hist,
            'iterations': iteration}
     if execution_status == Exec.TOO_MANY_ITERS:
         raise excepts.TooManyIterations(msg=("Maximum number of iterations reached"),
@@ -168,8 +176,6 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     if execution_status == Exec.ABNORMAL_END:
         raise excepts.UnstableIteration(msg=("The iteration is not stable"),
                                         last_value=ret)
-
-
     return ret
 
 
@@ -224,13 +230,13 @@ def simplex(x0, y, fnc, free_conc, weights, **kwargs):
 
     # ii. initial parameters
     # ----------------------
-    Nr = len(x0)    # number of variables to refine
-    h = Nr*[0.1]    # the initial steps in each dimmension
-    alpha = 1.0     # constant for reflection operation
-    beta = 0.5      # constant for contraction operation
-    gamma = 2       # constant for expansion operation
-    delta = 0.5     # constant for shrinking operation
-    iteration = 0
+    Nr: int = len(x0)          # number of variables to refine
+    h: list[float] = Nr*[0.1]  # the initial steps in each dimmension
+    alpha: float = 1.0         # constant for reflection operation
+    beta: float= 0.5           # constant for contraction operation
+    gamma = 2                  # constant for expansion operation
+    delta: float = 0.5         # constant for shrinking operation
+    iteration: int = 0
     chisq_hist = []
 
     def _report(**kws):
@@ -402,7 +408,7 @@ def final_params(jacobian, weights, resid):
     return error_beta, covar, correl
 
 
-def _centroid(x):
+def _centroid(x: FloatArray):
     """Given a list of vectors, return the centroid.
 
     Parameters:
@@ -428,8 +434,8 @@ def _hsl(lst):
     >>> _hsl([5,3,7,1,0])
     3, 0, 4
     """
-    if not len(lst) > 2:
-        breakpoint()
+    # if not len(lst) > 2:
+    #     breakpoint()
     assert len(lst) > 2
     f_idx = [lst.index(ff) for ff in sorted(lst, reverse=True)]
     return f_idx[0], f_idx[1], f_idx[-1]

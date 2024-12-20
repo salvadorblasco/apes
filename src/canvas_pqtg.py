@@ -139,21 +139,15 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         for col, widget in enumerate(widgets):
             data_plot = self._create_plot(row=0, col=col, label='titre / mL')
             resi_plot = self._create_plot(row=1, col=col, label='Residuals')
-            resi_plot.setXLink(data_plot)
-
-            if isinstance(widget, EmfWidget):
-                self.plot_emf(widget, data_plot, resi_plot)
-            else:
-                raise TypeError(f"Unsupported widget type: {type(widget)}")
 
             match widget:
                 case EmfWidget():
                     self.plot_emf(widget, data_plot, resi_plot, None)
                 case _:
-                    raise TypeError
+                    raise TypeError(f"Unsupported widget type: {type(widget)}")
                     
         pltr = self.addPlot(row=2, col=0, colspan=len(widgets))
-        pltr.plot(bridge.chisq_hist) 
+        pltr.plot(bridge.chisq_hist, symbol='o') 
         # bar = pg.BarGraphItem(x=np.arange(10), height=np.exp(-np.linspace(0.1, 10.0, 10)), width=1.0)
         # pltr.addItem(bar)
         pltr.setLabel('bottom', 'iteration')
@@ -211,24 +205,20 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         data_plot.setLabel("left", "emf / mV")
         resi_plot.setLabel("left", "emf / mV")
 
-        # for y in yexp:
-        #     data_plot.plot(x, y, symbol='o')
-        # for yc, yr in ycal:
-        #     data_plot.plot(x, y, pen='r')
-        #     resi_plot.plot(x, y, pen='r')
+        # TODO FIX
+        pconcs = pyqtgraph.ViewBox()
+        data_plot.showAxis('right')
+        data_plot.scene().addItem(pconcs)
+        data_plot.getAxis('right').linkToView(pconcs)
+        pconcs.setXLink(data_plot)
+        data_plot.getAxis('right').setLabel('concentrations')
 
-        # pconcs = pyqtgraph.ViewBox()
-        # plot.showAxis('right')
-        # plot.scene().addItem(pconcs)
-        # plot.getAxis('right').linkToView(pconcs)
-        # pconcs.setXLink(plot)
-        # plot.getAxis('right').setLabel('concentrations')
+        concs = widget.titration.free_concentration.T
+        for c in concs:
+            pconcs.addItem(pyqtgraph.PlotCurveItem(x=x, y=c))
 
-        # concs = widget.titration.free_conc.T
-        # for c in concs:
-        #     pconcs.addItem(pyqtgraph.PlotCurveItem(x=x, y=c))
-
-        # pconcs.setGeometry(plot.vb.sceneBoundingRect())
+        pconcs.setGeometry(data_plot.vb.sceneBoundingRect())
+        # TODO FIX
 
     def plot_ionic(self, ionicwidget):
         self.clear()

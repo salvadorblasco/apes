@@ -2,12 +2,16 @@ from PyQt5 import QtWidgets as QtGui
 from PyQt5 import QtCore
 
 import numpy as np
+from numpy.typing import NDArray
 
 import consts
 import libqt
 import libeq
 from modelwidget import ModelWidget
 from otherwidgets import TitrationBaseWidget
+
+
+FloatArray = NDArray[float]
 
 
 class DataWidget(QtGui.QWidget):
@@ -133,12 +137,12 @@ class DataWidget(QtGui.QWidget):
                         col0=min(self._expcol0))
 
     @property
-    def free_concentration(self):
-        return self._freeconcentration
+    def free_concentration(self) -> FloatArray:
+        return self._titration.free_concentration
 
-    @free_concentration.setter
-    def free_concentration(self, c):
-        self._freeconcentration = c
+    # @free_concentration.setter
+    # def free_concentration(self, c: FloatArray):
+    #     self._freeconcentration = c
 
     @property
     def name(self):

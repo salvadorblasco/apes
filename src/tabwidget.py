@@ -168,7 +168,7 @@ class TabWidget(QtWidgets.QTabWidget):
 
         ffit = libfit.fitting_functions[method]
         
-        info = ffit(bridgeobj, weight=bridgeobj.weights(), report=self.output.buffer, debug=True)
+        info = ffit(bridgeobj, weight=bridgeobj.weights(), report=self.output.buffer, debug=False)
 
         covariance = libmath.covariance(info['jacobian'], bridgeobj.weights())
         errors = libmath.fitting_errors(covariance)

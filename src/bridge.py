@@ -67,6 +67,7 @@ from specwidget import SpecWidget
 from otherwidgets import TitrationBaseWidget
 
 
+FloatArray = NDArray[float]
 prod_tuple = partial(reduce, lambda x, y: x*y)
 
 
@@ -139,6 +140,7 @@ class Bridge():
 
         self.chisq_hist: list[float] = []   # record fitting parameter history
         self.sigma_hist: list[float] = []
+        self.gradn_hist: list[float] = []
 
     @property
     def degrees_of_freedom(self):
@@ -152,9 +154,10 @@ class Bridge():
     def size(self) -> tuple[int]:
         return self.parameters.jacobian_shape
 
-    def iteration_history(self, chisq:float, sigma:float) -> None:
+    def iteration_history(self, chisq:float, sigma:float, gradient_norm:float) -> None:
         self.chisq_hist.append(chisq)
         self.sigma_hist.append(sigma)
+        self.gradn_hist.append(gradient_norm)
 
     def step_values(self, increments):
         "Change provisionally the values of the variables."
@@ -200,6 +203,33 @@ class Bridge():
                 self.jacobian[row_slice, col_slice] = jac_partial
         return self.jacobian, self.residual
 
+    def tmp_residual(self) -> FloatArray:
+        """Builds the Jacobian and residual matrices required for refinement.
+
+        This method iterates over available data to calculate partial derivatives and residuals
+        for each data type (e.g., EmfWidget, CalorWidget), storing results in pre-allocated
+        matrices. Each data type's specific processing function is called to compute the 
+        respective Jacobian and residual components.
+
+        Returns:
+            tuple[NDArray[float], NDArray[float]]: The computed Jacobian and residual matrices.
+        """
+        temp = self.parameters.get_temp()
+        betadata = self.parameters.beta
+        beta = betadata.beta()
+        beta_refine = betadata.to_refine
+        betaref = betadata.beta_refine()
+        tmpres = np.zeros_like(self.residual)
+
+        self.update_titrations(beta)
+
+        for dataid, datatype, data in self.parameters.iter_data():
+            row_slice = data.vslice
+            residual_partial = data.residual()
+            tmpres[row_slice] = residual_partial.flat
+
+        return tmpres
+
     def _process_emf_data(self, dataid, data, jpart, beta_refine, row_slice, col_slice, temp):
         if jpart == "beta":
             eactiv = data.electroactive
@@ -223,7 +253,8 @@ class Bridge():
         raise NotImplementedError
 
     def report_step(self, **kwargs):
-        self.iteration_history(chisq=kwargs['chisq'], sigma=kwargs['sigma'])
+        self.iteration_history(chisq=kwargs['chisq'], sigma=kwargs['sigma'], 
+                               gradient_norm=kwargs['gradient_norm'])
         if self.report_buffer is None:
             return
         write = self.report_buffer.write
@@ -246,7 +277,7 @@ class Bridge():
         self.report_buffer.write(txt)
 
 
-    def update_titrations(self, beta: np.ndarray) -> None:
+    def update_titrations(self, beta: FloatArray) -> None:
         """Update titration data by recalculating free concentrations and analytical matrices.
 
         For each titration instance, calculates new free concentrations and updates the Jacobian
@@ -595,7 +626,7 @@ class TitrationData():
 
     def dump(self, widget: TitrationBaseWidget) -> None:
         "Dump data into the widget to update the GUI."
-        widget.free_conc = self.free_conc
+        widget.free_concentration = self.free_conc
         if self.refine:
             return
         if any(self.init_flags):
@@ -628,7 +659,7 @@ class EmfData():
         if any(self.emf0_flags):
             widget.emf0 = self.emf0
 
-    def emf_calc(self) -> np.ndarray:
+    def emf_calc(self) -> FloatArray:
         "Return calculated emf values."
         hconc = libemf.hselect(self.titration.free_conc, self.electroactive)
         return libemf.nernst(hconc, self.emf0, self.slope, 0.0, self.temperature)
@@ -650,16 +681,26 @@ class BetaData:
     "Placeholder for equilibrium constants."
     logbeta: np.ndarray     # the value of log(β)
     beta_flags: tuple[int]
-    to_refine: tuple[int] = field(init=False)
+    to_refine: tuple[int] = field(init=False)   # contains the indices of the refined betas
     errors: NDArray[float] = field(init=False)
     variables: list["FreeVariable"] = field(init=False)
 
     def __post_init__(self):
         self.errors = np.zeros_like(self.logbeta)
 
-    def beta(self) -> np.ndarray:
+    def _choosebeta(self):
+        assert len(self.variables) == len(self.to_refine)
+        itv = iter(self.variables)
+        for n, val in enumerate(self.logbeta):
+            if n in self.to_refine:
+                yield next(itv).get_temporal()
+            else:
+                yield val
+
+    def beta(self) -> FloatArray:
         "Return beta values."
-        return np.exp(self.logbeta)
+        # return np.exp(self.logbeta)
+        return np.exp(np.fromiter(self._choosebeta(), float))
 
     def beta_refine(self):
         return np.exp(self.logbeta[self.to_refine])
@@ -793,19 +834,19 @@ class Variable:
         self.last_increment: float
 
     def accept_value(self) -> None:
-        self.previous_value = self.stored_value
-        self.last_increment = self.increment
+        "Make final the temporal value."
         self.set_value(self.stored_value + self.increment)
+        self.previous_value = self.stored_value     # save values for logging later
+        self.last_increment = self.increment
         self.stored_value = None
         self.increment = 0.0
 
     def increment_value(self, increment: float) -> None:
+        "Temporaly introduce an increment."
         if abs(increment) > self.max_increment:
             increment = math.copysign(self.max_increment, increment)
 
-        if self.stored_value is None:
-            self.stored_value = self.get_value()
-
+        self.stored_value = self.get_value()
         self.increment = increment
 
     def get_value(self) -> float:
@@ -816,8 +857,11 @@ class Variable:
         else:
             return self.stored_value # + self.increment
 
+    def get_temporal(self) -> float:
+        return self.get_value() +  self.increment
+
     def relative_increment(self) -> float:
-        return self.increment/self.get_value()
+        return self.increment/self.stored_value
 
     def get_error(self) -> float:
         dataholder = getattr(self.data, self.keyerror)
@@ -828,7 +872,7 @@ class Variable:
         dataholder[self.position] = value
 
     def set_value(self, value: float) -> None:
-        """Set value for all parameters in this Constraint.
+        """Set value for all parameters in this variable.
 
         Args:
             new_value (float): the new value to include.
