@@ -2,25 +2,25 @@
 
 import collections
 import configparser
-import itertools
+# import itertools
 import logging
 import sys
 
 import numpy as np
 
 from PyQt5.Qt import QApplication, QClipboard
-from PyQt5 import QtGui
+# from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
 import csolver
 import dialogs
-import excepts
+# import excepts
 import libaux
 import libio
-import libeq
-import libeq.consol
-import libemf
+# import libeq
+# import libeq.consol
+# import libemf
 import libqt
 import canvas_pqtg as canvas
 import consts
@@ -40,7 +40,25 @@ from tabmodels import TabModelWidget
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    "This class defines the main window."
+    """The MainWindow class defines the main window for the All-Purpose Equilibrium Solver (APES) application.
+
+    This class is responsible for:
+    - Initializing the main window and its components.
+    - Setting up and managing the user interface.
+    - Handling actions and events triggered by the user.
+    - Managing project data and interaction with various widgets.
+    - Providing functionalities to load, save, and manipulate equilibrium data.
+
+    Attributes:
+        project (Project): An instance of the Project class managing the current project data.
+        ui (Ui_MainWindow): User interface setup for the main window.
+        modelwidget (ModelWidget): Widget for managing equilibrium models.
+        modelwindow (QMainWindow): Sub-window for the model widget.
+        common_params: Placeholder for common parameters [to be initialized].
+        fitting_group (list): List of fitting group widgets.
+        canvas (MyCanvas): Canvas widget for plotting data.
+    """
+   
     def __init__(self):
         super().__init__()
 
@@ -57,75 +75,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.common_params = None
         self.fitting_group = []
 
-
         self._setup_vars()          # initialize variables
         self._make_connections()    # pair signals/slots
 
         self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
-        # lbl = QtWidgets.QLabel()
-        # lbl.setPixmap(QtGui.QPixmap('../icons/idle.png').scaledToHeight(20))
-        # self.ui.statusbar.insertWidget(0, lbl)
+        self.__testing_stuff()      # TESTING ONLY
 
-        # FOR TESTING ONLY
-        # _debug_fname_ =  '../data/distri_pytc8_extd.xml'
-        # _debug_fname_ =  '../data/cuimpy33333_.xml'
-        # self.new_speciation()
-        # self.ui.tab_main.clear()
-        # _debug_fname_ = '../data/hcit1.xml'
-        # _debug_fname_ = '../data/cuimpy33333_.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/hcit3.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA2/hedta8.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/kk.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
-        # _debug_fname_ = '../data/lmh.xml'
-        # _debug_fname_ = '../data/phosphate.xml'
-        # _debug_fname_ = '../data/hexaprotic.xml'
-        # _debug_fname_ = '../data/znedta_berto.sup'
-        # _debug_fname_ = '../data/hdtc.xml'
-        # _debug_fname_ = '../data/hpytren4q.xml'
-        # _debug_fname_ = '../data/distri_cudtc.xml'
-        # _debug_fname_ -= '../data/external.xml'
-        # _debug_fname_ = '../data/pylh.xml'
-        # _debug_fname_ = '../data/universal_buffer.xml'
-        #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
-        # logging.debug(f'loading {_debug_fname_}')
-        # libio.loadXML(self, _debug_fname_)
-        # t1 = self.ui.tab_main.add_titrationbase()
-        # t1.set_volume_explicit(False)
-        # m = self.ui.tab_main.add_model()
-        # m.addEquilibrium(position=-1, stoich=(1, 2), value=10.0, error=0.0)
-        # m.addEquilibrium(position=-1, stoich=(1, 3), value=20.0, error=0.0)
-        # m.addEquilibrium(position=-1, stoich=(1, 4), value=20.0, error=0.0)
-        # self.ui.tab_main.add_titrationbase()
-        # self.ui.tab_main.add_spectrumuv()
-        # m.removeComponent()
-        # self.ui.tab_main.add_nmr()
-        # self.ui.tab_main.add_ionic()
-        # self.ui.tab_main.import_txtspectrum('./spec1.txt')
-        # self.ui.mdiArea.activateNextSubWindow()
-        # self.ui.mdiArea.activateNextSubWindow()
-        # self.ui.mdiArea.activateNextSubWindow()
-        # self._manual_fitting()
-        # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
-        # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
-        # libio.importSuperquadApp(self, '../data/hpytren1.sup')
-        # libio.importSuperquadApp(self, '../data/znedta_berto.sup')
-        # with libqt.signals_blocked(self.modelwidget.ui.table_model) as table:
-        #     table.item(12, 3).setText("16.00")
-        # libio.saveXML(self, '../data/hpytren1.xml')
-        # libio.loadXML(self, '../data/hpytren1.xml')
-        # self.new_speciation()
-        # self.newIonic()
-        # self.go()
-        # END TESTING PART
 
-    def go(self):
-        'Start calculations.'
+    def go(self) -> None:
+        "Start calculations."
         window = self.ui.mdiArea.currentSubWindow()
         if window is None:
             self.message("Select a data window to fit")
@@ -147,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
         "Perform only one iteration."
         raise NotImplementedError
 
-    def menu_about(self):
+    def menu_about(self) -> None:
         aboutd = dialogs.AboutDialog()
         aboutd.exec()
 
@@ -892,7 +852,7 @@ class MainWindow(QtWidgets.QMainWindow):
         u.actionRemove_reagent.triggered.connect(m.removeComponent)
         if not renew:
             u.actionNewModel.triggered.connect(self.__newmodel)
-            u.action_ar_calorimetry.triggered.connect(self.__switch_calorimetry)
+            # u.action_ar_calorimetry.triggered.connect(self.__switch_calorimetry)
             u.action_set_temperature.triggered.connect(self.__set_temperature)
             u.action_combine_constants.triggered.connect(self.__combine_constants, type=unique)
             u.action_manual_fitting.triggered.connect(self._manual_fitting)
@@ -1004,7 +964,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ...
 
     def __newmodel(self):
-        'Create new model and change to it.'
+        "Create new model and change to it."
         self.modelwidget.newModel()
         self._update_available_models()
         action = self._available_models[-1]
@@ -1178,11 +1138,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if accept:
             model.temperature = temp
 
-    def __switch_calorimetry(self):
-        if self.modelwidget.isCalori():
-            self.modelwidget.removeCalorimetry()
-        else:
-            self.modelwidget.addCalorimetry()
+    # def __switch_calorimetry(self):
+    #     if self.modelwidget.isCalori():
+    #         self.modelwidget.removeCalorimetry()
+    #     else:
+    #         self.modelwidget.addCalorimetry()
 
     def __tab_changed(self, i):
         "Triggered when the tab changes."
@@ -1234,3 +1194,61 @@ class MainWindow(QtWidgets.QMainWindow):
         filename = self.__savedialog(filters)
         if filename:
             self.canvas.saveFigure(filename)
+
+    def __testing_stuff(self):
+        # FOR TESTING ONLY
+        # _debug_fname_ =  '../data/distri_pytc8_extd.xml'
+        # _debug_fname_ =  '../data/cuimpy33333_.xml'
+        # self.new_speciation()
+        # self.ui.tab_main.clear()
+        # _debug_fname_ = '../data/hcit1.xml'
+        # _debug_fname_ = '../data/cuimpy33333_.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/hcit3.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA2/hedta8.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA/kk.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
+        # _debug_fname_ = '../data/lmh.xml'
+        # _debug_fname_ = '../data/phosphate.xml'
+        # _debug_fname_ = '../data/hexaprotic.xml'
+        # _debug_fname_ = '../data/znedta_berto.sup'
+        # _debug_fname_ = '../data/hdtc.xml'
+        # _debug_fname_ = '../data/hpytren4q.xml'
+        # _debug_fname_ = '../data/distri_cudtc.xml'
+        # _debug_fname_ -= '../data/external.xml'
+        # _debug_fname_ = '../data/pylh.xml'
+        # _debug_fname_ = '../data/universal_buffer.xml'
+        #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
+        # logging.debug(f'loading {_debug_fname_}')
+        # libio.loadXML(self, _debug_fname_)
+        # t1 = self.ui.tab_main.add_titrationbase()
+        # t1.set_volume_explicit(False)
+        # m = self.ui.tab_main.add_model()
+        # m.addEquilibrium(position=-1, stoich=(1, 2), value=10.0, error=0.0)
+        # m.addEquilibrium(position=-1, stoich=(1, 3), value=20.0, error=0.0)
+        # m.addEquilibrium(position=-1, stoich=(1, 4), value=20.0, error=0.0)
+        # self.ui.tab_main.add_titrationbase()
+        # self.ui.tab_main.add_spectrumuv()
+        # m.removeComponent()
+        # self.ui.tab_main.add_nmr()
+        # self.ui.tab_main.add_ionic()
+        # self.ui.tab_main.import_txtspectrum('./spec1.txt')
+        # self.ui.mdiArea.activateNextSubWindow()
+        # self.ui.mdiArea.activateNextSubWindow()
+        # self.ui.mdiArea.activateNextSubWindow()
+        # self._manual_fitting()
+        # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
+        # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
+        # libio.importSuperquadApp(self, '../data/hpytren1.sup')
+        # libio.importSuperquadApp(self, '../data/znedta_berto.sup')
+        # with libqt.signals_blocked(self.modelwidget.ui.table_model) as table:
+        #     table.item(12, 3).setText("16.00")
+        # libio.saveXML(self, '../data/hpytren1.xml')
+        # libio.loadXML(self, '../data/hpytren1.xml')
+        # self.new_speciation()
+        # self.newIonic()
+        # self.go()
+        # END TESTING PART
+        return
