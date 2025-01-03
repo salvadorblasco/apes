@@ -52,8 +52,8 @@ class PlotStyle:
 class DraggableLabel(pyqtgraph.TextItem):
     "Create a dragable label that responds to mouse events."
 
-    def __init__(self, text="", anchor=(0.5, 0.5), **kwargs):
-        super().__init__(text, anchor=anchor, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.setFlag(self.ItemIsMovable, True)
         self.setFlag(self.ItemIsSelectable, True)
         self.setAcceptedMouseButtons(QtCore.Qt.LeftButton)
@@ -73,6 +73,20 @@ class DraggableLabel(pyqtgraph.TextItem):
         if event.button() == QtCore.Qt.LeftButton:
             self._startPos = None
         super().mouseReleaseEvent(event)
+
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            # print(f"Label '{self.toPlainText()}' was double-clicked!")
+            # breakpoint()
+            # assert isinstance(self.parent, QtWidgets.QWidget)
+            new_label, ok = QtWidgets.QInputDialog.getText(None,
+                                                           "Change label",
+                                                           "New label",
+                                                           QtWidgets.QLineEdit.Normal,
+                                                           self.toHtml())
+            if ok:
+                print(f"new label is {new_label}")
+        super().mouseDoubleClickEvent(event)
 
 
 class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
@@ -320,8 +334,8 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
             # text = pyqtgraph.TextItem()
             text = DraggableLabel()
             text.setHtml(l)
-            axes.addItem(text)
             text.setPos(*xy)
+            axes.addItem(text)
 
     def style(self, num_entries=None, withfill=False, groups=None):
         """Generate style data.
