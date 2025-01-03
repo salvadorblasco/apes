@@ -49,6 +49,32 @@ class PlotStyle:
         return {'linestyle': self.linestyle, 'linewidth': self.linewidth}
 
 
+class DraggableLabel(pyqtgraph.TextItem):
+    "Create a dragable label that responds to mouse events."
+
+    def __init__(self, text="", anchor=(0.5, 0.5), **kwargs):
+        super().__init__(text, anchor=anchor, **kwargs)
+        self.setFlag(self.ItemIsMovable, True)
+        self.setFlag(self.ItemIsSelectable, True)
+        self.setAcceptedMouseButtons(QtCore.Qt.LeftButton)
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self._startPos = event.pos()
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == QtCore.Qt.LeftButton:
+            displacement = event.pos() - self._startPos
+            self.setPos(self.pos() + displacement)
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self._startPos = None
+        super().mouseReleaseEvent(event)
+
+
 class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
     """Main class to do the drawing.
 
@@ -291,7 +317,8 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         for xy, l in zip(label_xy, label_text):
             if xy[1] < threshold:
                 continue
-            text = pyqtgraph.TextItem()
+            # text = pyqtgraph.TextItem()
+            text = DraggableLabel()
             text.setHtml(l)
             axes.addItem(text)
             text.setPos(*xy)
@@ -361,7 +388,6 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         plot.setLabel("bottom", label)
         plot.showAxes('both')
         return plot
-
 
 
 def smooth_curve(xmin, xmax, ydata):            # TODO move somewhere else

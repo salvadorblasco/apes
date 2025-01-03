@@ -1190,7 +1190,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/hcit1.xml'
         # _debug_fname_ = '../data/cuimpy33333_.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
-        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
+        _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/hcit3.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA2/hedta8.xml'
@@ -1208,7 +1208,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        # libio.loadXML(self, _debug_fname_)
+        libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
