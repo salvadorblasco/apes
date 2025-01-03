@@ -2,32 +2,26 @@
 
 import collections
 import configparser
-# import itertools
 import logging
 import sys
 
 import numpy as np
 
 from PyQt5.Qt import QApplication, QClipboard
-# from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import uic
 
 import csolver
 import dialogs
-# import excepts
 import libaux
 import libio
-# import libeq
-# import libeq.consol
-# import libemf
 import libqt
 import canvas_pqtg as canvas
 import consts
-import ui_mainwindow as mainui
 import datawidget
 import otherwidgets
+
 from emfwidget import EmfWidget
 from modelwidget import ModelWidget
 from calorwidget import CalorWidget
@@ -63,12 +57,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.project = Project()
+        self.project: Project = Project()
         self._options_widget = dialogs.OptionsDialog()
         self._docprops_widget = dialogs.PropertiesDialog(self.project)
 
-        # self.ui = mainui.Ui_MainWindow()
-        # self.ui.setupUi(self)
         self.ui = uic.loadUi('../forms/mainwindow.ui', self)
 
         self.modelwidget = ModelWidget()
@@ -84,7 +76,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.mdiArea.tileSubWindows()
 
         # self.__testing_stuff()      # TESTING ONLY
-
 
     def go(self) -> None:
         "Start calculations."
@@ -181,7 +172,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.new_model()
         self._model_connections(renew=True)
         # self._fmode = consts.FM_NONE
-        self.__notifymode()
+        # self.__notifymode()
         return True
 
     def menuSaveFile(self):
@@ -226,31 +217,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self._options_widget.exec()
 
     # TODO delete
-    def menuPlotColor(self, qaction):
-        """Select the color scheme that will be applied to the current plot.
+    # def menuPlotColor(self, qaction):
+    #     """Select the color scheme that will be applied to the current plot.
 
-        Several schemes are available. See also :class:`canvas.MyCanvas` and
-        :func:`canvas.MyCanvas.setColor`
-        """
-        action_color = {self.ui.actionColorBW: canvas.MyCanvas.COLORBW,
-                        self.ui.actionColorRed:canvas.MyCanvas.COLORR,
-                        self.ui.actionColorBlue: canvas.MyCanvas.COLORB,
-                        self.ui.actionColorRainbow: canvas.MyCanvas.COLORRB}
-        assert qaction in action_color
-        self.canvas.setColor(action_color[qaction])
+    #     Several schemes are available. See also :class:`canvas.MyCanvas` and
+    #     :func:`canvas.MyCanvas.setColor`
+    #     """
+    #     action_color = {self.ui.actionColorBW: canvas.MyCanvas.COLORBW,
+    #                     self.ui.actionColorRed: canvas.MyCanvas.COLORR,
+    #                     self.ui.actionColorBlue: canvas.MyCanvas.COLORB,
+    #                     self.ui.actionColorRainbow: canvas.MyCanvas.COLORRB}
+    #     assert qaction in action_color
+    #     self.canvas.setColor(action_color[qaction])
 
     # TODO delete
-    def menuPlotStyle(self, qaction):
-        """Select the style that will be applied to the current plot.
+    # def menuPlotStyle(self, qaction):
+    #     """Select the style that will be applied to the current plot.
 
-        Several schemes are available. See also :class:`canvas.MyCanvas` and
-        :func:`canvas.MyCanvas.setStyle`.
-        """
-        action_style = {self.ui.actionStyle1: canvas.MyCanvas.STYLE1,
-                        self.ui.actionStyle2: canvas.MyCanvas.STYLE2,
-                        self.ui.actionStyle3: canvas.MyCanvas.STYLE3,
-                        self.ui.actionStyle4: canvas.MyCanvas.STYLE4}
-        self.canvas.setStyle(action_style[qaction])
+    #     Several schemes are available. See also :class:`canvas.MyCanvas` and
+    #     :func:`canvas.MyCanvas.setStyle`.
+    #     """
+    #     action_style = {self.ui.actionStyle1: canvas.MyCanvas.STYLE1,
+    #                     self.ui.actionStyle2: canvas.MyCanvas.STYLE2,
+    #                     self.ui.actionStyle3: canvas.MyCanvas.STYLE3,
+    #                     self.ui.actionStyle4: canvas.MyCanvas.STYLE4}
+    #     self.canvas.setStyle(action_style[qaction])
 
     def menuRemoveComponent(self):
         "Remove a component."
@@ -303,6 +294,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`EmfWidget`: The newly created widget.
         '''
+        raise DeprecationWarning
         if not self.fitting_group:         # if empty list
             self.new_fitting_group()
 
@@ -687,7 +679,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.message('Error importing data')
             print(e)
         else:
-            self._fmode = consts.FM_EMF
+            # self._fmode = consts.FM_EMF
+            pass
 
     def _import_hyperquad(self):
         'Import data from HYPERQUAD file.'
@@ -697,8 +690,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         # TESTING
-        libio.importHyperquadApp(self, filename)
-        self._fmode = consts.FM_EMF
+        libio.import_hyperquad_app(self, filename)
 
     def _import_txtsp(self):
         'Import data from text file.'
@@ -879,7 +871,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._filename = None
         self.outputw = None
         self._multilock = True  # if true, forbid mixing different data types
-        self._fmode = consts.FM_NONE
+        # self._fmode = consts.FM_NONE
         self._activemodel_ag = QtWidgets.QActionGroup(self)
         self._activemodel_ag.setExclusive(True)
         self._available_models = [self.ui.actionModel_1]
@@ -1210,7 +1202,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        # libio.loadXML(self, _debug_fname_)
+        libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -1237,6 +1229,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
         # self.newIonic()
-        # self.go()
+        self.go()
         # END TESTING PART
         return
