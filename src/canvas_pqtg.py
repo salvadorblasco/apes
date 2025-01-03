@@ -19,21 +19,21 @@ Dependencies:
 .. moduleauthor:: Salvador Blasco <salvador.blasco@protonmail.com>
 """
 
-import itertools
+# import itertools
 import dataclasses
 
 import numpy as np
 from scipy.interpolate import interp1d
 
-import PyQt5.Qt
+# import PyQt5.Qt
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
 import pyqtgraph
 
-import libaux
+# import libaux
 import libplot
-from datawidget import DataWidget
+# from datawidget import DataWidget
 from emfwidget import EmfWidget
 
 
@@ -76,16 +76,9 @@ class DraggableLabel(pyqtgraph.TextItem):
 
     def mouseDoubleClickEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton:
-            # print(f"Label '{self.toPlainText()}' was double-clicked!")
-            # breakpoint()
-            # assert isinstance(self.parent, QtWidgets.QWidget)
-            new_label, ok = QtWidgets.QInputDialog.getText(None,
-                                                           "Change label",
-                                                           "New label",
-                                                           QtWidgets.QLineEdit.Normal,
-                                                           self.toHtml())
+            new_label, ok = QtWidgets.QInputDialog.getText(None, "Change label", "New label",
+                                                           QtWidgets.QLineEdit.Normal, "")
             if ok and new_label:
-                # print(f"new label is {new_label}")
                 self.setHtml(new_label)
         super().mouseDoubleClickEvent(event)
 
@@ -386,8 +379,8 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         """
         ...
 
-    def mpl_connect(*args, **kwargs):
-        pass
+    # def mpl_connect(*args, **kwargs):
+    #     pass
 
     def _create_plot(self, row, col, label):
         """Utility method to create and configure a plot.
