@@ -12,6 +12,7 @@ from PyQt5.Qt import QApplication, QClipboard
 # from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from PyQt5 import uic
 
 import csolver
 import dialogs
@@ -66,8 +67,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self._options_widget = dialogs.OptionsDialog()
         self._docprops_widget = dialogs.PropertiesDialog(self.project)
 
-        self.ui = mainui.Ui_MainWindow()
-        self.ui.setupUi(self)
+        # self.ui = mainui.Ui_MainWindow()
+        # self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/mainwindow.ui', self)
 
         self.modelwidget = ModelWidget()
         self.modelwindow = self.ui.mdiArea.addSubWindow(self.modelwidget)
@@ -178,7 +180,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.mdiArea.closeAllSubWindows()
         self.new_model()
         self._model_connections(renew=True)
-        self._fmode = consts.FM_NONE
+        # self._fmode = consts.FM_NONE
         self.__notifymode()
         return True
 
@@ -193,7 +195,7 @@ class MainWindow(QtWidgets.QMainWindow):
         "Ask for a file to save the current data."
         filters = "XML Files (*.xml);;All Files (*.*)"
         filename, ok = self.__savedialog(filters)
-        if ok:
+        if ok and filename:
             self._filename = filename
             libio.saveXML(self, filename)
 

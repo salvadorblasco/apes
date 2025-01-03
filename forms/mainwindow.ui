@@ -310,6 +310,7 @@
      <string>Windows</string>
     </property>
     <addaction name="actionTile_windows"/>
+    <addaction name="actionCascade_windows"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Model"/>
@@ -1005,6 +1006,11 @@
   <action name="actionTile_windows">
    <property name="text">
     <string>Tile windows</string>
+   </property>
+  </action>
+  <action name="actionCascade_windows">
+   <property name="text">
+    <string>Cascade windows</string>
    </property>
   </action>
  </widget>
