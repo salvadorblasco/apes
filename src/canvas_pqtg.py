@@ -84,8 +84,9 @@ class DraggableLabel(pyqtgraph.TextItem):
                                                            "New label",
                                                            QtWidgets.QLineEdit.Normal,
                                                            self.toHtml())
-            if ok:
-                print(f"new label is {new_label}")
+            if ok and new_label:
+                # print(f"new label is {new_label}")
+                self.setHtml(new_label)
         super().mouseDoubleClickEvent(event)
 
 

@@ -81,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
-        self.__testing_stuff()      # TESTING ONLY
+        # self.__testing_stuff()      # TESTING ONLY
 
 
     def go(self) -> None:
@@ -1208,7 +1208,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        libio.loadXML(self, _debug_fname_)
+        # libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
