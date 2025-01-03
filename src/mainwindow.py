@@ -371,6 +371,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`SpecDSWidget`: The newly created widget.
         '''
+        raise DeprecationWarning
         # if self._spect_fit is None:
         #     dswf = SpecFitWidget(self.modelwidget)
         #     self._newtab('spec fit', dswf, self.ui.actionNewSpecDS)
@@ -451,23 +452,6 @@ class MainWindow(QtWidgets.QMainWindow):
             case 'fitting algorithm':
                 return self._get_fitalg()
         raise ValueError
-
-    # def plotEmf(self):
-    #     '''Plot emf data.
-
-    #     This routine streams emf data and fit data to canvas
-    #     '''
-    #     def data_stream():
-    #         'Stream emf data.'
-    #         # number of potentiometry datasets
-    #         yield self._tabcounter(EmfWidget)
-    #         # plot masked flag
-    #         yield True
-    #         for widget in libqt.filter_tabwidget(self.ui.tab_main, EmfWidget):
-    #             yield (widget.use, widget.titre, widget.emf, widget.emf_fit,
-    #                    widget.C, widget.residuals)
-
-    #     self.canvas.drawEmfFit(data_stream)
 
     def _copytdat(self):
         # 1. find out number of points
@@ -593,6 +577,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _get_fitalg(self):
         "Return selected fitting algorithm."
+        raise DeprecationWarning
         ui = self.ui
         ag = self.__fitmethactgr
         if ag.checkedAction() is ui.actionLevenberg_Marquardt:
@@ -688,19 +673,19 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         # TESTING
-        libio.importSuperquadApp(self, filename)
-        self._fmode = consts.FM_EMF
+        # libio.importSuperquadApp(self, filename)
+        # self._fmode = consts.FM_EMF
 
         # PRODUCTION
-        #try:
-        #    libio.importSuperquadApp(self, filename)
-        #except OSError:
-        #    self.message('File could not be opened')
-        #except Exception as e:
-        #    self.message('Error importing data')
-        #    print(e)
-        #else:
-        #    self._fmode = consts.FM_EMF
+        try:
+            libio.importSuperquadApp(self, filename)
+        except OSError:
+            self.message('File could not be opened')
+        except Exception as e:
+            self.message('Error importing data')
+            print(e)
+        else:
+            self._fmode = consts.FM_EMF
 
     def _import_hyperquad(self):
         'Import data from HYPERQUAD file.'
@@ -1171,18 +1156,6 @@ class MainWindow(QtWidgets.QMainWindow):
         for item in all_items:
             item.setEnabled(item in items)
 
-    def __tilewindows(self):
-        self.ui.mdiArea.tileSubWindows()
-
-    def __unlabellowerthan(self, threshold):
-        self.canvas.unlabellowerthan = threshold
-        # TODO raise plot_update
-
-    def __update_constants(self):
-        lastresult = self.outputw.get_last_result()
-        self.modelwidget.beta_raw = lastresult['beta']
-        self.modelwidget.beta_error = lastresult['beta_error']
-
     def __plexp(self):
         "export plot"
         filters = ";;".join(("Portable Network Graphics (*.png)",
@@ -1194,6 +1167,19 @@ class MainWindow(QtWidgets.QMainWindow):
         filename = self.__savedialog(filters)
         if filename:
             self.canvas.saveFigure(filename)
+
+    def __tilewindows(self):
+        "Tile windows."
+        self.ui.mdiArea.tileSubWindows()
+
+    def __unlabellowerthan(self, threshold):
+        self.canvas.unlabellowerthan = threshold
+        # TODO raise plot_update
+
+    def __update_constants(self):
+        lastresult = self.outputw.get_last_result()
+        self.modelwidget.beta_raw = lastresult['beta']
+        self.modelwidget.beta_error = lastresult['beta_error']
 
     def __testing_stuff(self):
         # FOR TESTING ONLY
@@ -1239,10 +1225,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.mdiArea.activateNextSubWindow()
         # self.ui.mdiArea.activateNextSubWindow()
         # self._manual_fitting()
-        # libio.importHyperquadApp(self, '/home/salvador/pztrenDoSeTy.hqd')
-        # libio.importHyperquadApp(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
+        # libio.import_hyperquad_app(self, '/home/salvador/pztrenDoSeTy.hqd')
+        # libio.import_hyperquad_app(self, '/home/salvador/Documents/Trabajo/datos/emf/pdma/PDMA_0.15_25_080322.HQD')
         # libio.importSuperquadApp(self, '../data/hpytren1.sup')
-        # libio.importSuperquadApp(self, '../data/znedta_berto.sup')
+        # libio.import_superquad_app(self, '../data/znedta_berto.sup')
         # with libqt.signals_blocked(self.modelwidget.ui.table_model) as table:
         #     table.item(12, 3).setText("16.00")
         # libio.saveXML(self, '../data/hpytren1.xml')

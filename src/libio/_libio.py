@@ -1,4 +1,20 @@
-"""Routines for input/output and import/export data."""
+"""Routines for input/output and import/export data.
+
+Public API:
+- loadXML
+- saveXML
+- import_passat
+- import_spectrum_text
+- import_tiamo
+- importSuperquad
+- importHyperquad
+- importK88
+- importSuperquadApp
+- importHyperquadApp
+- importPasatApp
+- importTiamoApp
+- importTxtSpApp
+"""
 
 import datetime
 import itertools
@@ -113,7 +129,7 @@ def loadFittingXML(widget, xmle):
         twidget.populate_cb_titration(titration_names)
         loadEmfXML(twidget, potentio)
 
-    for nmrdat in xmle.findall('nmrdata'):
+    for nmrdata in xmle.findall('nmrdata'):
         twidget = widget.add_nmr()
         index = widget.indexOf(twidget)
         widget.setTabText(index, nmrdata.attrib['name'])
