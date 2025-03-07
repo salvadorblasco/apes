@@ -207,7 +207,8 @@ class EmfTests(unittest.TestCase):
         self.main = apes.MainWindow()
         # self.main.show()
         # QTest.qWaitForWindowShown(self.main)
-        self.emf = self.main.newEmf()
+        self.tgroup = self.main.new_fitting_group()
+        self.emf = self.tgroup.add_emf()
         # n_data = 20
         # import random
         # self.emf.emf = [random.random() for r in range(n_data)]

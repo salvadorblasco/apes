@@ -1184,7 +1184,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/hcit1.xml'
         # _debug_fname_ = '../data/cuimpy33333_.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
-        _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
+        # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/hcit3.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/EDTA2/hedta8.xml'
@@ -1229,6 +1229,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # libio.loadXML(self, '../data/hpytren1.xml')
         # self.new_speciation()
         # self.newIonic()
-        self.go()
+        # self.go()
         # END TESTING PART
         return

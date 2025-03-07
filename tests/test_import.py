@@ -23,7 +23,7 @@ class TestImport(unittest.TestCase):
 
     def test_k88(self):
         for _file in lsdir('*.k88'):
-            A, B, V1, V2, idp, Q = libio.importK88(_file)
+            A, B, V1, V2, idp, Q = libio.import_K88_data(_file)
             self.checkis(A, list, list, float)
             self.checkis(B, list, list, float)
             self.checkis(V1, list, float)
@@ -33,7 +33,7 @@ class TestImport(unittest.TestCase):
 
     def test_pasat(self):
         for _file in lsdir('*.ptr'):
-            data = libio.import_pasat(_file)
+            data = libio.import_pasat_data(_file)
             self.checkis(data, tuple, list, float)
 
     @unittest.skip("Not implemented")
@@ -43,7 +43,7 @@ class TestImport(unittest.TestCase):
     def test_superquad(self):
         checkis = self.checkis
         for _file in lsdir('*.sup'):
-            stream = libio.importSuperquad(_file)
+            stream = libio.import_superquad_data(_file)
             checkis(next(stream), str)
             checkis(next(stream), tuple, int)
             checkis(next(stream), tuple, str)

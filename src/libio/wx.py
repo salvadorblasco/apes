@@ -312,3 +312,8 @@ def _checkXML(xmle, tag):
 
 def _read_seq(xmle, x, dtype=float):
     return (dtype(i) for i in xmle.find(x).text.split())
+
+
+def j(a):
+    'A shortcut.'
+    return " ".join(map(str, a))

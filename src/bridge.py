@@ -831,7 +831,7 @@ class Variable:
         self.stored_value: float | None = None
         self.increment: float = 0.0
         self.previous_value: float = 0.0
-        self.last_increment: float
+        self.last_increment: float = 0.0
 
     def accept_value(self) -> None:
         "Make final the temporal value."
@@ -855,7 +855,7 @@ class Variable:
             dataholder = getattr(self.data, self.key)
             return dataholder[self.position]
         else:
-            return self.stored_value # + self.increment
+            return self.stored_value + self.increment
 
     def get_temporal(self) -> float:
         return self.get_value() +  self.increment

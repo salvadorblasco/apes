@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import QApplication
 
 sys.path.append('../src')
 import libio
+import libio.wx
+import libio.rx
 
 
 def _xml(xml_text):
@@ -87,7 +89,7 @@ class TestLoad(unittest.TestCase):
            <enthropy_error>0.06 0.09</enthropy_error>
           </model>"""
         xmle = _xml(text)
-        model = libio.loadModelXML(xmle)
+        model = libio.rx.loadModelXML(xmle)
 
         self.assertEqual(model.name, "title example")
         self.assertListEqual(model.const, [9.25, 10.19])
@@ -277,7 +279,7 @@ class TestSave(unittest.TestCase):
         model.stoich = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
         model.const_error = [0.1, 0.2, 0.3, 0.4]
 
-        xmle = libio.saveModelXML(model)
+        xmle = libio.wx.saveModelXML(model)
         self.assertEqual('test name', xmle.attrib['title'])
         _read_beta = [float(number) for number in xmle.find('beta').text.split()]
         self.assertListEqual(model.const, _read_beta)

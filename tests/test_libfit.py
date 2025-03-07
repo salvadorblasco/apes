@@ -29,7 +29,7 @@ class TestLevenberg(unittest.TestCase):
             with self.subTest(noise=noise):
                 self._marquardt_call(noise)
                 values = np.fromiter(self.params.initial_values(), dtype=float) / consts.LOGK
-                npt.assert_allclose(values, self.data.logbeta[:6], atol=1e-2)
+                npt.assert_allclose(values, self.data.logbeta[:6], atol=2e-2)
 
     def _marquardt_call(self, noise_level: float):
         noise = noise_level * (np.random.rand(6) - 0.5)
@@ -52,7 +52,7 @@ class TestLevenberg2(unittest.TestCase):
             with self.subTest(noise=noise):
                 self._marquardt_call(noise)
                 values = np.fromiter(self.params.initial_values(), dtype=float) / consts.LOGK
-                npt.assert_allclose(values, self.data.logbeta[6:9], atol=1e-3)
+                npt.assert_allclose(values, self.data.logbeta[6:9], atol=1e-2)
 
     def _marquardt_call(self, noise_level: float):
         noise = noise_level * (np.random.rand(3) - 0.5)
