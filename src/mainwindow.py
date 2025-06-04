@@ -1076,8 +1076,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __saveconc(self):
         "Save free concentrations to a file."
-        # current_widget = self.ui.tab_main.currentWidget()
-        # currentWidget = self.ui.mdiArea.activeSubWindow().widget()
+        current_widget = self.ui.mdiArea.activeSubWindow().widget()
         conc = self.__concentration_matrix()
 
         filters = ("Numpy files (*.npy)",
