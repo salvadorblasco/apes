@@ -1076,7 +1076,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __saveconc(self):
         "Save free concentrations to a file."
-        current_widget = self.ui.tab_main.currentWidget()
+        # current_widget = self.ui.tab_main.currentWidget()
+        # currentWidget = self.ui.mdiArea.activeSubWindow().widget()
         conc = self.__concentration_matrix()
 
         filters = ("Numpy files (*.npy)",
@@ -1184,6 +1185,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/hcit1.xml'
         # _debug_fname_ = '../data/cuimpy33333_.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
+        _debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren22.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/zncit.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/Northover/hzn5.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/citrate/hcit3.xml'
