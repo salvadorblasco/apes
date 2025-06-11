@@ -440,3 +440,15 @@ def _checkXML(xmle, tag):
     if xmle.tag != tag:
         raise ValueError("Wrong XML piece was loaded")
     return
+
+
+def _read_seq(xmle, x, dtype=float):
+    return (dtype(i) for i in xmle.find(x).text.split())
+
+
+def __read_floats(xmle, tag):
+    return map(float, xmle.find(tag).text.split())
+
+
+def __read_ints(xmle, tag):
+    return map(int, xmle.find(tag).text.split())

@@ -168,7 +168,9 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             raise RuntimeError
 
-        self.ui.mdiArea.closeAllSubWindows()
+        # self.ui.mdiArea.closeAllSubWindows()
+        for widget in self.fitting_group:
+            widget.close()
         self.new_model()
         self._model_connections(renew=True)
         # self._fmode = consts.FM_NONE
@@ -211,6 +213,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print(traceback.format_exc())
         else:
             self._model_connections(renew=True)
+        self.ui.mdiArea.tileSubWindows()
 
     def menu_options(self):
         "Open options dialog."
@@ -571,7 +574,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _get_fitalg(self):
         "Return selected fitting algorithm."
-        raise DeprecationWarning
+        # raise DeprecationWarning
         ui = self.ui
         ag = self.__fitmethactgr
         if ag.checkedAction() is ui.actionLevenberg_Marquardt:
@@ -1192,7 +1195,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
         # _debug_fname_ = '../data/lmh.xml'
         # _debug_fname_ = '../data/phosphate.xml'
-        # _debug_fname_ = '../data/hexaprotic.xml'
+        _debug_fname_ = '../data/hexaprotic.xml'
         # _debug_fname_ = '../data/znedta_berto.sup'
         # _debug_fname_ = '../data/hdtc.xml'
         # _debug_fname_ = '../data/hpytren4q.xml'
