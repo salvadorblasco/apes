@@ -4,6 +4,7 @@ import collections
 import configparser
 import logging
 import sys
+import warnings
 
 import numpy as np
 
@@ -75,7 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
-        # self.__testing_stuff()      # TESTING ONLY
+        self.__testing_stuff()      # TESTING ONLY
 
     def go(self) -> None:
         "Start calculations."
@@ -297,7 +298,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`EmfWidget`: The newly created widget.
         '''
-        raise DeprecationWarning
+        warnings.warn("deprecated", DeprecationWarning)
         if not self.fitting_group:         # if empty list
             self.new_fitting_group()
 
@@ -368,7 +369,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns:
             :class:`SpecDSWidget`: The newly created widget.
         '''
-        raise DeprecationWarning
+        warnings.warn("deprecated", DeprecationWarning)
         # if self._spect_fit is None:
         #     dswf = SpecFitWidget(self.modelwidget)
         #     self._newtab('spec fit', dswf, self.ui.actionNewSpecDS)
@@ -574,7 +575,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _get_fitalg(self):
         "Return selected fitting algorithm."
-        # raise DeprecationWarning
+        warnings.warn("deprecated", DeprecationWarning)
         ui = self.ui
         ag = self.__fitmethactgr
         if ag.checkedAction() is ui.actionLevenberg_Marquardt:
@@ -1033,7 +1034,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 yield widget
 
     def __itertabs(self):
-        raise DeprecationWarning
+        warnings.warn("deprecated", DeprecationWarning)
         'Iterate over widgets in the tab widget.'
         for tabn in range(self.ui.tab_main.count()):
             yield self.ui.tab_main.widget(tabn)
