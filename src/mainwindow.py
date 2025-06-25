@@ -35,6 +35,18 @@ from tabwidget import TabWidget
 from tabmodels import TabModelWidget
 
 
+class AppStatus:
+    """Centralized state management of the main window."""
+
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):                        # implement singleton pattern
+            cls.instance = super(AppStatus, cls).__new__(cls)
+        return cls.instance
+
+    def __init__(self):
+        self.project: Project = Project()
+
+
 class MainWindow(QtWidgets.QMainWindow):
     """The MainWindow class defines the main window for the All-Purpose Equilibrium Solver (APES) application.
 
