@@ -27,6 +27,10 @@ experimental points per titration point, number of parameters to refine).
 |  ∂δ/∂β  | ∂δ/∂Δ |    0   |   0   |   0    | ∂δ/∂t | ∂δ/∂b |      NMR        |       | calc δ |
 |         |       |        |       |        |       |       |       ↓         ↓       |        |
 +---------+-------+--------+-------+--------+-------+-------+                         +--------+
+|         |       |        |       |        |       |       |       ↑                 |        |
+|  ∂R/∂β  | ∂R/∂Δ | ∂R/∂ΔH | ∂R/∂ε | ∂R/∂E₀ | ∂R/∂t | ∂R/∂b |   restraints            | calc R |
+|         |       |        |       |        |       |       |       ↓                 |        |
++---------+-------+--------+-------+--------+-------+-------+                         +--------+
  <----------  number of variables to refine --------------->
 
 Basic rundown.

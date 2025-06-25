@@ -28,6 +28,8 @@ def main():
 
 
 if __name__ == '__main__':
+    logging_level=logging.DEBUG     # for development
+    # logging_level=logging.INFO      # for production
     logging.basicConfig(filename='apes.log',
                         filemode='w',
                         level=logging.DEBUG,
