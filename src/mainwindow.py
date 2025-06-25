@@ -1058,7 +1058,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return QtWidgets.QFileDialog.getSaveFileName(
             parent=self,
             caption='Choose file to open',
-            directory=self.project.default_dir,  #self.__default_dir,
+            directory=self.project.default_dir,
             filter=filters)
 
     def __savefile(self):
@@ -1135,12 +1135,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                   value=model.temperature, min=0.0, decimals=2)
         if accept:
             model.temperature = temp
-
-    # def __switch_calorimetry(self):
-    #     if self.modelwidget.isCalori():
-    #         self.modelwidget.removeCalorimetry()
-    #     else:
-    #         self.modelwidget.addCalorimetry()
 
     def __tab_changed(self, i):
         "Triggered when the tab changes."
