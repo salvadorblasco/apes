@@ -70,8 +70,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.status = AppStatus()
-        # self.project: Project = Project()
+        # self.status = AppStatus()
+        self.project: Project = Project()
         self._options_widget = dialogs.OptionsDialog()
         self._docprops_widget = dialogs.PropertiesDialog(self.status.project)
 
@@ -193,17 +193,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def menuSaveFile(self) -> None:
         "Save the current file."
-        if self._filename is None:
+        if self.project.filename is None:
             self.menuSaveFileAs()
         else:
-            libio.saveXML(self, self._filename)
+            libio.saveXML(self, self.project.filename)
 
     def menuSaveFileAs(self) -> None:
         "Ask for a file to save the current data."
         filters = "XML Files (*.xml);;All Files (*.*)"
         filename, ok = self.__savedialog(filters)
         if ok and filename:
-            self._filename = filename
+            self.project.filename = filename
             libio.saveXML(self, filename)
 
     def menuOpenFile(self):
@@ -214,7 +214,7 @@ class MainWindow(QtWidgets.QMainWindow):
         filename, ok = self.open_dialog(filters)
         if not ok:
             return
-        self._filename = filename
+        self.project.filename = filename
 
         try:
             libio.loadXML(self, filename)
@@ -885,7 +885,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _setup_vars(self):
         "initialize variables"
-        self._filename = None
+        # self._filename = None
         self.outputw = None
         self._multilock = True  # if true, forbid mixing different data types
         # self._fmode = consts.FM_NONE
