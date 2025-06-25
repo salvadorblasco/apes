@@ -209,9 +209,9 @@ class MainWindow(QtWidgets.QMainWindow):
             errtxt = str(err)
             exinfo = sys.exc_info()[2]
             logging.error(f'error opening {filename}\n{errtxt}\n{exinfo}')
-            self.message('Data file corrupted or incomplete.')
+            self.message('Data file corrupted or incomplete. (see log)')
             import traceback
-            print(traceback.format_exc())
+            logging.error(traceback.format_exc())
         else:
             self._model_connections(renew=True)
         self.ui.mdiArea.tileSubWindows()
@@ -681,7 +681,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.message('File could not be opened')
         except Exception as e:
             self.message('Error importing data')
-            print(e)
+            logging.error(e)
         else:
             # self._fmode = consts.FM_EMF
             pass
