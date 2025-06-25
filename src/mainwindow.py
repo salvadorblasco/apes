@@ -70,9 +70,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.project: Project = Project()
+        self.status = AppStatus()
+        # self.project: Project = Project()
         self._options_widget = dialogs.OptionsDialog()
-        self._docprops_widget = dialogs.PropertiesDialog(self.project)
+        self._docprops_widget = dialogs.PropertiesDialog(self.status.project)
 
         self.ui = uic.loadUi('../forms/mainwindow.ui', self)
 
@@ -109,7 +110,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.message('Please, select the data window you want to work with.')
 
-    def iterate(self):
+    def iterate(self) -> None:
         "Perform only one iteration."
         raise NotImplementedError
 
@@ -117,7 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
         aboutd = dialogs.AboutDialog()
         aboutd.exec()
 
-    def menuAddComponent(self):
+    def menuAddComponent(self) -> None:
         "Add a new component."
         text, ok = QtWidgets.QInputDialog.getText(self, "New component",
                                                   "Enter new label")
@@ -128,7 +129,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # for widget in self.__filtertabs(SpeciationWidget):
             #     widget.add_component(text)
 
-    def menuConcentrationSolver(self):
+    def menuConcentrationSolver(self) -> None:
         "Open the Concentration Solver dialog."
         d = self._get_tab2dat()
         cs = csolver.CSolver(**d)
@@ -142,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
             widget.set_free_concentration(c)
             self.refresh()
 
-    def menuModelRename(self):
+    def menuModelRename(self) -> None:
         """Change the name of the current model.
 
         A dialog will pop up to introduce the new name.
@@ -155,7 +156,7 @@ class MainWindow(QtWidgets.QMainWindow):
             action = self._activemodel_ag.checkedAction()
             action.setText(t)
 
-    def menuNewProject(self):
+    def menuNewProject(self) -> bool:
         """Clear all the forms and start a clean project, but ask first.
 
         Returns True if the user agreed to wipe everything and False if
@@ -190,14 +191,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.__notifymode()
         return True
 
-    def menuSaveFile(self):
+    def menuSaveFile(self) -> None:
         "Save the current file."
         if self._filename is None:
             self.menuSaveFileAs()
         else:
             libio.saveXML(self, self._filename)
 
-    def menuSaveFileAs(self):
+    def menuSaveFileAs(self) -> None:
         "Ask for a file to save the current data."
         filters = "XML Files (*.xml);;All Files (*.*)"
         filename, ok = self.__savedialog(filters)
@@ -436,7 +437,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return QtWidgets.QFileDialog.getOpenFileName(
             parent=self,
             caption='Choose file to open',
-            directory=self.project.default_dir,  # self.__default_dir,
+            directory=self.status.project.default_dir,  # self.__default_dir,
             filter=filters)
 
     def option(self, query: str):
@@ -820,8 +821,8 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionSaveConc.triggered.connect(self.__saveconc)
         ui.actionCopyConc.triggered.connect(self.__copyconc)
 
-        ui.actionWAuto.triggered.connect(self.project.set_weight_auto)
-        ui.actionWUnit.triggered.connect(self.project.set_weight_unit)
+        ui.actionWAuto.triggered.connect(self.status.project.set_weight_auto)
+        ui.actionWUnit.triggered.connect(self.status.project.set_weight_unit)
         ui.actionAllowDP.triggered.connect(self.__dangerparams)
 
         ui.actionIonic_strength_calculator.triggered.connect(self.newIonic)
@@ -951,10 +952,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self._docprops_widget.exec()
 
     def __figaspect(self):
+        default_aspect_ratio = 1.33
         asp, ok = QtWidgets.QInputDialog.getDouble(self, 
                                                    'Aspect ratio',
                                                    'select width/height ratio', 
-                                                   decimals=4, min=0.1, max=10.0, value=1.33)
+                                                   decimals=4, min=0.1, max=10.0,
+                                                   value=default_aspect_ratio)
         if ok:
             ...
 
@@ -1055,7 +1058,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return QtWidgets.QFileDialog.getSaveFileName(
             parent=self,
             caption='Choose file to open',
-            directory=self.project.default_dir,  #self.__default_dir,
+            directory=self.status.project.default_dir,  #self.__default_dir,
             filter=filters)
 
     def __savefile(self):
