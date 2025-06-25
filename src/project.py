@@ -5,13 +5,15 @@ import consts
 
 @dataclass
 class Project:
+    """Manage options for project."""
+
     default_dir: str = '.'
     author: str = 'Anonymous'
     title: str = 'No title'
     comments: str = ''
     created: str = ''
     last_modified: str = ''
-    temperature: float = 298.15
+    temperature: float = 298.15     # in kelvin
     filename: str = ''
     weighting: int = consts.WEIGHT_AUTO
 

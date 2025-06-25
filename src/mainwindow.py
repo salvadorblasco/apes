@@ -73,7 +73,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.status = AppStatus()
         self.project: Project = Project()
         self._options_widget = dialogs.OptionsDialog()
-        self._docprops_widget = dialogs.PropertiesDialog(self.status.project)
+        self._docprops_widget = dialogs.PropertiesDialog(self.project)
 
         self.ui = uic.loadUi('../forms/mainwindow.ui', self)
 
@@ -437,7 +437,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return QtWidgets.QFileDialog.getOpenFileName(
             parent=self,
             caption='Choose file to open',
-            directory=self.status.project.default_dir,  # self.__default_dir,
+            directory=self.project.default_dir,  # self.__default_dir,
             filter=filters)
 
     def option(self, query: str):
@@ -821,8 +821,8 @@ class MainWindow(QtWidgets.QMainWindow):
         ui.actionSaveConc.triggered.connect(self.__saveconc)
         ui.actionCopyConc.triggered.connect(self.__copyconc)
 
-        ui.actionWAuto.triggered.connect(self.status.project.set_weight_auto)
-        ui.actionWUnit.triggered.connect(self.status.project.set_weight_unit)
+        ui.actionWAuto.triggered.connect(self.project.set_weight_auto)
+        ui.actionWUnit.triggered.connect(self.project.set_weight_unit)
         ui.actionAllowDP.triggered.connect(self.__dangerparams)
 
         ui.actionIonic_strength_calculator.triggered.connect(self.newIonic)
@@ -1058,7 +1058,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return QtWidgets.QFileDialog.getSaveFileName(
             parent=self,
             caption='Choose file to open',
-            directory=self.status.project.default_dir,  #self.__default_dir,
+            directory=self.project.default_dir,  #self.__default_dir,
             filter=filters)
 
     def __savefile(self):
