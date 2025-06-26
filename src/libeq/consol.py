@@ -611,7 +611,7 @@ def resample(array, every):
 def interpolate_masked(data):
     """Interpolate masked values using the nearest values.
     """
-    n = len(data)
+    n: int = len(data)
     mask = np.any(data.mask, axis=1)
     assert len(mask) == n
 
@@ -635,7 +635,7 @@ def compute_concentration_combined(beta, stoichiometry, analytc, initial_values)
     analytic_packed = np.concatenate(analytc)
     lims = list(itertools.accumulate([0] + [s.shape[0] for s in analytc]))
     inivals = np.concatenate(initial_values)
-    concentration_packed = consol(beta, stoichiometry, analytic, inivals)
+    concentration_packed = consol(beta, stoichiometry, analytc, inivals)
     concentration = np.vsplit(concentration_packed, lims[1:-1])
     return concentration
 

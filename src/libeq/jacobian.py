@@ -1,5 +1,7 @@
 import numpy as np
 
+from . import fobj
+
 
 def jacobian(concentration, stoichiometry, logc=False):
     r"""Compute the jacobian array.
@@ -46,7 +48,7 @@ def jacobian(concentration, stoichiometry, logc=False):
         return aux2 + aux1/aux3
 
 
-def jacobian_solid(concentration, stoichiometry, solubility_stoich, solubility_produc):
+def jacobian_solid(concentration, stoichiometry, solubility_stoich, solubility_product):
     jf1 = jacobian(concentration, stoichiometry)
     jf2 = jacobian_f_solid(solubility_stoich)
     jg1 = jacobian_g_solid(concentration, solubility_stoich, solubility_product)
@@ -83,9 +85,9 @@ def extended_dlogcdlogbeta(dlcdlb, stoichiometry):
     r"""Return ∂logc_k/∂logβ_i for the extended species E->E+S.
 
     It returns the values of:
-    .. math :: \frac{\partial\log c_{i+S}}{\partial\log\beta_k} = 
-               \delta_{ik} + \sum_{j=1}^S p_{ij} 
-               \frac{\partial\log c_j}{\partial\log\beta_k} 
+    .. math :: \frac{\partial\log c_{i+S}}{\partial\log\beta_k} =
+               \delta_{ik} + \sum_{j=1}^S p_{ij}
+               \frac{\partial\log c_j}{\partial\log\beta_k}
     """
     n_equil = stoichiometry.shape[0]
     return np.eye(n_equil) + np.einsum('ijk,lj->ikl', dlcdlb, stoichiometry)

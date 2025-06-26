@@ -65,9 +65,9 @@ def fobj_solid(concentration, stoich_soln, stoich_solid, analyticalc, beta, solu
     n_solids = len(solubility_product)
     n_equils = len(beta)
 
-    c_comps = concentrations[:,:n_components]
-    c_solut = concentrations[:,:(n_components+n_equils)]
-    c_solid = concentrations[:,(n_components+n_equils+1):]
+    c_comps = concentration[:,:n_components]
+    c_solut = concentration[:,:(n_components+n_equils)]
+    c_solid = concentration[:,(n_components+n_equils+1):]
 
     raw_f = fobj(c_solut, analyticalc)
     solid_f = solid_factor(c_solid, stoich_solid)

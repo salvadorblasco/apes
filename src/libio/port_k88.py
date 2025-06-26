@@ -1,3 +1,8 @@
+import numpy as np
+
+from .. import libqt
+
+
 def import_K88_data(filename):
     """Import data from a file which complies with K88 file format.
 
@@ -40,7 +45,7 @@ def import_K88_app(app):
         return
 
     with open(fhandler, 'r') as fi:
-        C1, __, V1, V2, __, Q = importK88(fi)
+        C1, __, V1, V2, __, Q = import_K88_data(fi)
 
     n = len(C1[0])
     if app.S < n:

@@ -75,4 +75,4 @@ def cpluss(concentration, beta, stoichiometry, full=False, logc=False):
 
 def mass_action_solid(concentration, solubility_stoich):
     logc = np.log(concentration)
-    return np.exp(np.dot(logc, stoichiometry.T))
+    return np.exp(np.dot(logc, solubility_stoich.T))

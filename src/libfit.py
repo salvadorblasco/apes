@@ -1,5 +1,7 @@
 """General functions for nonlinear fitting."""
 
+# pylint: disable=possibly-used-before-assignment
+
 import enum
 import math
 from typing import Tuple, Dict, List, Final

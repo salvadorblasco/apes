@@ -1,3 +1,5 @@
+from .. import emfwidget
+
 def import_pasat_data(filename):
     """Import data from a file which complies with PASAT file format.
 
