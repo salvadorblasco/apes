@@ -6,7 +6,7 @@ import itertools
 
 import numpy as np
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, uic
 
 import consts
 import datawidget
@@ -14,7 +14,7 @@ import libaux
 import libemf
 import libmath
 import libqt
-import ui_emfds
+# import ui_emfds
 
 
 class EmfWidget(datawidget.DataWidget):
@@ -28,8 +28,9 @@ class EmfWidget(datawidget.DataWidget):
         """Initiate widget."""
         super().__init__(model)
         self.parent = parent
-        self.ui = ui_emfds.Ui_EmfDSWidget()
-        self.ui.setupUi(self)
+        #self.ui = ui_emfds.Ui_EmfDSWidget()
+        #self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/emfds.ui', self)
 
         self._tabtitr = None
 
