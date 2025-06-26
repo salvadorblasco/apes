@@ -59,7 +59,7 @@ def calfit(logB0, Bflags, H, Hflags, P, Q, titration, method=consts.METHOD_LM,
         else:
             T = libaux.build_T_titr2(titration['T0'], titration['buret'],
                                      titration['V0'], titration['V'])
-        C = libeq.consol(10**logB0, P, T)
+        C = libeq.consol.consol(10**logB0, P, T)
         N = titration['V'][:, np.newaxis] * C
         refined_enthalpy = calfit_Honly(Q, N, H, Hflags)
         refined_beta = logB0
