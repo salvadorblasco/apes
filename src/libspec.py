@@ -49,6 +49,8 @@ import functools
 
 import numpy as np
 
+import consts
+import libaux
 import libeq
 
 # LOGK = 2.3025851
@@ -56,7 +58,7 @@ __version__ = 'dev'
 
 
 def specfit(logB0, Bflags, P, spectra, T, **kwargs):
-    """Routine for spectrometry data fitting.
+    r"""Routine for spectrometry data fitting.
 
     Parameters:
         logB (:class:`numpy.ndarray`): 1D-array of floats representing the
@@ -97,7 +99,7 @@ def specfit(logB0, Bflags, P, spectra, T, **kwargs):
     """
     # ravel parameters
     #  * prepare x0
-    x = libaux.unravel(logB0, Bflags)
+    x0 = libaux.unravel(logB0, Bflags)
 
     # transform parameters
     #  * prepare y

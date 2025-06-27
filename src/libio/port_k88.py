@@ -1,6 +1,6 @@
 import numpy as np
 
-from .. import libqt
+import libqt
 
 
 def import_K88_data(filename):
