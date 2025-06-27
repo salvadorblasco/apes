@@ -2,19 +2,22 @@ import numpy as np
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
+from PyQt5 import uic
 
 import datawidget
 import libaux
 import libqt
-import ui_specds
+# import ui_specds
 
 
 class SpecWidget(datawidget.DataWidget):
     def __init__(self, model):
         super().__init__(model)
         QtWidgets.QWidget.__init__(self)
-        self.ui = ui_specds.Ui_SpecDSWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/specds.ui', self)
+        # self.ui = ui_specds.Ui_SpecDSWidget()
+        # self.ui.setupUi(self)
+
         # self._connectMenu(self.ui.tab_data)
         self._colored_checkboxes = []
 

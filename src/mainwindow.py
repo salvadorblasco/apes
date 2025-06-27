@@ -4,11 +4,11 @@ import collections
 import configparser
 import logging
 import sys
+from typing import Any
 import warnings
 
 import numpy as np
 
-from PyQt5.Qt import QApplication, QClipboard
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import uic
@@ -32,7 +32,6 @@ from otherwidgets import OutputWidget, ExternalDataWidget, IonicWidget, Titratio
 from simulationwidgets import SpeciationWidget, TitrationWidget, SimulationData
 from project import Project
 from tabwidget import TabWidget
-from tabmodels import TabModelWidget
 
 
 class AppStatus:
@@ -557,13 +556,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _fit_ionic(self):
         widget = self.ui.tab_main.currentWidget()
-        try:
-            ionic = np.fromiter(widget.ionic_strength, dtype=np.float)
-        except (AttributeError, ValueError):
-            self.message("There is an error in the table.")
+        if not isinstance(widget, IonicWidget):
+            raise TypeError("An IonicWidget is required")
+        # try:
+        #     ionic = np.fromiter(widget.ionic_strength, dtype=np.float)
+        # except (AttributeError, ValueError):
+        #     self.message("There is an error in the table.")
 
-        titre = np.fromiter(widget.titre, dtype=np.float)
-        self.canvas.plot_ionic(titre=titre, ionic=ionic)
+        # titre = np.fromiter(widget.titre, dtype=np.float)
+        self.canvas.plot_ionic(ionicwidget=widget)
 
     def _fit_nmr(self):
         raise NotImplementedError
@@ -598,7 +599,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         raise ValueError
 
-    def _get_tab2dat(self):
+    def _get_tab2dat(self) -> dict[str, Any]:
         "Returns the data chunk of the current tab."
         t = self.ui.tab_main.currentWidget()
 
@@ -649,7 +650,7 @@ class MainWindow(QtWidgets.QMainWindow):
         f, ok = self.open_dialog(filters)
         if not ok:
             return
-        libio.loadModelsOnlyXML(self.modelwidget, f)
+        libio.rx.loadModelsOnlyXML(self.modelwidget, f)
 
     def _import_tiamo(self):
         filters = "TIAMO Files (*.csv);;All Files (*.*)"
@@ -658,7 +659,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         #w = self.newEmf()
         w = self.ui.tab_main.add_emf()
-        volume, emf = libio.import_tiamo(f)
+        volume, emf = libio.import_tiamo_data(f)
         # always set 'emf' first because the table is reshaped accordingly
         w.emf = emf
         w.titre = volume
@@ -671,7 +672,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         w = self.ui.tab_main.add_emf()
         # w = self.newEmf()
-        volume, emf = libio.import_pasat(f)
+        volume, emf = libio.import_pasat_data(f)
         # always set 'emf' first because the table is reshaped accordingly
         w.emf = emf
         w.titre = volume
@@ -689,7 +690,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # PRODUCTION
         try:
-            libio.importSuperquadApp(self, filename)
+            libio.import_superquad_app(self, filename)
         except OSError:
             self.message('File could not be opened')
         except Exception as e:
@@ -733,6 +734,7 @@ class MainWindow(QtWidgets.QMainWindow):
             model = self.modelwidget.current_model()
             labels = self.modelwidget.labels
             widgets = [t for t in self.__itertabs() if hasattr(t, 'analyticalc')]
+            # FIX send data to plotter
             plotemf = lambda: self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)))
 
             dsw = otherwidgets.ManualFitWidget(model, labels, widgets, plotemf)
@@ -766,7 +768,7 @@ class MainWindow(QtWidgets.QMainWindow):
                          ui.actionFont12)
         self.__fontszactgr = _newxag(*_action_fonts)
         for act, sz in zip(_action_fonts, (8.0, 10.0, 12.0, 14.0)):
-            act.setText("{:.1f}pt".format(sz))
+            act.setText(f"{sz:.1f}pt")
             act.triggered.connect(lambda: self.canvas.label_size_changed(sz))
 
         self.qag_color = _newxag(ui.actionColorBW, ui.actionColorRed,
@@ -855,25 +857,25 @@ class MainWindow(QtWidgets.QMainWindow):
 
             self._activemodel_ag.triggered.connect(self.__change_active_model)
 
-    def _menu_refresh(self):
-        def _what(type_):
-            return isinstance(self.ui.tab_main.currentWidget(), type_)
+    # def _menu_refresh(self):
+    #     def _what(type_):
+    #         return isinstance(self.ui.tab_main.currentWidget(), type_)
 
-        # TODO for python 3.10 use match case
-        if _what(EmfWidget):
-            self._compute_concentration_combined()
-            # for widget in self.__filtertabs(EmfWidget):
-            #     widget.calc_freec()
-            self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)))
-            self.update()
-        elif _what(CalorWidget):
-            raise NotImplementedError
-        elif _what(SpecWidget):
-            raise NotImplementedError
-        elif _what(NmrWidget):
-            raise NotImplementedError
-        else:
-            self.message("Nothing to do")
+    #     # TODO for python 3.10 use match case
+    #     if _what(EmfWidget):
+    #         self._compute_concentration_combined()
+    #         # for widget in self.__filtertabs(EmfWidget):
+    #         #     widget.calc_freec()
+    #         self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)))
+    #         self.update()
+    #     elif _what(CalorWidget):
+    #         raise NotImplementedError
+    #     elif _what(SpecWidget):
+    #         raise NotImplementedError
+    #     elif _what(NmrWidget):
+    #         raise NotImplementedError
+    #     else:
+    #         self.message("Nothing to do")
 
     def _reset_model(self):
         dialog = dialogs.ModelInputDialog(self)
@@ -1004,7 +1006,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __plclrad(self):
         d = self._get_tab2dat()
         # assert isinstance(d, data.SimulationData)
-        d.clearExternalData()
+        # d.clearExternalData()
 
     def __plstycol(self, style):
         "Update plot when color scheme changes."
@@ -1090,7 +1092,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                         self.modelwidget.stoich)
         text = "\t".join(labels) + "\n" + \
             "\n".join("\t".join(f"{num:.6e}" for num in line) for line in conc)
-        clipboard = QApplication.clipboard()
+        clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(text)
 
     def __saveconc(self):

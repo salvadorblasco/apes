@@ -19,12 +19,15 @@ Variables:
 import numpy as np
 from libeq.consol import dcdb
 
+
 def f_obj(d_c, d_o, w):
     # d_c = 
     np.sum(w * (d_c - d_o)**2)
 
 def jacobian(C, P):
-    dcdb = dcdb(C, P)     # d log c / d log B
+    _dcdb = dcdb(C, P)     # d log c / d log B
+    # TODO complete
+    pass
 
 def nmrfit(delta_obs, T, P, B0, B_mask, d0, d_mask, X):
     """See from C. Frassineti, S. Ghelli, P. Gans, A. Sabatini,
@@ -60,7 +63,7 @@ def c2f(C, T, P, Pr):
         :class:`numpy.ndarray`: An (N, Nn) array with the fractional
             populations of nuclei.
     """
-
+    Nn = len(Pr)
     CC = expandC(C, Pr)
     f = np.empty(P, Nn)
     #for c in CC.T:

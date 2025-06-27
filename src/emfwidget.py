@@ -2,6 +2,8 @@
     # file: emfwidget.py #
     ###################### """
 
+# pylint: disable=no-member
+
 import itertools
 
 import numpy as np
@@ -14,7 +16,7 @@ import libaux
 import libemf
 import libmath
 import libqt
-# import ui_emfds
+from modelwidget import ModelWidget
 
 
 class EmfWidget(datawidget.DataWidget):
@@ -24,7 +26,7 @@ class EmfWidget(datawidget.DataWidget):
     (2) table_params and (3) table_data.
     """
 
-    def __init__(self, model, parent=None):
+    def __init__(self, model: ModelWidget, parent=None):
         """Initiate widget."""
         super().__init__(model)
         self.parent = parent
@@ -61,7 +63,7 @@ class EmfWidget(datawidget.DataWidget):
 
         self.ui.cb_titration.currentTextChanged.connect(super()._DataWidget__titration_changed)
 
-    def add_component(self, label, position=-1):
+    def add_component(self, label: str, position: int=-1) -> None:
         table = self.ui.table_titration
         ncomps = self.model.number_components
 
@@ -376,6 +378,7 @@ class EmfWidget(datawidget.DataWidget):
 
     @property
     def titration_name(self):
+        "The identifier for the titration."
         return self.ui.cb_titration.currentText()
 
     def _select_titration_dropdown(self):
@@ -413,8 +416,8 @@ class EmfWidget(datawidget.DataWidget):
             self.ui.table_params.setHorizontalHeaderLabels(('electrode',))
             self.ui.table_data.setHorizontalHeaderLabels(('titre', 'emf'))
         else:
-            lbls1 = ['electrode{}'.format(i) for i in range(nelectrs)]
-            lbls2 = ['titre'] + ['emf({})'.format(i) for i in range(nelectrs)]
+            lbls1 = [f'electrode{i}' for i in range(nelectrs)]
+            lbls2 = ['titre'] + [f'emf({i})' for i in range(nelectrs)]
             self.ui.table_params.setHorizontalHeaderLabels(lbls1)
             self.ui.table_data.setHorizontalHeaderLabels(lbls2)
 
@@ -451,8 +454,4 @@ class EmfWidget(datawidget.DataWidget):
 
     @staticmethod
     def __num2it(n):
-        # if isinstance(n, (int, float)):
-        #     return (n,)
-        # else:
-        #     return n
         return (n,) if isinstance(n, (int, float)) else n
