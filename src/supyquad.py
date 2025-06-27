@@ -82,7 +82,7 @@ print("\tlibio ", libio.__version__)
 #     d = libio.importSuperquad(sys.stdin)
 
 source = args.f if args.f else sys.stdin
-d = libio.importSuperquad(source)
+d = libio.import_superquad_data(source)
 
 method = 1 if args.simplex else 0
 freport = report.spyq_nm_iteration if args.simplex else report.spyq_lm_iteration

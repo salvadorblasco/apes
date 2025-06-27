@@ -6,8 +6,9 @@ Widget for the model containing stoichiometry values and beta values.
 """
 
 
-# from contextlib import contextmanager
 import copy
+import itertools
+import string
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore

@@ -16,3 +16,5 @@ from .port_hyperquad import import_hyperquad_app, import_hyperquad_data
 from .port_k88 import import_K88_app, import_K88_data
 from .port_tiamo import import_tiamo_app, import_tiamo_data
 from .port_pasat import import_pasat_app, import_pasat_data
+
+__version__ = '0'

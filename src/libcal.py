@@ -16,7 +16,7 @@ import libeq
 import libio
 
 
-def calfit(logB0, Bflags, H, Hflags, P, Q, titration, method=consts.METHOD_LM,
+def calfit(logB0, Bflags, H, Hflags, P, Q, titration, free_concentration, method=consts.METHOD_LM,
            **kwargs):
     r"""This function fits equilibrium constants for a calorimetric titration.
 
@@ -59,7 +59,7 @@ def calfit(logB0, Bflags, H, Hflags, P, Q, titration, method=consts.METHOD_LM,
         else:
             T = libaux.build_T_titr2(titration['T0'], titration['buret'],
                                      titration['V0'], titration['V'])
-        C = libeq.consol.consol(10**logB0, P, T)
+        C = libeq.consol.consol(10**logB0, P, T, free_concentration)
         N = titration['V'][:, np.newaxis] * C
         refined_enthalpy = calfit_Honly(Q, N, H, Hflags)
         refined_beta = logB0
@@ -298,7 +298,7 @@ def calfit_Honly(Q, N, H, Hflags):
     return libaux.ravel(H, Hfit, Hflags)
 
 
-def cal_jac1():
+def cal_jac1() -> np.ndarray:
     pass
 
 

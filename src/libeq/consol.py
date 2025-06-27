@@ -176,6 +176,7 @@ def _consol_python(beta, stoichiometry, analytc, initial_values,
     # libaux.assert_array_dim(1, beta)
     # libaux.assert_array_dim(2, T, stoichiometry)
     new_c = None
+    c0 = None
 
     n_data = analytc.shape[0]
     n_equilibria, n_species = stoichiometry.shape

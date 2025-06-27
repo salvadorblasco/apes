@@ -302,6 +302,10 @@ def saveTitrationXML(widget):
     return ttitr
 
 
+def _abool(x):
+    return 'yes' if x else 'no'
+
+
 def _checkXML(xmle, tag):
     if not isinstance(xmle, ET.Element):
         raise ValueError("xmle must be an ElementTree.Element instance")

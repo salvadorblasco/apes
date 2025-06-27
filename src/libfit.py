@@ -87,6 +87,8 @@ def levenberg_marquardt(bridge, **kwargs) -> Dict[str, np.ndarray]:
     chisq: float = 1e99
     sigma: float = math.inf
     execution_status: Exec = Exec.INITIALISING
+    M = np.array([])
+    D = np.array([])
     # breakpoint()
 
     while iteration < max_iterations:

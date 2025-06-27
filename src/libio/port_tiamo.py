@@ -1,3 +1,8 @@
+import numpy as np
+
+import emfwidget
+
+
 def import_tiamo_data(filename):
     """Import data from a file which complies with TIAMO file format.
 

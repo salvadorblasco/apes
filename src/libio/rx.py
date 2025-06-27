@@ -109,7 +109,7 @@ def loadFittingXML(widget, xmle):
         index = widget.indexOf(twidget)
         widget.setTabText(index, nmrdata.attrib['name'])
         twidget.populate_cb_titration(titration_names)
-        loadNmrXML(twidget, nmrdat)
+        loadNmrXML(twidget, nmrdata)
 
 
 def loadExternalXML(widget, xmle):
@@ -163,7 +163,7 @@ def loadExternalXML(widget, xmle):
     #         max_depth = len(_dat)
     #     data.append((ordr, type_, sordr, labels, _dat))
 
-    widget.feed_data(x, y, (ey if with_errors else None))
+    widget.feed_data(x, y, (_ey if with_errors else None))
     # widget.feed_data(data, max_depth)
     widget.set_labels(labels)
     return widget

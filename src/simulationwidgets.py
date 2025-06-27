@@ -75,7 +75,7 @@ class SimulationData(QtWidgets.QWidget):
             insert = 1 + position
         px = list(self.pX())
 
-        with libqt.table_locked(table):
+        with libqt.signals_blocked(table):
             table.insertRow(insert)
             for col in range(table.columnCount() - 1):
                 self._set_main_table_defaults(insert, col)

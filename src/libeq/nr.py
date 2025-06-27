@@ -498,8 +498,6 @@ def linesearch1(x0, dx, slope, gfunc):
 
         lam2 = lam[...]
         f2 = g_lam[...]
-        import pudb
-        pudb.set_trace()
         assert len(lam2[~done]) == len(f2[~done]) == len(_lam) == len(_slope)
         lam[~done] = np.where(tmplam > 0.1*_lam, tmplam, 0.1*_lam)
 

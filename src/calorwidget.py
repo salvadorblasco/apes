@@ -54,7 +54,7 @@ class CalorWidget(datawidget.DataWidget):
 
     @QtCore.pyqtSlot(int, str)
     def componentAdded(self, which, label):
-        with libqt.table_locked(self.ui.table_titration) as t:
+        with libqt.signals_blocked(self.ui.table_titration) as t:
             t.insertRow(which)
             tw = QtWidgets.QTableWidgetItem(label)
             tw.setFlags(QtCore.Qt.ItemIsSelectable)
@@ -72,7 +72,7 @@ class CalorWidget(datawidget.DataWidget):
 
     @QtCore.pyqtSlot(int)
     def componentDeleted(self, which):
-        with libqt.table_locked(self.ui.table_titration) as t:
+        with libqt.signals_blocked(self.ui.table_titration) as t:
             t.removeRow(which)
 
     @QtCore.pyqtSlot(int, str)
@@ -109,7 +109,7 @@ class CalorWidget(datawidget.DataWidget):
     @enthalpy_flags.setter
     def enthalpy_flags(self, flags):
         flagwidgets = (libqt.create_combo(consts.REFINE_LABELS, flag) for flag in flags)
-        with libqt.table_locked(self.ui.table_titration):
+        with libqt.signals_blocked(self.ui.table_titration):
             for row, widget in enumerate(flagwidgets):
                 self.ui.table_titration.setCellWidget(row, self._cols.enthalpy_flag, widget)
 
