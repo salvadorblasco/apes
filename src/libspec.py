@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 """Module **libspec** contains the routines needed for fitting equilibrium
@@ -99,7 +98,7 @@ def specfit(logB0, Bflags, P, spectra, T, **kwargs):
     """
     # ravel parameters
     #  * prepare x0
-    x0 = libaux.unravel(logB0, Bflags)
+    # x0 = libaux.unravel(logB0, Bflags)
 
     # transform parameters
     #  * prepare y
@@ -110,7 +109,7 @@ def specfit(logB0, Bflags, P, spectra, T, **kwargs):
     #  * prepare weights
 
     # call libfit.levenberg_marquardt
-    x, concs, ret_extra = libfit.levenberg_marquardt(x0, y, f, free_conc, jacobian, weights)
+    # x, concs, ret_extra = libfit.levenberg_marquardt(x0, y, f, free_conc, jacobian, weights)
 
     # unravel parameters
     # return result
@@ -126,129 +125,129 @@ def spec_function(free_concentrations, optical_activity, optical_path, baseline=
 
 
 # TODO delete
-def specLM1(A, e):
-    """This routine performs the fitting of the constants by means of the
-    Levenberg-Marquardt algorithm when only the contants are to be refined.
-
-    The objective function is defined as
-
-    .. math::
-
-        f = \sum_{i,\lambda}\left( A_{i\lambda} - 
-        l \sum_{j=1}^{E+S} \\varepsilon_{\lambda, j} c_{ij}
-        (\\beta_1,\\beta_2,\ldots,\\beta_E) \\right)^2
-
-    where we refine ε and β together.
-
-    Arguments:
-        A (:class:`numpy.ndarray`): The absorbance matrix. It must
-            be (Ns, Nl)-sized.
-        e (:class:`numpy.ndarray`): The epsilon matrix. It must
-            be (Nl, Nc)-sized.
-
-    Raises:
-        ValueError: If invalid parameters are passed.
-    """
-
-    # calculate initial free concentrations
-    # compute χ₂(dx)
-
-    if 'damping' in kwargs:
-        damping = kwargs.pop('damping')
-    else:
-        damping = 0.001
-
-    x = libaux.unravel(logB0, Bflags)  # TODO unravel x
-    J = jacobian()
-    M = np.dot(np.dot(J.T, W), J)
-    D = np.diag(np.diag(M))
-
-    while True:
-        try:
-            dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), F.T))
-        except np.linalg.linalg.LinAlgError:
-            damping *= 10
-            continue
-
-        try:
-            C, H = CH(libaux.ravel(logB0, x+dx, Bflags), fcalcC, hindex)
-        except:
-            diagn = {'iteration': iterations, 'x': x, 'dx': dx, 'J': J,
-                     'chisq': chisq, 'residuals': F, 'damping': damping}
-            raise excepts.FailedCalculateConcentrations(**diagn)
-
-        # TODO calc residuals
-        F = remf - np.log(H)
-
-        if qt_handle is not None:
-            qt_handle("iter %d. chisq = %f" % (iterations, chisq))
-
-        if np.sum(F**2) >= chisq:
-            damping *= 10
-        else:
-            if htmlout:
-                htmlout(_html_iteration(iterations, x/consts.LOGK, dx/consts.LOGK, chisq))
-
-            iterations += 1
-            damping /= 10
-            chisq = np.sum(F**2)
-            out_chisq.append(chisq)
-            x += dx
-            if 'one_iter' in kwargs:
-                break
-            J = emf_jac1(P, C, hindex, var)
-            M = np.dot(np.dot(J.T, W), J)
-            D = np.diag(np.diag(M))
-
-        if np.all(np.abs(dx)/x < threshold):
-            break
-
-        if iterations > max_iterations:
-            if htmlout and verbosity:
-                htmlout("Maximum number of iterations has been reached." +
-                        "Fitting will stop now.")
-
-    error_B = np.diag(np.linalg.inv(M))
-    CV = covariance(J, weights, F)
-    D = np.diag(CV)
-    nD = len(D)
-    CR = CV/np.sqrt(np.dot(D.reshape((nD, 1)), D.reshape((1, nD))))
-
-    if htmlout and verbosity:
-        htmlout(_html_finalconvg(x/consts.LOGK, error_B/consts.LOGK, CR))
-
-    if supyquad and verbosity:
-        _spyq_finalconvg(x, error_B, CR)
-
-    ret_extra = {'error': libaux.ravel(np.zeros(E), error_B, Bflags),
-                 'damping': damping,
-                 'covariance': CV,
-                 'correlation': CR}
-
-    return libaux.ravel(logB0, x, Bflags), C, ret_extra
+# def specLM1(A, e):
+#     """This routine performs the fitting of the constants by means of the
+#     Levenberg-Marquardt algorithm when only the contants are to be refined.
+# 
+#     The objective function is defined as
+# 
+#     .. math::
+# 
+#         f = \sum_{i,\lambda}\left( A_{i\lambda} - 
+#         l \sum_{j=1}^{E+S} \\varepsilon_{\lambda, j} c_{ij}
+#         (\\beta_1,\\beta_2,\ldots,\\beta_E) \\right)^2
+# 
+#     where we refine ε and β together.
+# 
+#     Arguments:
+#         A (:class:`numpy.ndarray`): The absorbance matrix. It must
+#             be (Ns, Nl)-sized.
+#         e (:class:`numpy.ndarray`): The epsilon matrix. It must
+#             be (Nl, Nc)-sized.
+# 
+#     Raises:
+#         ValueError: If invalid parameters are passed.
+#     """
+# 
+#     # calculate initial free concentrations
+#     # compute χ₂(dx)
+# 
+#     if 'damping' in kwargs:
+#         damping = kwargs.pop('damping')
+#     else:
+#         damping = 0.001
+# 
+#     x = libaux.unravel(logB0, Bflags)  # TODO unravel x
+#     J = jacobian()
+#     M = np.dot(np.dot(J.T, W), J)
+#     D = np.diag(np.diag(M))
+# 
+#     while True:
+#         try:
+#             dx = np.linalg.solve(M+damping*D, np.dot(np.dot(J.T, W), F.T))
+#         except np.linalg.linalg.LinAlgError:
+#             damping *= 10
+#             continue
+# 
+#         try:
+#             C, H = CH(libaux.ravel(logB0, x+dx, Bflags), fcalcC, hindex)
+#         except:
+#             diagn = {'iteration': iterations, 'x': x, 'dx': dx, 'J': J,
+#                      'chisq': chisq, 'residuals': F, 'damping': damping}
+#             raise excepts.FailedCalculateConcentrations(**diagn)
+# 
+#         # TODO calc residuals
+#         F = remf - np.log(H)
+# 
+#         if qt_handle is not None:
+#             qt_handle("iter %d. chisq = %f" % (iterations, chisq))
+# 
+#         if np.sum(F**2) >= chisq:
+#             damping *= 10
+#         else:
+#             if htmlout:
+#                 htmlout(_html_iteration(iterations, x/consts.LOGK, dx/consts.LOGK, chisq))
+# 
+#             iterations += 1
+#             damping /= 10
+#             chisq = np.sum(F**2)
+#             out_chisq.append(chisq)
+#             x += dx
+#             if 'one_iter' in kwargs:
+#                 break
+#             J = emf_jac1(P, C, hindex, var)
+#             M = np.dot(np.dot(J.T, W), J)
+#             D = np.diag(np.diag(M))
+# 
+#         if np.all(np.abs(dx)/x < threshold):
+#             break
+# 
+#         if iterations > max_iterations:
+#             if htmlout and verbosity:
+#                 htmlout("Maximum number of iterations has been reached." +
+#                         "Fitting will stop now.")
+# 
+#     error_B = np.diag(np.linalg.inv(M))
+#     CV = covariance(J, weights, F)
+#     D = np.diag(CV)
+#     nD = len(D)
+#     CR = CV/np.sqrt(np.dot(D.reshape((nD, 1)), D.reshape((1, nD))))
+# 
+#     if htmlout and verbosity:
+#         htmlout(_html_finalconvg(x/consts.LOGK, error_B/consts.LOGK, CR))
+# 
+#     if supyquad and verbosity:
+#         _spyq_finalconvg(x, error_B, CR)
+# 
+#     ret_extra = {'error': libaux.ravel(np.zeros(E), error_B, Bflags),
+#                  'damping': damping,
+#                  'covariance': CV,
+#                  'correlation': CR}
+# 
+#     return libaux.ravel(logB0, x, Bflags), C, ret_extra
 
 
 # TODO delete
-def jacobian(A, e, C):
-    """Returns the jacobian matrix. For constant fitting from spectroscopic
-    data it is an (N×Nl,Nl×Nb)-array.
-
-    Parameters:
-        A (:class:`numpy.ndarray`): The absorbance matrix. It must
-            be (Ns, Nl)-sized.
-        e (:class:`numpy.ndarray`): The epsilon matrix. It must
-            be (Nl, Nc)-sized.
-        ntrares (:class:`numpy.ndarray`): An **E**+**S**-sized list of bools
-            that indicate whether a specific species is transparent or not
-        C (:class:`numpy.ndarray`): The free concentrations array. It must
-            be (Ns, E+S)-sized.
-    """
-
-    Nl = e.shape[0]
-    j1 = jac_sub_eps(Nl, C)
-    j2 = jac_sub_beta(e, C, P)
-    assert j1.shape[0] == j2.shape[0]
-    return np.concatenate((j1, j2))
+# def jacobian(A, e, C, P):
+#     """Returns the jacobian matrix. For constant fitting from spectroscopic
+#     data it is an (N×Nl,Nl×Nb)-array.
+# 
+#     Parameters:
+#         A (:class:`numpy.ndarray`): The absorbance matrix. It must
+#             be (Ns, Nl)-sized.
+#         e (:class:`numpy.ndarray`): The epsilon matrix. It must
+#             be (Nl, Nc)-sized.
+#         ntrares (:class:`numpy.ndarray`): An **E**+**S**-sized list of bools
+#             that indicate whether a specific species is transparent or not
+#         C (:class:`numpy.ndarray`): The free concentrations array. It must
+#             be (Ns, E+S)-sized.
+#     """
+# 
+#     Nl = e.shape[0]
+#     j1 = jac_sub_eps(Nl, C)
+#     j2 = jac_sub_beta(e, C, P)
+#     assert j1.shape[0] == j2.shape[0]
+#     return np.concatenate((j1, j2))
 
 
 def jac_sub_eps(Nl, C):
@@ -305,10 +304,12 @@ def jac_sub_beta(e, C, P):
         The part of the jacobian matrix that depends on the extintion
             coefficient.
     """
-
-    # TODO define Nb
+    N, Ne = C.shape
+    E, S = P.shape
+    Nl = e.shape[0]
+    Nb = 1          # TODO estimate correctly Nb
     J = np.zeros(N, Nb)
-    dcdB = numpy.stack(libeq.iterdcdB(C, P))
+    dcdB = np.stack(libeq.consol.dcdb(C, P))
     assert dcdB.shape == (N, S, E)
 
     J = np.einsum('ij,kj,kjl->ikl', (e, C, dcdB))

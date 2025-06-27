@@ -407,7 +407,7 @@ def simplex(x0, y, fnc, free_conc, weights, **kwargs):
 
 def final_params(jacobian, weights, resid):
     error_beta = libmath.error_params(jacobian, weights)
-    covar = libmath.covariance(jacobian, weights, resid)
+    covar = libmath.covariance(jacobian, weights)
     correl = libmath.correlation_matrix(covar)
     return error_beta, covar, correl
 

@@ -730,17 +730,18 @@ class MainWindow(QtWidgets.QMainWindow):
         manfit_widgets = sum(1 for t in self.__itertabs()
                                if isinstance(t, otherwidgets.ManualFitWidget))
         assert manfit_widgets < 2
-        if manfit_widgets == 0:
-            model = self.modelwidget.current_model()
-            labels = self.modelwidget.labels
-            widgets = [t for t in self.__itertabs() if hasattr(t, 'analyticalc')]
-            # FIX send data to plotter
-            plotemf = lambda: self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)))
+        # TODO fix this
+        # if manfit_widgets == 0:
+        #     model = self.modelwidget.current_model()
+        #     labels = self.modelwidget.labels
+        #     widgets = [t for t in self.__itertabs() if hasattr(t, 'analyticalc')]
+        #     # FIX send data to plotter
+        #     plotemf = lambda: self.canvas.plot_emf(tuple(self.__filtertabs(EmfWidget)))
 
-            dsw = otherwidgets.ManualFitWidget(model, labels, widgets, plotemf)
-            self._newtab("Manual fit", dsw)
-        else:
-            pass
+        #     dsw = otherwidgets.ManualFitWidget(model, labels, widgets, plotemf)
+        #     self._newtab("Manual fit", dsw)
+        # else:
+        #     pass
 
     def _make_connections(self):
         """Connect signals with slots.

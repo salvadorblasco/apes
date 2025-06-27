@@ -136,14 +136,15 @@ for curve, weight in zip(titrations, weights):
 
 report.spyq_start(log10B, Bflags, P, titrations, weights, verbosity=1)
 
-newB, newC, alt = libemf.emffit(np.array(log10B), Bflags, np.array(P),
-                                titrations, electrodes,
-                                report=freport,
-                                method=method)
-
-report.spyq_finalconvg(newB, errors=alt['error_beta'], titrations=titrations,
-                       residuals=alt['residuals'],
-                       correlation=alt['correlation'])
+# TODO FIX
+# newB, newC, alt = libemf.emffit(np.array(log10B), Bflags, np.array(P),
+#                                 titrations, electrodes,
+#                                 report=freport,
+#                                 method=method)
+# 
+# report.spyq_finalconvg(newB, errors=alt['error_beta'], titrations=titrations,
+#                        residuals=alt['residuals'],
+#                        correlation=alt['correlation'])
 
 print("PROGRAM FINISHED")
 

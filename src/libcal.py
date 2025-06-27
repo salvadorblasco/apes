@@ -218,8 +218,7 @@ def calfit_LM1(logB, Bflags, H, Hflags, P, Q, V, T, **kwargs):
             if quiet_maxits:
                 break
             else:
-                raise excepts.TooManyIterations(libaux.ravel(logB,
-                                                             x, Bflags))
+                raise excepts.TooManyIterations
 
     error_B = np.diag(np.linalg.inv(M))
     CV = libaux.covariance(J, weights, F)
@@ -299,7 +298,8 @@ def calfit_Honly(Q, N, H, Hflags):
 
 
 def cal_jac1() -> np.ndarray:
-    pass
+    # TODO complete this
+    return np.array([])
 
 
 def cal_jac2(H, V, C, P):

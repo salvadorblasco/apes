@@ -1,6 +1,6 @@
 import numpy as np
 
-from libeq.cpluss import cpluss
+from libeq.cpluss import cpluss, mass_action_solid
 
 
 def fobj(concentration, stoichiometry, analyticalc, beta=None):
@@ -69,7 +69,7 @@ def fobj_solid(concentration, stoich_soln, stoich_solid, analyticalc, beta, solu
     c_solut = concentration[:,:(n_components+n_equils)]
     c_solid = concentration[:,(n_components+n_equils+1):]
 
-    raw_f = fobj(c_solut, analyticalc)
+    raw_f = fobj(c_solut, stoich_soln, analyticalc)
     solid_f = solid_factor(c_solid, stoich_solid)
     raw_g = gobj(c_comps, stoich_solid, solubility_product)
 
@@ -95,7 +95,7 @@ def gobj(concentration, stoichiometry, solubility_product):
         :class:`numpy.ndarray`: array of (*N*, *S*) floats containing the
             values of the function.
     """
-    aux = cpluss.mass_action_solid(concentration, stoichiometry)
+    aux = mass_action_solid(concentration, stoichiometry)
     return aux / solubility_product - 1
 
 
