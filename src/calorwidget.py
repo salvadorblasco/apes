@@ -9,7 +9,7 @@ Widget for calorimetry.
 import enum
 
 from PyQt5 import QtWidgets
-from PyQt5 import QtCore
+from PyQt5 import QtCore, uic
 
 import consts
 import datawidget
@@ -32,8 +32,9 @@ class CalorWidget(datawidget.DataWidget):
             model (:class:`modelwidget.ModelWidget`): The model reference
         """
         super().__init__(model)
-        self.ui = ui_calords.Ui_CalorWidget()
-        self.ui.setupUi(self)
+        # self.ui = ui_calords.Ui_CalorWidget()
+        # self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/calords.ui', self)
         self._cols = enum.IntEnum('col', 'label enthalpy enthalpy_flag entropy', start=0)
         self.__default_value = '0.0000'
 
