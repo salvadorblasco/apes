@@ -4,12 +4,12 @@ import random
 import sys
 import unittest
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtWidgets
 
 sys.path.append('../src/')
 import apes
 
-app = QApplication(sys.argv)
+app = QtWidgets.QApplication(sys.argv)
 
 
 class CanvasTests(unittest.TestCase):
@@ -17,7 +17,7 @@ class CanvasTests(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
     def setUp(self):
-        import canvas
+        import canvas_pqtg as canvas
         self.main = apes.MainWindow()
         self.canvas = canvas.MyCanvas()
 

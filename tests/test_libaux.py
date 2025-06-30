@@ -5,7 +5,6 @@ import sys
 import unittest
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication
 
 import hypothesis as hp
 import hypothesis.strategies as st

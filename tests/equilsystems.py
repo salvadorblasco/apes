@@ -40,7 +40,7 @@ def hcoeffs(T, B, Kw):
 def filter_h(roots):
     try:
         be_real = [float(x) for x in roots if np.isreal(x)]
-    except ComplexWarning:
+    except np.exceptions.ComplexWarning:
         pass
 
     be_positive = [x for x in be_real if x >= 0.0]

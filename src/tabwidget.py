@@ -183,7 +183,9 @@ class TabWidget(QtWidgets.QTabWidget):
 
     def import_txtspectrum(self, filename):
         'Import data from text file.'
-        wavelength, data = libio.import_spectrum_text(filename)
+        # wavelength, data = libio.import_spectrum_text(filename)
+        wavelength, data = np.loadtxt(filename, unpack=True)
+    
         titrwidget = self.add_titrationbase()
         titrwidget.n_points = data.shape[1]
         spectwidget = self.add_spectrumuv()

@@ -4,7 +4,7 @@ import random
 import unittest
 
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtWidgets
 
 sys.path.append('../src')
 import libio
@@ -60,7 +60,7 @@ class TestLoad(unittest.TestCase):
         import mainwindow
         fname = '_load_all1.xml'
         # fname = '../data/pylh.xml'
-        app = QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         mainw = mainwindow.MainWindow()
         libio.loadXML(mainw, fname)
 
@@ -101,7 +101,7 @@ class TestLoad(unittest.TestCase):
 
     @unittest.skip('DEBUG!!!')
     def test_load_models(self):
-        app = QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         import modelwidget
         text = """<models active="1">
            <model title="title example" energy_units='kcal/mol'>
@@ -131,7 +131,7 @@ class TestLoad(unittest.TestCase):
         with open('_load_emf.xml', 'r') as f:
             text = f.read()
         xmle = _xml(text)
-        app = QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         modelw = _gen_test_model()
         modelw.setCurrentModel(0)
         emfw = emfwidget.EmfWidget(modelw)
@@ -154,7 +154,7 @@ class TestLoad(unittest.TestCase):
 
     @unittest.skip('DEBUG!!')
     def test_load_external(self):
-        app = QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         import otherwidgets
 
         DATA_MAX = 20
@@ -189,7 +189,7 @@ class TestLoad(unittest.TestCase):
         # TODO delete when the other is complete
         # import pudb
         # pudb.set_trace()
-        app = QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         import otherwidgets
         edwidget = otherwidgets.ExternalDataWidget()
         x = tuple(_gen_rand_float())
@@ -224,7 +224,7 @@ class TestLoad(unittest.TestCase):
     @unittest.skip('DEBUG')
     def test_load_speciation(self):
         import otherwidgets
-        app = QApplication(sys.argv)
+        app = QtWidgets.QApplication(sys.argv)
         text = """<distri name="noname" points="100">
           <initial unit="mol/L">0.001 0.001 2</initial>
           <final unit="mol/L">0.001 0.001 11</final>

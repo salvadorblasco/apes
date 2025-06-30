@@ -104,7 +104,7 @@ class SpecWidget(datawidget.DataWidget):
         total_rows = len(wavelengths)
         total_columns = spectra_data.shape[1]
 
-        with libqt.table_locked(self.ui.table_data) as table:
+        with libqt.signals_blocked(self.ui.table_data) as table:
             table.clear()
             table.setRowCount(total_rows)
             table.setColumnCount(total_columns)
@@ -112,7 +112,7 @@ class SpecWidget(datawidget.DataWidget):
             vertical_header_labels = ["{:.1f}".format(w) for w in wavelengths]
             table.setVerticalHeaderLabels(vertical_header_labels)
 
-        with libqt.table_locked(self.ui.table_components) as table:
+        with libqt.signals_blocked(self.ui.table_components) as table:
             table.setRowCount(total_rows)
             table.setVerticalHeaderLabels([''] + vertical_header_labels)
             fill_size = (total_rows+1,self._model.number_equilibria+self._model.number_components)
@@ -127,12 +127,12 @@ class SpecWidget(datawidget.DataWidget):
     # Slots
     @QtCore.pyqtSlot(int, str)
     def component_added(self, index, label):
-        with libqt.table_locked(self.ui.table_data) as table:
+        with libqt.signals_blocked(self.ui.table_data) as table:
             table.insertRow(index)
 
     @QtCore.pyqtSlot(int)
     def componentDeleted(self, index):
-        with libqt.table_locked(self.ui.table_components) as table:
+        with libqt.signals_blocked(self.ui.table_components) as table:
             table.removeColumn(index)
         self.labels_changed()
 
@@ -286,7 +286,7 @@ class SpecWidget(datawidget.DataWidget):
 
     def __set_component_labels(self):
         # this function assumes the new rows have already been added/deleted
-        with libqt.table_locked(self.table_data) as table:
+        with libqt.signals_blocked(self.table_data) as table:
             for position, (islog, label) in enumerate(zip(self._islog, self._model.labels)):
                 lbl = "".join((['p'] if islog else []) + [label])
                 item = QtWidgets.QTableWidgetItem(lbl)

@@ -297,7 +297,7 @@ def calfit_Honly(Q, N, H, Hflags):
     return libaux.ravel(H, Hfit, Hflags)
 
 
-def cal_jac1() -> np.ndarray:
+def cal_jac1(P, C, var) -> np.ndarray:
     # TODO complete this
     return np.array([])
 

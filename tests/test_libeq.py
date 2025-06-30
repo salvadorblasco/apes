@@ -151,8 +151,8 @@ class Test2Jacobian(unittest.TestCase):
         self.B = 10**self.logB
         self.P = np.array([[1, 1], [1, 2], [1, 3], [1, 4], [0, -1]])
         with np.load('pytrenal.npz') as d:
-            self.real_C = d['C']
-            self.real_T = d['T']
+            self.real_C: np.ndarray[float] = d['C']
+            self.real_T: np.ndarray[float] = d['T']
         self.E, self.S = self.P.shape
 
     def test_python_jacobian(self):
@@ -386,12 +386,12 @@ class Test7Solid(unittest.TestCase):
         stoich2 = np.array([[1,-3]])
 
 
-def random_mask(array, axis=0):
-    #TODO
-    import random
-    _mask = np.column_stack(n_species*[random.choice([True, False])
-                                           for _ in range(n_points)])
-    return np.ma.array(array, mask=_mask)
+# def random_mask(array, axis=0):
+#     #TODO
+#     import random
+#     _mask = np.column_stack(n_species*[random.choice([True, False])
+#                                            for _ in range(n_points)])
+#     return np.ma.array(array, mask=_mask)
 
 
 def randompick(array):
