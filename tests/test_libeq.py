@@ -9,7 +9,9 @@ import numpy as np
 
 sys.path.append('../src')
 # pylint: disable=import-error
-
+# pylint: disable=no-member
+# pylint: disable=unsubscriptable-object
+  
 
 class Test0General(unittest.TestCase):
     def __init__(self, *args, **kwargs):

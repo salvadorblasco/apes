@@ -12,6 +12,7 @@ Dependencies:
 import datetime
 from typing import Callable, Any
 
+import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import bridge
@@ -263,8 +264,8 @@ class TabWidget(QtWidgets.QTabWidget):
         # print("slot activated: ", widget, txt)
         # titration = self.__tabdicts[txt]
         if widget.titration.is_titre_implicit():
-            titre = titration.titre
-            widget.npoints = titration.n_points
+            titre = widget.titration.titre
+            widget.npoints = widget.titration.n_points
             widget.titre = titre
         widget._titrationid = id(widget.titration)
 

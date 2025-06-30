@@ -198,9 +198,9 @@ class LibAuxTests(unittest.TestCase):
 
     def test_percent_distribution(self):
         with np.load('distr_cu2pz32323.npz') as f:
-            freec = f['free_concentration']
-            stoich = f['stoichiometry']
-            analc = f['analyticalc']
+            freec: np.ndarray[float] = f['free_concentration']
+            stoich: np.ndarray[int]  = f['stoichiometry']
+            analc: np.ndarray[float] = f['analyticalc']
 
         ref = 1
         x = libaux.percent_distribution(freec, stoich, analc, reference=ref)

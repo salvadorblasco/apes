@@ -127,76 +127,76 @@ class ModelTests(unittest.TestCase):
         for prop in properties:
             self.assertTrue(hasattr(self.model, prop), msg.format(prop))
 
-    @unittest.skip('broken')
-    def test_tablerw(self):
-        import numpy as np
-        import consts
-        compare_arrays = np.testing.assert_array_almost_equal
+    # @unittest.skip('broken')
+    # def test_tablerw(self):
+    #     import numpy as np
+    #     import consts
+    #     compare_arrays = np.testing.assert_array_almost_equal
 
-        def generate_model(iscal, num_comps, num_samples):
-            for E in np.random.randint(2, high=15, size=(num_resamples,)):
-                # self.assertEqual(n, len(self.model))
-                if iscal:
-                    _h = np.random.rand(E)
-                    _eh = np.random.rand(E)
-                    _fh = np.random.randint(low=0, high=7+1, size=(E,))
-                    assert(np.all(np.logical_and(_fh <= 7, _fh >= 0)))
-                    self.model.addCalorimetry()
-                else:
-                    _h = None
-                    _eh = None
-                    _fh = None
-                    self.model.removeCalorimetry()
-                _p = np.random.randint(low=-5, high=11, size=(E, S))
-                _fb = np.random.randint(low=-1, high=7+1, size=(E,))
-                assert(np.all(np.logical_and(_fb <= 7, _fb >= -1)))
-                newmodel = consts.Model(name='No name',
-                                        const=np.random.rand(E),
-                                        stoich=_p,
-                                        const_flags=_fb,
-                                        const_error=np.random.rand(E),
-                                        enthalpy=_h,
-                                        enthalpy_error=_eh,
-                                        enthalpy_flags=_fh)
-                yield newmodel
+    #     def generate_model(iscal, num_comps, num_samples):
+    #         for E in np.random.randint(2, high=15, size=(num_resamples,)):
+    #             # self.assertEqual(n, len(self.model))
+    #             if iscal:
+    #                 _h = np.random.rand(E)
+    #                 _eh = np.random.rand(E)
+    #                 _fh = np.random.randint(low=0, high=7+1, size=(E,))
+    #                 assert(np.all(np.logical_and(_fh <= 7, _fh >= 0)))
+    #                 self.model.addCalorimetry()
+    #             else:
+    #                 _h = None
+    #                 _eh = None
+    #                 _fh = None
+    #                 self.model.removeCalorimetry()
+    #             _p = np.random.randint(low=-5, high=11, size=(E, S))
+    #             _fb = np.random.randint(low=-1, high=7+1, size=(E,))
+    #             assert(np.all(np.logical_and(_fb <= 7, _fb >= -1)))
+    #             newmodel = consts.Model(name='No name',
+    #                                     const=np.random.rand(E),
+    #                                     stoich=_p,
+    #                                     const_flags=_fb,
+    #                                     const_error=np.random.rand(E),
+    #                                     enthalpy=_h,
+    #                                     enthalpy_error=_eh,
+    #                                     enthalpy_flags=_fh)
+    #             yield newmodel
 
-        num_samples = 20
-        num_resamples = 10
-        labels = [letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-        for iscal in (False, True):
-            for S in np.random.randint(low=2, high=15, size=(num_samples,)):
-                self.model.clear()
-                self.model.labels = labels[:S]
-                modelgen = generate_model(iscal, S, num_resamples)
-                for n, model in enumerate(modelgen):
-                    self.model.mainwend(model)
-                    self.assertEqual(n+1, len(self.model))
-                    self.model.setCurrentModel(-1)
-                    self.assertEqual(iscal, self.model.isCalori())
+    #     num_samples = 20
+    #     num_resamples = 10
+    #     labels = [letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+    #     for iscal in (False, True):
+    #         for S in np.random.randint(low=2, high=15, size=(num_samples,)):
+    #             self.model.clear()
+    #             self.model.labels = labels[:S]
+    #             modelgen = generate_model(iscal, S, num_resamples)
+    #             for n, model in enumerate(modelgen):
+    #                 self.model.mainwend(model)
+    #                 self.assertEqual(n+1, len(self.model))
+    #                 self.model.setCurrentModel(-1)
+    #                 self.assertEqual(iscal, self.model.isCalori())
 
-                    flagged = model.const_flags != -1
-                    compare_arrays(self.model.beta, model.const[flagged])
-                    compare_arrays(self.model.beta_error,
-                                   model.const_error[flagged])
-                    compare_arrays(self.model.stoich,
-                                   model.stoich[np.nonzero(flagged)[0], :])
-                    # if np.any(self.model.beta_flags != model.const_flags[flagged]):
-                    #     import pdb
-                    #     pdb.set_trace()
-                    np.testing.assert_equal(self.model.beta_flags,
-                                            model.const_flags[flagged])
-                    if iscal:
-                        np.testing.assert_equal(self.model.enthalpy_flags,
-                                                model.enthalpy_flags[flagged])
-                        compare_arrays(self.model.enthalpy, model.enthalpy[flagged])
-                        compare_arrays(self.model.enthalpy_error,
-                                       model.enthalpy_error[flagged])
-                    else:
-                        self.assertIsNone(self.model.enthalpy)
-                        self.assertIsNone(self.model.enthalpy_error)
-                        self.assertIsNone(self.model.enthalpy_flags)
-                        self.assertIsNone(self.model.enthropy)
-                        self.assertIsNone(self.model.enthropy_error)
+    #                 flagged = model.const_flags != -1
+    #                 compare_arrays(self.model.beta, model.const[flagged])
+    #                 compare_arrays(self.model.beta_error,
+    #                                model.const_error[flagged])
+    #                 compare_arrays(self.model.stoich,
+    #                                model.stoich[np.nonzero(flagged)[0], :])
+    #                 # if np.any(self.model.beta_flags != model.const_flags[flagged]):
+    #                 #     import pdb
+    #                 #     pdb.set_trace()
+    #                 np.testing.assert_equal(self.model.beta_flags,
+    #                                         model.const_flags[flagged])
+    #                 if iscal:
+    #                     np.testing.assert_equal(self.model.enthalpy_flags,
+    #                                             model.enthalpy_flags[flagged])
+    #                     compare_arrays(self.model.enthalpy, model.enthalpy[flagged])
+    #                     compare_arrays(self.model.enthalpy_error,
+    #                                    model.enthalpy_error[flagged])
+    #                 else:
+    #                     self.assertIsNone(self.model.enthalpy)
+    #                     self.assertIsNone(self.model.enthalpy_error)
+    #                     self.assertIsNone(self.model.enthalpy_flags)
+    #                     self.assertIsNone(self.model.enthropy)
+    #                     self.assertIsNone(self.model.enthropy_error)
 
 
 class EmfTests(unittest.TestCase):
