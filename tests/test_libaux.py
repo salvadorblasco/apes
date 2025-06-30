@@ -12,6 +12,7 @@ import hypothesis.strategies as st
 sys.path.append('../src/')
 import libaux
 
+# pylint: disable=unsubscriptable-object
 
 class LibAuxTests(unittest.TestCase):
     def __init__(self, *args, **kwargs):

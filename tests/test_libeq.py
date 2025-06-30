@@ -5,13 +5,13 @@ import unittest
 import sys
 import numpy as np
 
-# import hexaprotic
-
 sys.path.append('../src')
+
 # pylint: disable=import-error
 # pylint: disable=no-member
 # pylint: disable=unsubscriptable-object
-  
+# pylint: disable=not-an-iterable 
+
 
 class Test0General(unittest.TestCase):
     def __init__(self, *args, **kwargs):
