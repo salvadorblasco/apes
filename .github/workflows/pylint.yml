@@ -20,4 +20,4 @@ jobs:
         pip install pylint PyQt5 numpy scipy pyqtgraph matplotlib hypothesis
     - name: Analysing the code with pylint
       run: |
-        pylint --disable=W,R,C,I $(git ls-files '*.py')
+        pylint --disable=R,C,I $(git ls-files '*.py')
