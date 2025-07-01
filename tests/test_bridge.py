@@ -12,7 +12,6 @@ import _syntheticdata
 sys.path.append('../src')
 
 import consts
-# import libeq.consol
 
 
 class TestBridge(unittest.TestCase):
@@ -21,8 +20,10 @@ class TestBridge(unittest.TestCase):
 
         self.data, self.params = _syntheticdata.load_hexaprotic()
 
-        self.pconsol = unittest.mock.patch("libeq.consol.consol", new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
-        self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess", new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
+        self.pconsol = unittest.mock.patch("libeq.consol.consol",
+                                           new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
+        self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess",
+                                            new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
 
     def setUp(self):
         from bridge import Bridge
@@ -40,9 +41,6 @@ class TestBridge(unittest.TestCase):
             np.testing.assert_allclose(cc.amatrix, self.data.matrix_a, atol=0.2)
 
     def test_matrices(self):
-        # import libeq.consol
-        # libeq.consol.consol = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
-        # libeq.consol.initial_guess = unittest.mock.MagicMock(return_value=hexaprotic.free_concentration)
         self.pconsol.start()   
         self.pinitgu.start()
         jac, res = self.bridge.build_matrices()
@@ -75,7 +73,6 @@ class TestBridge2(unittest.TestCase):
 
     @unittest.skip("works but jumps have a lot of error")
     def test_matrices(self):
-        #breakpoint()
         jac, res = self.bridge.build_matrices()
 
         # weight = np.concatenate((self.data.t1_emf_weight, self.data.t2_emf_weight)).reshape(404,1)
@@ -137,7 +134,7 @@ class TestVariable(unittest.TestCase):
 
     def test_assign(self):
         var = self.bridge.Variable(data=self.dummyvar, key="var", position=0)
-        # breakpoint()
+
         self.assertEqual(var.get_value(), 0.0)
         var.increment_value(1.0)
         self.assertEqual(var.stored_value, 0.0)
