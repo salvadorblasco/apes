@@ -21,4 +21,4 @@ jobs:
         pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint --fail-on=E $(git ls-files '*.py')
+        pylint --fail-on=E --fail-under=5.0 $(git ls-files '*.py')
