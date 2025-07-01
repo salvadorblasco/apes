@@ -299,7 +299,7 @@ class Bridge():
             analc = titration.analc()
 
             if titration.free_conc is None:
-                conc = libeq.consol.initial_guess(beta, self.stoichiometry, analc)
+                conc = libeq.initial_guess(beta, self.stoichiometry, analc)
             else:
                 conc = libeq.consol.consol(beta, self.stoichiometry, analc, titration.free_conc)
             titration.free_conc = conc

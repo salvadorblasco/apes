@@ -19,30 +19,34 @@ Dependencies:
 .. moduleauthor:: Salvador Blasco <salvador.blasco@protonmail.com>
 """
 
-# import itertools
 import dataclasses
 
 import numpy as np
 from scipy.interpolate import interp1d
 
-# import PyQt5.Qt
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from PyQt5 import QtGui
 
 import pyqtgraph
 
-# import libaux
 import libplot
-# from datawidget import DataWidget
 from emfwidget import EmfWidget
 
 
 @dataclasses.dataclass
 class PlotStyle:
     "Encapsulates plot style attributes."
+    color: str
     linestyle: str
     linewidth: float
     plot_error: bool
+
+    def brush(self) -> QtGui.QBrush:
+        return pyqtgraph.mkBrush(self.pen())
+
+    def pen(self) -> QtGui.QPen:
+        return pyqtgraph.mkPen({'color': self.color, 'width': self.linewidth})
 
     def kwargs(self):
         "Return style attributes as a dictionary for use in plot functions."
@@ -106,6 +110,9 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         self.current_color = 0
         self._plotlabels = True
         self._plotlegend = False
+        
+        self.plotstyles = {}
+        self.__default_styles()
 
         # the dragable labels
         self.drlbls = []
@@ -396,6 +403,11 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         plot.setLabel("bottom", label)
         plot.showAxes('both')
         return plot
+
+
+    def __default_styles(self):
+        style = PlotStyle(linestyle="-", color='k', linewidth=1.0, plot_error=False)
+        self.plotstyles['style 1'] = style
 
 
 def smooth_curve(xmin, xmax, ydata):            # TODO move somewhere else

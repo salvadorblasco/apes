@@ -24,7 +24,7 @@ import numpy as np
 import libaux
 import excepts
 
-from libeq import LIBEQ_ENGINE
+from . import LIBEQ_ENGINE
 
 __version__ = '0.5'
 
