@@ -1,3 +1,6 @@
+from .jacobian import amatrix, dlogcdlogbeta
+
+
 __version__ = '0.11'
 
 # The engine to be used for calculations

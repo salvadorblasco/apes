@@ -303,9 +303,9 @@ class Bridge():
             else:
                 conc = libeq.consol.consol(beta, self.stoichiometry, analc, titration.free_conc)
             titration.free_conc = conc
-            titration.amatrix = libeq.jacobian.amatrix(conc, self.stoichiometryx)
-            titration.dlcdlbeta = libeq.jacobian.dlogcdlogbeta(titration.amatrix, conc,
-                                                               self.stoichiometry)
+            titration.amatrix = libeq.amatrix(conc, self.stoichiometryx)
+            titration.dlcdlbeta = libeq.dlogcdlogbeta(titration.amatrix, conc,
+                                                      self.stoichiometry)
 
     @cache
     def weights(self):
