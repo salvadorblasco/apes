@@ -172,7 +172,7 @@ class Bridge():
 
         This method iterates over available data to calculate partial derivatives and residuals
         for each data type (e.g., EmfWidget, CalorWidget), storing results in pre-allocated
-        matrices. Each data type's specific processing function is called to compute the 
+        matrices. Each data type's specific processing function is called to compute the
         respective Jacobian and residual components.
 
         Returns:
@@ -200,10 +200,11 @@ class Bridge():
 
             for jpart, col_slice in self.parameters.iter_jblock():
                 if datatype in data_methods:
-                    jac_partial = data_methods[datatype](dataid, data, jpart, beta_refine, row_slice, col_slice, temp)
+                    jac_partial = data_methods[datatype](dataid, data, jpart, beta_refine,
+                                                         row_slice, col_slice, temp)
                 else:
                     jac_partial = np.zeros(_size(row_slice, col_slice))
-                
+
                 self.jacobian[row_slice, col_slice] = jac_partial
         return self.jacobian, self.residual
 
@@ -257,7 +258,7 @@ class Bridge():
         raise NotImplementedError
 
     def report_step(self, **kwargs):
-        self.iteration_history(chisq=kwargs['chisq'], sigma=kwargs['sigma'], 
+        self.iteration_history(chisq=kwargs['chisq'], sigma=kwargs['sigma'],
                                gradient_norm=kwargs['gradient_norm'])
         if self.report_buffer is None:
             return
@@ -356,7 +357,8 @@ class Parameters:
 
         # other variables
         self.constraint = 6*[None]
-        titration_match = {}    # keys are id of datawidgets and values are id of the matching TitrationBaseWidget
+        titration_match = {}    # keys are id of datawidgets and values are id of the matching
+                                #  TitrationBaseWidget
         self.spectraldata = None
 
         # ~~~~ start collecting information ~~~~
@@ -673,7 +675,8 @@ class EmfData():
 
     def weight(self) -> NDArray[float]:
         return self.error_emf**2 + \
-               (np.gradient(self.emf.T, self.titration.titre, axis=1) * self.titration.error_volume)**2
+               (np.gradient(self.emf.T, self.titration.titre, axis=1) * \
+               self.titration.error_volume)**2
 
     def residual(self) -> np.ndarray:
         "Return residual."
@@ -763,14 +766,16 @@ class SpectrumData:
         "Dump data into the widget to update the GUI."
         raise NotImplementedError
 
-    def residual(self) -> np.ndarray:
+    def residual(self) -> FloatArray:
         "Return residual."
-        free_conc = self.titration.free_conc
+        free_conc: FloatArray = self.titration.free_conc
         optical_activity = self.epsilon.interpolate(self.wavelength)
-        return self.absorbance - libspec.spec_function(free_conc, optical_activity, self.optical_path)
+        return self.absorbance - \
+               libspec.spec_function(free_conc, optical_activity, self.optical_path)
 
 
 class FreeVariable(typing.Protocol):
+    """Define protocol for a variable."""
     max_increment: float
     stored_value: float | None
     error: float
@@ -854,24 +859,28 @@ class Variable:
         self.increment = increment
 
     def get_value(self) -> float:
-        "Get the value of the variable."
+        "Get the consolidated value of the variable."
         if self.stored_value is None:
             dataholder = getattr(self.data, self.key)
             return dataholder[self.position]
-        else:
-            return self.stored_value + self.increment
+
+        return self.stored_value + self.increment
 
     def get_temporal(self) -> float:
+        "Get the temporal value."
         return self.get_value() +  self.increment
 
     def relative_increment(self) -> float:
+        "Get the increment relative to the value."
         return self.increment/self.stored_value
 
     def get_error(self) -> float:
+        "Get the error associated to this variable."
         dataholder = getattr(self.data, self.keyerror)
         return dataholder[self.position]
 
     def set_error(self, value: float) -> None:
+        "Set the error associated to this variable."
         dataholder = getattr(self.data, self.keyerror)
         dataholder[self.position] = value
 
@@ -926,6 +935,7 @@ class Constraint:
         return self.__values[0]
 
     def set_error(self, value: float) -> None:
+        "Set the error associated to this variable."
         new_values = (value*self.__values[0]/val for val in self.__values)
         for (data, _, position), val in zip(self.__data, new_values):
             dataholder = getattr(data, "errors")
@@ -950,19 +960,20 @@ def _size(*slices):
     return tuple(len(s) for s in slices)
 
 
-def trivial_capping(x: NDArray[float], dx: NDArray[float]) -> NDArray[float]:
+def trivial_capping(value: NDArray[float], increment: NDArray[float]) -> NDArray[float]:
     "Capping function where there is no capping"
-    return x + dx
+    return value + increment
 
 
-def max_ratio_capping(x: NDArray[float], dx: NDArray[float], ratio: float) -> NDArray[float]:
+def max_ratio_capping(value: NDArray[float], increment: NDArray[float], ratio: float) -> NDArray[float]:
     "Capping to a fraction of change"
-    if (aux := np.abs(dx)/x) < ratio:
-        return x+dx
-    return x*(1+aux)
+    if (aux := np.abs(increment)/value) < ratio:
+        return value+increment
+    return value*(1+aux)
 
 
-def abs_capping(x, dx, maximum):
-    if abs(dx) < maximum:
-        return x + dx
-    return x + maximum
+def abs_capping(value: NDArray[float], increment: NDArray[float], maximum: float) -> NDArray[float]:
+    "cap values based on absolute value."
+    if abs(increment) < maximum:
+        return value + increment
+    return value + maximum

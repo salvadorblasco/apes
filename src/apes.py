@@ -12,6 +12,7 @@ This module runs the main application.
 
 import logging
 import sys
+from typing import Final
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -28,8 +29,8 @@ def main():
 
 
 if __name__ == '__main__':
-    logging_level=logging.DEBUG     # for development
-    # logging_level=logging.INFO      # for production
+    logging_level: Final[int] = logging.DEBUG     # for development
+    # logging_level: Final[int] = logging.INFO      # for production
     logging.basicConfig(filename='apes.log',
                         filemode='w',
                         level=logging.DEBUG,

@@ -1,6 +1,12 @@
-import cProfile, pstats, io
+"Tools for benchmarking functions."
+
+import cProfile
+import pstats
+import io
+
 
 def profile(func):
+    "Decorator for profiling the performance of an intensive function."
     def wrapper(*args, **kwargs):
         pr = cProfile.Profile()
         try:

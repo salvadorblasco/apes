@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 # -*- encoding: utf-8 -*-
 
+"Setup script from setup tools."
+
+
 from setuptools import setup
 
 setup(
@@ -30,6 +33,6 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.10',
         ]
 )
