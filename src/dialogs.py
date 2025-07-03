@@ -1,10 +1,7 @@
-from PyQt5 import QtWidgets
+"Classes related to dialogs."
 
-import ui_about
-import ui_constants
-import ui_optionsdialog
-import ui_docproperties
-import ui_model_input
+from PyQt5 import QtWidgets
+from PyQt5 import uic
 
 
 class AboutDialog(QtWidgets.QDialog):
@@ -12,16 +9,14 @@ class AboutDialog(QtWidgets.QDialog):
 
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
-        self.ui = ui_about.Ui_AboutDialog()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/about.ui', self)
 
 
 class Constants(QtWidgets.QDialog):
     """Dialog for calculate stepwise constants."""
     def __init__(self, beta, error_beta, labels):
         super().__init__()
-        self.ui = ui_constants.Ui_Constants()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/constants.ui', self)
 
         combos = (self.ui.cb_reagent1, self.ui.cb_reagent2,
                   self.ui.cb_reagent3, self.ui.cb_reagent4)
@@ -52,8 +47,7 @@ class OptionsDialog(QtWidgets.QDialog):
 
     def __init__(self):
         super().__init__()
-        self.ui = ui_optionsdialog.Ui_ApesOptions()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/optionsdialog.ui', self)
 
     @property
     def fitparams_coarse(self):
@@ -83,12 +77,10 @@ class OptionsDialog(QtWidgets.QDialog):
 class PropertiesDialog(QtWidgets.QDialog):
     def __init__(self, project):
         super().__init__()
-        self.ui = ui_docproperties.Ui_Properties()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/docproperties.ui', self)
 
 
 class ModelInputDialog(QtWidgets.QDialog):
     def __init__(self, project):
         super().__init__()
-        self.ui = ui_model_input.Ui_NewModelDialog()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/model_input.ui', self)

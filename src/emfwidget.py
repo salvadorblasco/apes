@@ -30,8 +30,6 @@ class EmfWidget(datawidget.DataWidget):
         """Initiate widget."""
         super().__init__(model)
         self.parent = parent
-        #self.ui = ui_emfds.Ui_EmfDSWidget()
-        #self.ui.setupUi(self)
         self.ui = uic.loadUi('../forms/emfds.ui', self)
 
         self._tabtitr = None

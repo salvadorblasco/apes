@@ -10,6 +10,7 @@ Solving equilibria.
 import numpy as np
 
 from PyQt5 import QtWidgets
+from PyQt5 import uic
 
 from matplotlib.backends.backend_qt5agg import \
     NavigationToolbar2QT as NavigationToolbar
@@ -17,7 +18,6 @@ from matplotlib.backends.backend_qt5agg import \
     FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-import ui_csolver
 from libeq.pcf import pcf
 from libeq.fobj import fobj
 from libeq.cpluss import cpluss
@@ -33,9 +33,7 @@ class CSolver(QtWidgets.QDialog):
     def __init__(self, beta, analytc, stoichiometry, free_concentration=None,
                  **kwargs):
         super().__init__()
-        # print(beta)
-        self.ui = ui_csolver.Ui_CSolverWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/csolver.ui', self)
         self.startingvals = None
         self.C = None
         self.T = np.array(analytc)

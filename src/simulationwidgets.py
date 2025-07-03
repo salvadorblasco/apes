@@ -14,9 +14,6 @@ import libmath
 import libqt
 import libplot
 
-import ui_sdistri
-import ui_titrsimu
-
 
 class SimulationData(QtWidgets.QWidget):
     '''Parent class for the data for titration and speciation simulations.
@@ -219,8 +216,7 @@ class SpeciationWidget(SimulationData):
         '''Initiate widget
         '''
         super().__init__(model)
-        self.ui = ui_sdistri.Ui_SpeciationWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/sdistri.ui', self)
 
         self._checkboxes = QtWidgets.QButtonGroup()
         self._checkboxes.setExclusive(False)
@@ -444,8 +440,8 @@ class TitrationWidget(SimulationData):
     def __init__(self, model):
         """Initiate widget. """
         super().__init__(model)
-        self.ui = ui_titrsimu.Ui_TitrationWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/titrsimu.ui', self)
+
         self._maintable = self.ui.table_titration
 
         self.ui.table_titration.setRowCount(model.number_components)

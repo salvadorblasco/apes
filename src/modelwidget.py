@@ -17,7 +17,6 @@ from PyQt5 import QtGui
 import consts
 import libaux
 import libqt
-import ui_model
 
 
 class ModelWidget(QtWidgets.QWidget):
@@ -52,8 +51,7 @@ class ModelWidget(QtWidgets.QWidget):
         self.__models = [self.__currentmodel]
         self.__labels = ['L', 'H']
 
-        self.ui = ui_model.Ui_ModelWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/model.ui', self)
 
         hheader = self.ui.table_model.horizontalHeader()
         hheader.sectionDoubleClicked.connect(self.__headerdoubleclicked)
