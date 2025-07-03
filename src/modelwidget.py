@@ -13,6 +13,7 @@ import string
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import uic
 
 import consts
 import libaux
@@ -618,8 +619,9 @@ class SolidModelWidget(QtWidgets.QWidget):
 
     def __init__(self, parent_model):
         super().__init__()
-        self.ui = ui_model.Ui_ModelWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/modelwidget.ui', self)
+        # self.ui = ui_model.Ui_ModelWidget()
+        # self.ui.setupUi(self)
         self.__parent_model = parent_model
 
 

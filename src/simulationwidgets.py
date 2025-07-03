@@ -4,7 +4,9 @@
 .. moduleauthor:: Salvador Blasco <salvador.blasco@gmail.com>
 """
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import uic
 import numpy as np
 
 import libaux
