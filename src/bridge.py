@@ -48,7 +48,7 @@ import collections
 from dataclasses import dataclass, field
 import math
 import typing
-from typing import Sequence, Dict
+from typing import Sequence, Dict, Callable
 from functools import reduce, partial, cache
 import itertools
 
@@ -213,13 +213,13 @@ class Bridge():
 
         This method iterates over available data to calculate partial derivatives and residuals
         for each data type (e.g., EmfWidget, CalorWidget), storing results in pre-allocated
-        matrices. Each data type's specific processing function is called to compute the 
+        matrices. Each data type's specific processing function is called to compute the
         respective Jacobian and residual components.
 
         Returns:
             tuple[NDArray[float], NDArray[float]]: The computed Jacobian and residual matrices.
         """
-        temp = self.parameters.get_temp()
+        # temp = self.parameters.get_temp()   # unused
         betadata = self.parameters.beta
         beta = betadata.beta()
         beta_refine = betadata.to_refine
@@ -369,7 +369,8 @@ class Parameters:
         # betas are always included first
         # BEWARE! the widget provides the values of the constants as LOG10
         # from this point on all calculations are done in the LN of the constants
-        self.beta = BetaData(logbeta=consts.LOGK*np.array(model.beta_raw), beta_flags=model.beta_flags)
+        self.beta = BetaData(logbeta=consts.LOGK*np.array(model.beta_raw), 
+                             beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
         jacobian_slice.stamp_slice('beta', self.jacobian_part)
         self.beta.variables = self.variables.copy()
@@ -720,26 +721,30 @@ class BetaData:
 
 
 class SpectralData:
+    "Handle spectral data."
     def __init__(self):
-        self.optically_active = None
-        self.xdata = np.empty(0)
-        self.ydata = np.empty(0)
-        self.spanning = 5.0  # nanometres
-        self.cubicspline = None
+        self.optically_active : NDArray | None = None
+        self.xdata : NDArray = np.empty(0)
+        self.ydata : NDArray = np.empty(0)
+        self.spanning: float = 5.0  # nanometres
+        self.cubicspline: Callable[FloatArray] = None
 
     def add_spectrum(self, optically_active: tuple[bool], spectrum: "SpectrumData") -> None:
+        "Add new spectrum to this object."
         self._assert_active_consistency(optically_active)
         new_xdata = spectrum.wavelength
         new_ydata = self._getestimation(spectrum)
         self.xdata = np.append(self.xdata, new_xdata)
         self.ydata = np.append(self.ydata, new_ydata)
 
-    def setup(self):
+    def setup(self) -> None:
+        "Initalize the class for proper use."
         self.cubicspline = scipy.interpolate.CubicSpline(self.xdata, self.ydata, axis=1)
         working_wavelength = np.arange(np.min(self.xdata), np.max(self.xdata), self.spanning)
         self.data = self.interpolate(working_wavelength)
 
-    def interpolate(self, wavelength):
+    def interpolate(self, wavelength: float | FloatArray) -> FloatArray:
+        "Obtain missing values by interpolation."
         return self.cubicspline(wavelength)
 
     def _assert_active_consistency(self, optically_active: tuple[bool]) -> None:
@@ -756,6 +761,7 @@ class SpectralData:
 
 @dataclass
 class SpectrumData:
+    "Data class for spectra."
     absorbance: NDArray[float]  # axis0->wavelength, axis1->titration point
     wavelength: NDArray[float]  # 1D array
     optical_path: float
@@ -780,19 +786,24 @@ class FreeVariable(typing.Protocol):
     stored_value: float | None
     error: float
 
-    def accept_value(self):
+    def accept_value(self) -> None:
+        "Make the temporary value consolidated."
         ...
 
-    def increment_value(self, increment):
+    def increment_value(self, increment) -> None:
+        "Change the temporary value by increment."
         ...
 
     def get_value(self) -> float:
+        "Set the temporary value."
         ...
 
     def set_error(self, value: float) -> None:
+        "Set the error."
         ...
 
     def set_value(self, value: float) -> None:
+        "Set the consolidated value."
         ...
 
 
@@ -965,7 +976,8 @@ def trivial_capping(value: NDArray[float], increment: NDArray[float]) -> NDArray
     return value + increment
 
 
-def max_ratio_capping(value: NDArray[float], increment: NDArray[float], ratio: float) -> NDArray[float]:
+def max_ratio_capping(value: NDArray[float], increment: NDArray[float],
+                      ratio: float) -> NDArray[float]:
     "Capping to a fraction of change"
     if (aux := np.abs(increment)/value) < ratio:
         return value+increment

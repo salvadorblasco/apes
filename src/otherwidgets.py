@@ -9,18 +9,16 @@ import itertools
 import math
 import re
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import uic
+
 import numpy as np
 
 import consts
 import libaux
 import libqt
 import report
-import ui_externaldata
-import ui_manualfit
-import ui_output
-import ui_ionicst
-import ui_titration
 
 
 class ManualFitWidget(QtWidgets.QWidget):
@@ -28,8 +26,7 @@ class ManualFitWidget(QtWidgets.QWidget):
 
     def __init__(self, model, labels, datawidgets, plotmethod):
         super().__init__()
-        self.ui = ui_manualfit.Ui_ManualFitWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/manualfit.ui', self)
 
         self._model = model
         self.__colbetas = model.n_species
@@ -166,8 +163,7 @@ class IonicWidget(QtWidgets.QWidget):
 
     def __init__(self):
         super().__init__()
-        self.ui = ui_ionicst.Ui_IonicWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/ionicst.ui', self)
         self.ui.pb_plus.clicked.connect(self.add_line)
         self.ui.pb_minus.clicked.connect(self.remove_line)
 
@@ -240,8 +236,8 @@ class OutputWidget(QtWidgets.QWidget):
 
     def __init__(self):
         super().__init__()
-        self.ui = ui_output.Ui_OutputWidget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/output.ui', self)
+
         self.buffer = io.StringIO()
         self.__last_result = None
         self.clear()
@@ -312,8 +308,7 @@ class ExternalDataWidget(QtWidgets.QWidget):
     """
     def __init__(self):
         super().__init__()
-        self.ui = ui_externaldata.Ui_ExternalData()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/externaldata.ui', self)
 
         self.__row_labels = 0
         self.__col_xdata = 0
@@ -566,8 +561,8 @@ class TitrationBaseWidget(QtWidgets.QWidget):
     def __init__(self, model):
         super().__init__()
         self.name = None
-        self.ui = ui_titration.Ui_Titration()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('../forms/titration.ui', self)
+
         self._cols = enum.IntEnum('col', 'label init init_flags buret buret_flags', start=0)
         n = model.number_components
         self.ui.table_titration.setRowCount(n)
