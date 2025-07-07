@@ -313,20 +313,20 @@ class SpeciationWidget(SimulationData):
             libeq.consol.freeze_concentration(beta, stoich, analc, xref)
         return x_values, frozen_beta, frozen_stoich, frozen_analc
 
-    def initial_concentration(self):
+    def initial_concentration(self) -> tuple:
         'The total concentration at the beginning of the titration'
         txtdata = libqt.iter_column_text(self.ui.table_species, col=1)
         return tuple(float(n) for n in txtdata)
 
-    def set_initial_concentration(self, concentration):
+    def set_initial_concentration(self, concentration) -> None:
         libqt.fill_column(self.ui.table_species, col=1, data=concentration)
 
-    def final_concentration(self):
+    def final_concentration(self) -> tuple:
         'The total concentration at the end of the titration'
         txtdata = libqt.iter_column_text(self.ui.table_species, col=2)
         return tuple(float(n) for n in txtdata)
 
-    def set_final_concentration(self, concentration):
+    def set_final_concentration(self, concentration: np.ndarray) -> None:
         libqt.fill_column(self.ui.table_species, col=2, data=concentration)
 
     def pX(self):
@@ -338,9 +338,9 @@ class SpeciationWidget(SimulationData):
     def set_pX(self, pX):
         self.__clearcheckboxes()
         tags = ('yes' if t else 'no' for t in pX)
-        for row, (c, tag) in enumerate(zip(pX, tags)):
+        for row, (check, tag) in enumerate(zip(pX, tags)):
             checkbox = QtWidgets.QCheckBox(tag)
-            checkbox.setChecked(c)
+            checkbox.setChecked(check)
             self._checkboxes.addButton(checkbox)
             self.ui.table_species.setCellWidget(row, 3, checkbox)
 
@@ -439,6 +439,7 @@ class SpeciationWidget(SimulationData):
 
 class TitrationWidget(SimulationData):
     '''Widget for a titration simulation.'''
+
     def __init__(self, model):
         """Initiate widget. """
         super().__init__(model)
@@ -557,14 +558,14 @@ class TitrationWidget(SimulationData):
 
     def xdata(self):
         'The data for the x-axis.'
-        n = self.ui.cb_Xaxis.currentIndex()
-        if n == 0:
+        index = self.ui.cb_Xaxis.currentIndex()
+        if index == 0:
             retval = np.linspace(0, self.final_volume()-self.starting_volume(), self.n_points())
-        if n == 1:
+        if index == 1:
             retval = np.linspace(self.starting_volume(), self.final_volume(), self.n_points())
         else:
-            xref = n // 2 - 1
-            pot = bool(n % 2)
+            xref = index // 2 - 1
+            pot = bool(index % 2)
             xconc = self.free_concentration()[:, xref]
             retval = -np.log10(xconc) if pot else xconc
         return retval
@@ -575,11 +576,11 @@ class TitrationWidget(SimulationData):
 
     def ydata(self):
         'The Y data to be plotted'
-        n = self.ui.cb_Yaxis.currentIndex()
-        if n == 0:
+        index = self.ui.cb_Yaxis.currentIndex()
+        if index == 0:
             return self.free_concentration()
 
-        reference = (n - 1) % 2
+        reference = (index - 1) % 2
         return libaux.percent_distribution(self.free_concentration(),
                                            np.array(self.model.stoich),
                                            np.array(tuple(self.analyticalc())),
@@ -613,7 +614,7 @@ class TitrationWidget(SimulationData):
             for col in range(table.columnCount()):
                 self._set_main_table_defaults(insert, col)
 
-    def __table_edited(self, row, col):
+    def __table_edited(self, row: int, col: int) -> None:
         'Slot for when the table is edited.'
         # edited_txt = self.ui.table_titration.item(row, col).text()
         if col == 0:         # labels have been edited
@@ -625,7 +626,7 @@ class TitrationWidget(SimulationData):
             self.plotUpdate.emit()
             self.clear_concentration()
 
-    def __populate_cb_Xaxis(self):
+    def __populate_cb_Xaxis(self) -> None:
         combo = self.ui.cb_Xaxis
         combo.clear()
         combo.addItem('V (titre)')

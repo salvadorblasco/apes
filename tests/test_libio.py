@@ -292,38 +292,6 @@ class TestSave(unittest.TestCase):
         flags = [int(i) for i in xmle.find('key').text.split()]
         self.assertListEqual(flags, [0, 0, 0, 0])
 
-    @unittest.skip('not implemented')
-    def test_save_nmr(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_emf(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_external(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_curve(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_calor(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_speciation(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_spectr(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_save_titration(self):
-        pass
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -48,7 +48,7 @@ import collections
 from dataclasses import dataclass, field
 import math
 import typing
-from typing import Sequence, Dict, Callable
+from typing import Sequence, Dict, Callable, Any
 from functools import reduce, partial, cache
 import itertools
 
@@ -369,7 +369,7 @@ class Parameters:
         # betas are always included first
         # BEWARE! the widget provides the values of the constants as LOG10
         # from this point on all calculations are done in the LN of the constants
-        self.beta = BetaData(logbeta=consts.LOGK*np.array(model.beta_raw), 
+        self.beta = BetaData(logbeta=consts.LOGK*np.array(model.beta_raw),
                              beta_flags=model.beta_flags)
         self._process_flags(self.beta, 'logbeta', 'beta_flags', 'to_refine', jacobian_slice)
         jacobian_slice.stamp_slice('beta', self.jacobian_part)
@@ -840,7 +840,7 @@ class Variable:
         >>> variable.increment_value(0.05)  # Increment by 0.05, respecting max_increment
         >>> variable.accept_value()  # Accept the current increment, resetting stored_value
     """
-    def __init__(self, data, key, position):
+    def __init__(self, data: Any, key, position: int):
         if not hasattr(data, key):
             raise ValueError(f"data {type(data)} does not contain property {key}")
         self.data: float = data

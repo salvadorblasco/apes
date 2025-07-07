@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+"Test suite."
+
 # tests/runner.py
 import unittest
 
@@ -19,14 +21,14 @@ loader = unittest.TestLoader()
 suite  = unittest.TestSuite()
 
 # add tests to the test suite
-modules = (test_bridge, 
-           test_gui, 
-           test_import, 
-           test_libaux, 
-           test_libemf, 
-           test_libeq, 
-           test_libfit, 
-           test_libio, 
+modules = (test_bridge,
+           test_gui,
+           test_import,
+           test_libaux,
+           test_libemf,
+           test_libeq,
+           test_libfit,
+           test_libio,
            test_libqt)
 
 for module in modules:

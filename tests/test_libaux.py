@@ -169,34 +169,6 @@ class LibAuxTests(unittest.TestCase):
         for a, b in ((0,1), (2,3)):
             self.assertEqual(ret[a], ret[b])
 
-    @unittest.skip('not implemented')
-    def test_linspace(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_get_lims(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_make_ranges(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_nwe2str(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_nwe2arr(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_numwerr(self):
-        pass
-
-    @unittest.skip('not implemented')
-    def test_inumwerr(self):
-        pass
-
     def test_percent_distribution(self):
         with np.load('distr_cu2pz32323.npz') as f:
             freec: np.ndarray[float] = f['free_concentration']

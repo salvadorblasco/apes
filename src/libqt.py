@@ -5,6 +5,7 @@ Qt libraries.
 """
 
 from contextlib import contextmanager
+from collections.abc import Iterable
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -15,7 +16,8 @@ from PyQt5 import QtWidgets
 # +---------------------------------------------------------------------------+
 
 
-def tab2array(tab, rows, cols, dtype=float, masked=True):
+def tab2array(tab: QtWidgets.QTableWidget, rows: Iterable[int], cols: Iterable[int],
+              dtype=float, masked=True) -> tuple:
     '''Write 1D or 2D array to :class:`PyQt4.QtWidgets.QTableWidget`.
 
     Given a :class:`PyQt4.QtWidgets.QTableWidget` and a range of rows and columns,
@@ -72,7 +74,8 @@ def tab2maarray(tab, rows, cols, dtype=float):
         tuple(dump_mask(row) for row in rows)
 
 
-def array2tab(tab, array, row0=0, col0=0, formatting="{}"):
+def array2tab(tab: QtWidgets.QTableWidget, array: Iterable, row0:int=0, col0:int=0,
+              formatting:str="{}") -> None:
     '''Write 2D array to QTableWidget.
 
     Given a :class:`PyQt4.QtWidgets.QTableWidget` and an iterable (or iterable of
@@ -93,7 +96,8 @@ def array2tab(tab, array, row0=0, col0=0, formatting="{}"):
         fill_row(tab, row, rowcontents, col0, formatting=formatting)
 
 
-def fill_column(tab, col, data, row0=0, flags=None, formatting="{}"):
+def fill_column(tab: QtWidgets.QTableWidget, col:int, data: Iterable, row0:int=0, flags=None,
+                formatting="{}") -> None:
     '''Fill column of a table with data.
 
     Parameters:
@@ -446,7 +450,7 @@ def selected_rows(table):
 
 
 @contextmanager
-def signals_blocked(widget):
+def signals_blocked(widget: QtWidgets.QWidget):
     """Suspend connections while changes are being made in table.
 
     The signals are blocked while editing table. Use as
@@ -466,6 +470,7 @@ def signals_blocked(widget):
 # +---------------------------------------------------------------------------+
 
 def checkbox_yesno(checkbox):
+    "Quick creation of a yes/no QCheckBox."
     txt = {QtCore.Qt.Checked: "yes", QtCore.Qt.Unchecked: "no"}
     checkbox.setText(txt[checkbox.checkState()])
 
@@ -509,7 +514,7 @@ def create_combo(options, default_option=0):
     return new_combo
 
 
-def opendialog(parent, filters, directory='.'):
+def opendialog(parent: QtWidgets.QWidget, filters: str, directory: str='.') -> QtWidgets.QDialog:
     """Open file dialog and return filename selected.
 
     Parameters:
@@ -527,7 +532,7 @@ def opendialog(parent, filters, directory='.'):
         filter=filters)
 
 
-def popwarning(text, more_info):
+def popwarning(text: str, more_info: str) -> None:
     """Open messagebox dialog.
 
     Parameters:
@@ -545,10 +550,5 @@ def popwarning(text, more_info):
 
 
 def __range(table, **kwargs):
-    # if 'iter_range' in kwargs:
-    #     retv = kwargs['iter_range']
-    # else:
-    #     retv = range(kwargs.get('col0', 0), table.columnCount())
-    # return retv
     return kwargs.get('iter_range',
                       range(kwargs.get('col0', 0), table.columnCount()))

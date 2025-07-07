@@ -19,11 +19,8 @@ class TestBridge(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         self.data, self.params = _syntheticdata.load_hexaprotic()
-
-        self.pconsol = unittest.mock.patch("libeq.consol.consol",
-                                           new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
-        self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess",
-                                            new=unittest.mock.MagicMock(return_value=self.data.free_concentration))
+        # self.pconsol = unittest.mock.patch("libeq.consol.consol", new=fmock)
+        # self.pinitgu = unittest.mock.patch("libeq.consol.initial_guess", new=fmock)
 
     def setUp(self):
         from bridge import Bridge
@@ -41,11 +38,15 @@ class TestBridge(unittest.TestCase):
             np.testing.assert_allclose(cc.amatrix, self.data.matrix_a, atol=0.2)
 
     def test_matrices(self):
-        self.pconsol.start()   
-        self.pinitgu.start()
-        jac, res = self.bridge.build_matrices()
-        self.pconsol.stop()   
-        self.pinitgu.stop()
+        # self.pconsol.start()   
+        # self.pinitgu.start()
+        # breakpoint()
+        # fmock = unittest.mock.MagicMock(return_value=self.data.free_concentration)
+        with unittest.mock.patch("libeq.initial_guess") as mockclass:
+            mockclass.return_value = self.data.free_concentration
+            jac, res = self.bridge.build_matrices()
+        # self.pconsol.stop()   
+        # self.pinitgu.stop()
 
         np.testing.assert_allclose(res, self.data.residuals, atol=0.1)
         np.testing.assert_allclose(jac, self.data.emf_jac, atol=0.001)
