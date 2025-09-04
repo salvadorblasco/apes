@@ -99,7 +99,7 @@ class Slices():
         >>> print(slices.yield_slice())  # slice(5, 8)
     """
 
-    def __init__(self, start=0):
+    def __init__(self, start: int=0):
         self.start = start
         self.stop = start
 
@@ -108,6 +108,7 @@ class Slices():
         self.stop += step
 
     def stamp_slice(self, key: str, dict_: dict) -> None:
+        "Stores the current slice in the provided dictionary."
         if key in dict_:
             raise KeyError(f"key {key} is already in dict")
         if len(self):

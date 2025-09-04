@@ -88,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
-        self.__testing_stuff()      # TESTING ONLY
+        # self.__testing_stuff()      # TESTING ONLY
 
     def go(self) -> None:
         "Start calculations."
@@ -1176,7 +1176,7 @@ class MainWindow(QtWidgets.QMainWindow):
                              "All Files (*.*)"))
         filename = self.__savedialog(filters)
         if filename:
-            self.canvas.saveFigure(filename)
+            self.canvas.save_figure(filename)
 
     def __tilewindows(self):
         "Tile windows."

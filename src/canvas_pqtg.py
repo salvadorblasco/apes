@@ -29,6 +29,7 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 
 import pyqtgraph
+import pyqtgraph.exporters
 
 import libplot
 from emfwidget import EmfWidget
@@ -160,7 +161,8 @@ class MyCanvas(pyqtgraph.GraphicsLayoutWidget):
         Arguments:
             f (file or str): The file to which the figure will be saved.
         """
-        ...
+        exporter = pyqtgraph.exporters.ImageExporter(self)
+        exporter.export(f)
 
 
     def plot_fitting(self, widgets, bridge):
