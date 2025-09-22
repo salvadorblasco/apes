@@ -24,7 +24,7 @@ import datawidget
 import otherwidgets
 
 from emfwidget import EmfWidget
-from modelwidget import ModelWidget
+from modelwidget import ModelWidget, ModelData
 from calorwidget import CalorWidget
 from specwidget import SpecWidget
 from nmrwidget import NmrWidget
@@ -88,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
-        # self.__testing_stuff()      # TESTING ONLY
+        self.__testing_stuff()      # TESTING ONLY
 
     def go(self) -> None:
         "Start calculations."
@@ -1195,8 +1195,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # FOR TESTING ONLY
         # _debug_fname_ =  '../data/distri_pytc8_extd.xml'
         # _debug_fname_ =  '../data/cuimpy33333_.xml'
-        # self.new_speciation()
-        # self.ui.tab_main.clear()
         # _debug_fname_ = '../data/hcit1.xml'
         # _debug_fname_ = '../data/cuimpy33333_.xml'
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/MA_POTENCIOMETRÍA/hpytrenc8.xml'
@@ -1208,7 +1206,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '/home/salvador/Documentos/Trabajo/datos/emf/colorantes/hnbt.xml'
         # _debug_fname_ = '../data/lmh.xml'
         # _debug_fname_ = '../data/phosphate.xml'
-        _debug_fname_ = '../data/hexaprotic.xml'
+        # _debug_fname_ = '../data/hexaprotic.xml'
         # _debug_fname_ = '../data/znedta_berto.sup'
         # _debug_fname_ = '../data/hdtc.xml'
         # _debug_fname_ = '../data/hpytren4q.xml'
@@ -1218,7 +1216,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # _debug_fname_ = '../data/universal_buffer.xml'
         #_debug_fname_ = '/home/salvador/Documentos/Trabajo/documentos/manuscritos/micelas_Mercy/distris/hpytren.xml'
         # logging.debug(f'loading {_debug_fname_}')
-        libio.loadXML(self, _debug_fname_)
+        # libio.loadXML(self, _debug_fname_)
         # t1 = self.ui.tab_main.add_titrationbase()
         # t1.set_volume_explicit(False)
         # m = self.ui.tab_main.add_model()
@@ -1243,6 +1241,24 @@ class MainWindow(QtWidgets.QMainWindow):
         #     table.item(12, 3).setText("16.00")
         # libio.saveXML(self, '../data/hpytren1.xml')
         # libio.loadXML(self, '../data/hpytren1.xml')
+
+        # model = self.modelwidget
+        # md = ModelData(n_equils=8, n_species=2)
+        # md.name = "my model"
+        # md.const = [10.59, 19.24, 23.52, 26.25, 28.31, 30.06, 31.51, -13.73]
+        # md.stoich = [[1, 1], [1,2], [1,3], [1,4], [1,5], [1,6], [1,7], [0,-1]]
+        # assert md.n_equil == 8
+        # assert md.n_species == 2
+        # print(md.const_error)
+        # print(len(model))
+        # model.append(md)
+        # print(len(model))
+        # model.setCurrentModel(1)
+        # w = self.new_speciation()
+        # libio.saveXML(self, "kk.xml")
+        libio.loadXML(self, "kk.xml")
+
+        # self.ui.tab_main.clear()
         # self.new_speciation()
         # self.newIonic()
         # self.go()

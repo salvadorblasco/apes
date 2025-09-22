@@ -119,7 +119,7 @@ class ModelWidget(QtWidgets.QWidget):
         self.componentAdded.emit(position, label)
         return position
 
-    def append(self, model):
+    def append(self, model: "ModelData") -> None:
         'Append a new model to the list. Do not update.'
         for mod in self.__models:
             if mod.n_species != model.n_species:
@@ -254,21 +254,21 @@ class ModelWidget(QtWidgets.QWidget):
         # TODO delete from all models
         self.componentDeleted.emit(position)
 
-    def setCurrentModel(self, modelindex=0):
+    def setCurrentModel(self, modelindex: int=0) -> None:
         '''Initialize the widget with the new values.
 
         Parameters:
-            data (dict): The data to be loaded.
+            modelindex (int): The index to make the current model
         '''
-        model = self.__models[modelindex]
+        model = self.__models[modelindex]  # it may raise an IndexError that will propagate upstream
         self.__currentmodel = model
         columns = model.n_species + 3
         rows = model.n_equil
         table = self.ui.table_model
         with libqt.signals_blocked(self.ui.table_model):
+            table.clearContents()
             table.setRowCount(rows)
             table.setColumnCount(columns)
-            table.clearContents()
             libqt.replace_nones(table)
             self.__set_horizontal_headers()
 
