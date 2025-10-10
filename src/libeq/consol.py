@@ -26,6 +26,8 @@ import excepts
 
 from . import LIBEQ_ENGINE
 
+from . import mfeq
+
 __version__ = '0.5'
 
 
@@ -667,11 +669,10 @@ def __forder(array):
 
 
 def __select_fortran_call(beta):
-    import libeq.mfeq
     if beta.ndim == 1:
-        fcall = libeq.mfeq.newtonr1
+        fcall = mfeq.newtonr1
     elif beta.ndim == 2:
-        fcall = libeq.mfeq.newtonr2
+        fcall = mfeq.newtonr2
     else:
         raise ValueError('Malformed beta array')
     return fcall

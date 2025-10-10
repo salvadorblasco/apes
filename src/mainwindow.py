@@ -88,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas = self.new_canvas()
         self.ui.mdiArea.tileSubWindows()
 
-        self.__testing_stuff()      # TESTING ONLY
+        # self.__testing_stuff()      # TESTING ONLY
 
     def go(self) -> None:
         "Start calculations."

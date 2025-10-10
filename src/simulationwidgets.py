@@ -175,10 +175,10 @@ class SimulationData(QtWidgets.QWidget):
 
     def _recalc_free_concentration_error(self):
         # TODO use @memoize here
-        ec = libeq.consol.beta_uncertainty(self._freeconcentrations,
-                                           np.array(self._model.beta_error),
-                                           np.array(self._model.stoich),
-                                           self.confidence())
+        ec = libeq.beta_uncertainty(self._freeconcentrations,
+                                    np.array(self._model.beta_error),
+                                    np.array(self._model.stoich),
+                                    self.confidence())
         assert self._freeconcentrations.shape == ec.shape
         self._freeconcentrationerrors = ec
 
@@ -504,7 +504,7 @@ class TitrationWidget(SimulationData):
         kwargs = {'first': False}
 
         if self._freeconcentrations is None:
-            initial_values = libeq.consol.initial_guess(beta, stoich, analc, **kwargs)
+            initial_values = libeq.initial_guess(beta, stoich, analc, **kwargs)
             kwargs['first'] = (LIBEQ_ENGINE == 'fortran')
         else:
             actual_n = self._freeconcentrations.shape[0]
@@ -514,8 +514,8 @@ class TitrationWidget(SimulationData):
             else:
                 initial_values = libmath.sample_size_change(self._freeconcentrations, wanted_n)
 
-        self._freeconcentrations = libeq.consol.consol(beta, stoich, analc,
-                                                       initial_values, **kwargs)
+        self._freeconcentrations = libeq.consol(beta, stoich, analc,
+                                                initial_values, **kwargs)
         self._recalc_free_concentration_error()
 
     def starting_volume(self):
